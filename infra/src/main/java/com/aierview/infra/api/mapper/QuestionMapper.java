@@ -10,10 +10,34 @@ import java.util.List;
 @Component
 public class QuestionMapper extends ModelMapper {
     public List<QuestionEntity> toListQuestionEntity(List<Question> questions) {
-        return questions.stream().map(question -> this.map(question, QuestionEntity.class)).toList();
+        return questions.stream().map(this::toQuestionEntity).toList();
+    }
+
+    public QuestionEntity toQuestionEntity(Question question){
+        return QuestionEntity
+                .builder()
+                .id(question.getId())
+                .framework(question.getFramework())
+                .language(question.getLanguage())
+                .specialty(question.getSpecialty())
+                .statement(question.getStatement())
+                .level(question.getLevel())
+                .build();
     }
 
     public List<Question> toListQuestion(List<QuestionEntity> entities) {
-        return entities.stream().map(question -> this.map(entities, Question.class)).toList();
+        return entities.stream().map(this::toQuestion).toList();
+    }
+
+    public Question toQuestion(QuestionEntity entity){
+        return Question
+                .builder()
+                .id(entity.getId())
+                .framework(entity.getFramework())
+                .language(entity.getLanguage())
+                .specialty(entity.getSpecialty())
+                .statement(entity.getStatement())
+                .level(entity.getLevel())
+                .build();
     }
 }

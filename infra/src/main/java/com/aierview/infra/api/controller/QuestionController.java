@@ -37,8 +37,8 @@ public class QuestionController {
     })
     public ResponseEntity<Response> create(@Valid @RequestBody GenerateQuestionRequest request) throws UnexpectedException {
         GenerateQuestionParams params = mapper.map(request, GenerateQuestionParams.class);
-        generateQuestion.generate(params);
-        Response response = Response.builder().statusCode(HttpStatus.CREATED.value()).data("CREATED").build();
+        var questions = generateQuestion.generate(params);
+        Response response = Response.builder().statusCode(HttpStatus.CREATED.value()).data(questions).build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }
