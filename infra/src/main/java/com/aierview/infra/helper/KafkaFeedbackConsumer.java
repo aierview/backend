@@ -25,7 +25,7 @@ public class KafkaFeedbackConsumer {
             geminiService.generateFeedbackAndUpdate(answer);
             ack.acknowledge();
         } catch (Exception e) {
-            log.error("Error while processing message: " + e.getMessage(), e);
+            log.error("Error while processing message for question id: {}", answer.getQuestionId(), e);
         }
     }
 }
