@@ -1,8 +1,8 @@
 package com.aierview.infra.api.controller;
 
-import com.aierview.application.usecase.contract.questionnaire.IGenerateQuestionare;
+import com.aierview.application.usecase.contract.questionnaire.IGenerateQuestionnaire;
 import com.aierview.application.usecase.contract.questionnaire.IGetFeedback;
-import com.aierview.domain.entity.GenerateQuestionareParams;
+import com.aierview.domain.entity.GenerateQuestionnaireParams;
 import com.aierview.domain.exceptions.BusinessException;
 import com.aierview.domain.exceptions.UnexpectedException;
 import com.aierview.infra.api.dto.GenerateQuestionareRequest;
@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RequestMapping("/api/v1/questionaries")
 @Tag(name = "Questionare", description = "Questionare")
-public class QuestionareController {
-    private final IGenerateQuestionare generateQuestionare;
+public class QuestionnaireController {
+    private final IGenerateQuestionnaire generateQuestionare;
     private final IGetFeedback getFeedback;
     private final QuestionMapper mapper;
 
@@ -36,7 +36,7 @@ public class QuestionareController {
             @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
     })
     public ResponseEntity<Response> generate(@Valid @RequestBody GenerateQuestionareRequest request) throws UnexpectedException {
-        GenerateQuestionareParams params = mapper.map(request, GenerateQuestionareParams.class);
+        GenerateQuestionnaireParams params = mapper.map(request, GenerateQuestionnaireParams.class);
         var questions = generateQuestionare.generate(params);
         Response response = Response.builder().statusCode(HttpStatus.CREATED.value()).data(questions).build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);

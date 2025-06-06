@@ -3,7 +3,7 @@ package com.aierview.infra.service;
 import com.aierview.application.gateway.AI.IGenerateFeedbackGateway;
 import com.aierview.application.gateway.AI.IGenerateQuestionGateway;
 import com.aierview.domain.entity.Answer;
-import com.aierview.domain.entity.GenerateQuestionareParams;
+import com.aierview.domain.entity.GenerateQuestionnaireParams;
 import com.aierview.domain.entity.Question;
 import com.aierview.domain.exceptions.BusinessException;
 import com.aierview.infra.helper.KafkaFeedbackProducer;
@@ -49,7 +49,7 @@ public class GeminiService implements IGenerateQuestionGateway, IGenerateFeedbac
 
     //Generates question
     @Override
-    public List<Question> generate(GenerateQuestionareParams params) {
+    public List<Question> generate(GenerateQuestionnaireParams params) {
         String prompt = buildQuestionPrompt(params);
         String response = getGeminiResponse(prompt);
         if (response == null || response.isEmpty()) return Collections.emptyList();
@@ -114,7 +114,7 @@ public class GeminiService implements IGenerateQuestionGateway, IGenerateFeedbac
                 .collect(Collectors.toList());
     }
 
-    private String buildQuestionPrompt(GenerateQuestionareParams params) {
+    private String buildQuestionPrompt(GenerateQuestionnaireParams params) {
         StringBuilder prompt = new StringBuilder();
         prompt
                 .append("Cenário: Simulação de uma entrevista técnica para a vaga de Desenvolvedor ")
@@ -143,7 +143,7 @@ public class GeminiService implements IGenerateQuestionGateway, IGenerateFeedbac
     }
 
 
-    private List<Question> toQuestionsList(GenerateQuestionareParams params, List<String> stringsQuestions) {
+    private List<Question> toQuestionsList(GenerateQuestionnaireParams params, List<String> stringsQuestions) {
         return stringsQuestions.stream()
                 .filter(statement -> statement != null && !statement.trim().isEmpty())
                 .map(statement -> Question.builder()

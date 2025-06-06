@@ -5,7 +5,7 @@ import com.aierview.application.usecase.contract.questionnaire.IGetFeedback;
 import com.aierview.application.usecase.contract.questionnaire.IReadQuestionareById;
 import com.aierview.domain.entity.Answer;
 import com.aierview.domain.entity.Question;
-import com.aierview.domain.entity.QuestionareResponse;
+import com.aierview.domain.entity.QuestionnaireResponse;
 import com.aierview.domain.entity.Questionnaire;
 import com.aierview.domain.exceptions.BusinessException;
 import lombok.AllArgsConstructor;
@@ -19,16 +19,16 @@ public class GetFeedback implements IGetFeedback {
     private final IReadAnswerByQuestionId readAnswerByQuestionId;
 
     @Override
-    public List<QuestionareResponse> get(String questionareId) throws BusinessException {
+    public List<QuestionnaireResponse> get(String questionareId) throws BusinessException {
         Questionnaire questionnaire = readQuestionareById.read(questionareId);
         return buildQuestionareResponses(questionnaire.getQuestions());
     }
 
-    private QuestionareResponse buildQuestionareResponse(String question, String answer, String feedback) {
-        return QuestionareResponse.builder().question(question).answer(answer).feedback(feedback).build();
+    private QuestionnaireResponse buildQuestionareResponse(String question, String answer, String feedback) {
+        return QuestionnaireResponse.builder().question(question).answer(answer).feedback(feedback).build();
     }
 
-    private List<QuestionareResponse> buildQuestionareResponses(List<Question> questions) throws BusinessException {
+    private List<QuestionnaireResponse> buildQuestionareResponses(List<Question> questions) throws BusinessException {
         boolean hasUnanswered = questions.stream()
                 .anyMatch(question -> readAnswerByQuestionId.read(question.getId()) == null);
 

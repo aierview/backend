@@ -2,10 +2,10 @@ package com.aierview.infra.factory;
 
 import com.aierview.application.usecase.contract.answer.IReadAnswerByQuestionId;
 import com.aierview.application.usecase.contract.question.ISaveQuestions;
-import com.aierview.application.usecase.contract.questionnaire.IGenerateQuestionare;
+import com.aierview.application.usecase.contract.questionnaire.IGenerateQuestionnaire;
 import com.aierview.application.usecase.contract.questionnaire.IGetFeedback;
 import com.aierview.application.usecase.impl.AI.GenerateQuestion;
-import com.aierview.application.usecase.impl.questionnaire.GenerateQuestionare;
+import com.aierview.application.usecase.impl.questionnaire.GenerateQuestionnaire;
 import com.aierview.application.usecase.impl.questionnaire.GetFeedback;
 import com.aierview.infra.service.AnswerService;
 import com.aierview.infra.service.GeminiService;
@@ -29,8 +29,8 @@ public class QuestionareFactory {
     private final IReadAnswerByQuestionId readAnswerByQuestionId;
 
     @Bean
-    public IGenerateQuestionare generateQuestionare() {
-        return new GenerateQuestionare(questionareService, new GenerateQuestion(geminiService, saveQuestions));
+    public IGenerateQuestionnaire generateQuestionare() {
+        return new GenerateQuestionnaire(questionareService, new GenerateQuestion(geminiService, saveQuestions));
     }
 
     @Bean
