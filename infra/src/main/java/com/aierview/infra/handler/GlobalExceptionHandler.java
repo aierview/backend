@@ -1,5 +1,6 @@
 package com.aierview.infra.handler;
 
+import com.aierview.domain.exceptions.BusinessException;
 import com.aierview.infra.api.dto.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Response> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage();
         Response response = new Response(HttpStatus.BAD_REQUEST.value(), errorMessage);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Response> handleBusinessException(BusinessException ex) {
+        Response response = new Response(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GenerateQuestionRequest {
+public class GenerateQuestionareRequest {
     @NotNull(message = "Framework type is required!")
     @NotBlank(message = "Framework type is required!")
     private String framework;

@@ -1,6 +1,8 @@
 package com.aierview.infra.api.mapper;
 
+import com.aierview.domain.entity.Answer;
 import com.aierview.domain.entity.Question;
+import com.aierview.infra.persistence.entity.AnswerEntity;
 import com.aierview.infra.persistence.entity.QuestionEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,7 @@ public class QuestionMapper extends ModelMapper {
         return questions.stream().map(this::toQuestionEntity).toList();
     }
 
-    public QuestionEntity toQuestionEntity(Question question){
+    public QuestionEntity toQuestionEntity(Question question) {
         return QuestionEntity
                 .builder()
                 .id(question.getId())
@@ -29,7 +31,7 @@ public class QuestionMapper extends ModelMapper {
         return entities.stream().map(this::toQuestion).toList();
     }
 
-    public Question toQuestion(QuestionEntity entity){
+    public Question toQuestion(QuestionEntity entity) {
         return Question
                 .builder()
                 .id(entity.getId())
@@ -40,4 +42,25 @@ public class QuestionMapper extends ModelMapper {
                 .level(entity.getLevel())
                 .build();
     }
+
+    public AnswerEntity toAnswerEntity(Answer answer) {
+        return AnswerEntity
+                .builder()
+                .id(answer.getId())
+                .questionId(answer.getQuestionId())
+                .answerText(answer.getAnswerText())
+                .feedback(answer.getFeedback())
+                .build();
+    }
+
+    public Answer toAnswer(AnswerEntity entity) {
+        return Answer
+                .builder()
+                .id(entity.getId())
+                .questionId(entity.getQuestionId())
+                .answerText(entity.getAnswerText())
+                .feedback(entity.getFeedback())
+                .build();
+    }
+
 }

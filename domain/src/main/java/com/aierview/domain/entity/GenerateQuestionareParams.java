@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GenerateQuestionParams {
+public class GenerateQuestionareParams {
     private String framework;
     private String language;
     private Specialty specialty;

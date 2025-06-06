@@ -1,4 +1,4 @@
-package com.aierview.application.usecase.contract;
+package com.aierview.application.usecase.contract.question;
 
 import com.aierview.domain.entity.Question;
 

@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Answer {
+public class Questionnaire {
     private String id;
-    private String questionId;
-    private String answerText;
-    private String feedback;
+    private String title;
+    private List<Question> questions;
 }

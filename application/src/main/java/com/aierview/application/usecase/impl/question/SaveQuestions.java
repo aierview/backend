@@ -1,7 +1,7 @@
-package com.aierview.application.usecase.impl;
+package com.aierview.application.usecase.impl.question;
 
-import com.aierview.application.gateway.ISaveQuestionsGateway;
-import com.aierview.application.usecase.contract.ISaveQuestions;
+import com.aierview.application.gateway.question.ISaveQuestionsGateway;
+import com.aierview.application.usecase.contract.question.ISaveQuestions;
 import com.aierview.domain.entity.Question;
 import lombok.AllArgsConstructor;
 

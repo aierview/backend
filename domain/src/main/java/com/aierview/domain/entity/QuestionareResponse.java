@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Answer {
-    private String id;
-    private String questionId;
-    private String answerText;
+public class QuestionareResponse {
+    private String question;
+    private String answer;
     private String feedback;
 }
