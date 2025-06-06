@@ -21,8 +21,6 @@ public class AnswerQuestion implements IAnswerQuestion {
         // throws not found if question does not exist
         readQuestionById.read(answer.getQuestionId());
         answer = gateway.answer(answer);
-        String feedback = generateFeedback.generate(answer);
-        answer.setFeedback(feedback);
-        update.update(answer);
+        generateFeedback.sendToAsyncGeneration(answer);
     }
 }

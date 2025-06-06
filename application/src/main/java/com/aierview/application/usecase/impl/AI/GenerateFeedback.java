@@ -13,9 +13,9 @@ public class GenerateFeedback implements IGenerateFeedback {
     private final IReadQuestionById readQuestionById;
 
     @Override
-    public String generate(Answer answer) throws NotFoundException {
+    public void sendToAsyncGeneration(Answer answer) throws NotFoundException {
         // throws not found if question does not exist
         readQuestionById.read(answer.getQuestionId());
-        return gateway.generate(answer);
+        gateway.sendToAsyncGeneration(answer);
     }
 }

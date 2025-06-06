@@ -5,8 +5,13 @@ import com.aierview.application.gateway.AI.IGenerateQuestionGateway;
 import com.aierview.domain.entity.Answer;
 import com.aierview.domain.entity.GenerateQuestionareParams;
 import com.aierview.domain.entity.Question;
+import com.aierview.domain.exceptions.BusinessException;
+import com.aierview.infra.helper.KafkaFeedbackProducer;
+import com.aierview.infra.persistence.entity.AnswerEntity;
 import com.aierview.infra.persistence.entity.QuestionEntity;
+import com.aierview.infra.persistence.repository.AnswerRepository;
 import com.aierview.infra.persistence.repository.QuestionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -18,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class GeminiService implements IGenerateQuestionGateway, IGenerateFeedbackGateway {
 
@@ -29,6 +35,13 @@ public class GeminiService implements IGenerateQuestionGateway, IGenerateFeedbac
 
     @Autowired
     private QuestionRepository questionRepository;
+
+
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private KafkaFeedbackProducer kafkaFeedbackProducer;
 
     private String buildApiUrl() {
         return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
@@ -46,9 +59,17 @@ public class GeminiService implements IGenerateQuestionGateway, IGenerateFeedbac
 
     //Generates feedback
     @Override
-    public String generate(Answer answer) {
+    public void sendToAsyncGeneration(Answer answer) {
+        kafkaFeedbackProducer.send(answer);
+    }
+
+    public void generateFeedbackAndUpdate(Answer answer) throws BusinessException {
+        AnswerEntity answerEntity = answerRepository.findById(answer.getId())
+                .orElseThrow(() -> new BusinessException("Could not find answer for question id " + answer.getQuestionId()));
         String prompt = buildFeedbackPrompt(answer);
-        return getGeminiResponse(prompt);
+        String feedback = getGeminiResponse(prompt);
+        answerEntity.setFeedback(feedback);
+        answerRepository.save(answerEntity);
     }
 
     private String getGeminiResponse(String prompt) {
