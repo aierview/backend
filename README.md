@@ -18,16 +18,6 @@ The project follows a modular architecture (**Clean Architecture**) and is struc
 
 ## ⚙️ Technologies Used
 
-- **Java 21**
-- **Spring Boot 3.4.5**
-- **Maven**
-- **Lombok**
-- **JUnit** for unit testing
-- Multi-module project using **Maven**
-- Follows **Clean Architecture** principles
-
-## ⚙️ Technologies Used
-
 The project leverages a modern backend stack with best practices and architectural patterns:
 
 ### 🔧 Core Technologies
