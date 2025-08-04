@@ -1,6 +1,6 @@
-package com.aierview.backend.auth.application.usecase.impl;
+package com.aierview.backend.auth.usecase.impl;
 
-import com.aierview.backend.auth.application.usecase.contract.ILocalSignup;
+import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
