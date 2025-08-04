@@ -1,6 +1,5 @@
 package com.aierview.backend.auth.usecase.impl;
 
-import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
@@ -9,6 +8,7 @@ import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.domain.repository.IAuthRepository;
 import com.aierview.backend.auth.domain.repository.IUserRepository;
 import com.aierview.backend.auth.domain.security.IPasswordEncoder;
+import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 
 import java.util.Optional;
 
