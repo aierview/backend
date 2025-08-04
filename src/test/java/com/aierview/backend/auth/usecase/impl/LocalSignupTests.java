@@ -38,7 +38,7 @@ public class LocalSignupTests {
     @Test
     @DisplayName("Should throw EmailAlreadyInUseException if email is already in use")
     void shouldThrowEmailAlreadyInUseExceptionIfEmailIsAlreadyInUse() {
-        LocalSignupRequest request = AuthTestFixture.anyLocalSigninRequest();
+        LocalSignupRequest request = AuthTestFixture.anyLocalSignupRequest();
         UserRef existingUser = AuthTestFixture.anySavedUserRef();
 
         when(this.userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(existingUser));
@@ -53,7 +53,7 @@ public class LocalSignupTests {
     @Test
     @DisplayName("Should save user ref, encode the password and save auth details")
     void shouldSaveUserRefAndEncodePasswordAndSaveAuthDetails() {
-        LocalSignupRequest request = AuthTestFixture.anyLocalSigninRequest();
+        LocalSignupRequest request = AuthTestFixture.anyLocalSignupRequest();
         UserRef toSaveUser = AuthTestFixture.anyUserRef();
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
         Auth toSaveAuth = AuthTestFixture.anyAuth(savedUser);
