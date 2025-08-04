@@ -3,7 +3,7 @@ package com.aierview.backend.auth.usecase.impl;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
-import com.aierview.backend.auth.domain.model.LocalSigninRequest;
+import com.aierview.backend.auth.domain.model.LocalSignupRequest;
 import com.aierview.backend.auth.domain.repository.IAuthRepository;
 import com.aierview.backend.auth.domain.repository.IUserRepository;
 import com.aierview.backend.auth.domain.security.IPasswordEncoder;
@@ -38,7 +38,7 @@ public class LocalSignupTests {
     @Test
     @DisplayName("Should throw EmailAlreadyInUseException if email is already in use")
     void shouldThrowEmailAlreadyInUseExceptionIfEmailIsAlreadyInUse() {
-        LocalSigninRequest request = AuthTestFixture.anyLocalSigninRequest();
+        LocalSignupRequest request = AuthTestFixture.anyLocalSigninRequest();
         UserRef existingUser = AuthTestFixture.anySavedUserRef();
 
         when(this.userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(existingUser));
@@ -53,7 +53,7 @@ public class LocalSignupTests {
     @Test
     @DisplayName("Should save user ref, encode the password and save auth details")
     void shouldSaveUserRefAndEncodePasswordAndSaveAuthDetails() {
-        LocalSigninRequest request = AuthTestFixture.anyLocalSigninRequest();
+        LocalSignupRequest request = AuthTestFixture.anyLocalSigninRequest();
         UserRef toSaveUser = AuthTestFixture.anyUserRef();
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
         Auth toSaveAuth = AuthTestFixture.anyAuth(savedUser);
