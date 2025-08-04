@@ -133,4 +133,22 @@ public class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("data",
                         Matchers.is("Please provide your full name!")));
     }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("Should return 400 when password is null")
+    void shouldReturn400WhenPasswordIsNull(String password) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
+        requestBody.setPassword(password);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Password is required!")));
+    }
 }
