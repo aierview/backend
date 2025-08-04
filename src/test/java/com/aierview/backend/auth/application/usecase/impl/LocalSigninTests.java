@@ -2,10 +2,10 @@ package com.aierview.backend.auth.application.usecase.impl;
 
 import com.aierview.backend.auth.application.usecase.contract.ILocalSignin;
 import com.aierview.backend.auth.domain.entity.UserRef;
-import com.aierview.backend.auth.domain.enums.UserRole;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.domain.repository.IUserRepository;
+import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,13 +32,8 @@ public class LocalSigninTests {
     @Test
     @DisplayName("Should throw EmailAlreadyInUseException if email is already in use")
     void shouldThrowEmailAlreadyInUseExceptionIfEmailIsAlreadyInUse() {
-        LocalSigninRequest request = LocalSigninRequest.builder().email("any_email").password("any_password").build();
-        UserRef existingUser =  UserRef
-                .builder().id(1L)
-                .name("any_name")
-                .email("any_email")
-                .role(UserRole.FULLSTACK)
-                .build();
+        LocalSigninRequest request = AuthTestFixture.anyLocalSigninRequest();
+        UserRef existingUser = AuthTestFixture.anyUserRef();
 
         when(this.userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(existingUser));
 
