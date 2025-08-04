@@ -2,6 +2,8 @@ package com.aierview.backend.auth.infra.persisntence.adapter;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.repository.IUserRepository;
+import com.aierview.backend.auth.infra.mapper.UserMapper;
+import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.jpa.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,11 +14,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements IUserRepository {
     private final UserJpaRepository userJpaRepository;
+    private final UserMapper userMapper;
 
     @Override
     public Optional<UserRef> findByEmail(String email) {
-        this.userJpaRepository.findByEmail(email);
-        return Optional.empty();
+        Optional<UserJpaEntity> entity = this.userJpaRepository.findByEmail(email);
+        if(entity.isEmpty()) return Optional.empty();
+        UserRef userRef =  this.userMapper.userJpaEntityToUserRef(entity.get());
+        return Optional.of(userRef);
     }
 
     @Override
