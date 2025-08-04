@@ -1,9 +1,13 @@
 package com.aierview.backend.auth.infra.controller;
 
+import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
 import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.HttpServletTestFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +16,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -39,13 +45,19 @@ public class AuthControllerIntegrationTest {
             .withDatabaseName("testdb")
             .withUsername("testuser")
             .withPassword("testpass");
+
     private final String URL = "/api/v1/auth";
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
 
     @Autowired
     private MockMvc mvc;
+
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private EntityManager entityManager;
+
     @Autowired
     private ILocalSignup localSignup;
 
@@ -75,6 +87,28 @@ public class AuthControllerIntegrationTest {
         mvc
                 .perform(request)
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 409 when email is already taken")
+    void shouldReturn409WhenEmailIsAlreadyTaken() throws Exception {
+        UserRef userRef =  AuthTestFixture.anyUserRef();
+        UserJpaEntity entity =  AuthTestFixture.anyUserJpaEntity(userRef);
+        entityManager.persist(entity);
+        entityManager.flush();
+
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("data",
+                        Matchers.is("The email "
+                                + requestBody.getEmail() + " is already in use.")));
     }
 
     @NullSource
