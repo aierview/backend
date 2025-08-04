@@ -20,7 +20,7 @@ public class BCryptPasswordEncoderAdapterTests {
 
     @BeforeEach
     void setUp() {
-        this.encoder =  mock(PasswordEncoder.class);
+        this.encoder = mock(PasswordEncoder.class);
         this.adapter = new BCryptPasswordEncoderAdapter(encoder);
     }
 
