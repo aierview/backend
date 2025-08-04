@@ -14,9 +14,9 @@ public class AuthTestFixture {
 
     public static LocalSignupRequest anyLocalSignupRequest() {
         return LocalSignupRequest.builder()
-                .email("any_email")
+                .email("example@example.com")
                 .password("Password123!")
-                .name("any_name")
+                .name("john Snow Smith")
                 .role(UserRole.FULLSTACK)
                 .build();
     }
