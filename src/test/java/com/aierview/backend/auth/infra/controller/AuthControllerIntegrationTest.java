@@ -105,9 +105,9 @@ public class AuthControllerIntegrationTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("Should return 400 when name is null or empty")
-    void shouldReturn400WhenNameIsNullOrEmpty(String name) throws Exception {
+    @NullSource
+    @DisplayName("Should return 400 when name is null")
+    void shouldReturn400WhenNameIsNull(String name) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
        requestBody.setName(name);
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -123,5 +123,26 @@ public class AuthControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("data",
                         Matchers.is("Name is required!")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings =  {"Ger","Gervasio"})
+    @DisplayName("Should return 400 when not insert a full name")
+    void shouldReturn400WhenNotInsertAFullName(String name) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
+        requestBody.setName(name);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(this.URL + "/local/signup")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Please provide your full name!")));
     }
 }
