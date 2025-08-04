@@ -2,12 +2,12 @@ package com.aierview.backend.auth.infra.controller;
 
 import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
+import com.aierview.backend.shared.testdata.HttpServletTestFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,8 @@ public class AuthControllerIntegrationTest {
             .withUsername("testuser")
             .withPassword("testpass");
     private final String URL = "/api/v1/auth";
+    private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
+
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -70,12 +72,8 @@ public class AuthControllerIntegrationTest {
         requestBody.setEmail(email);
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(this.URL + "/local/signup")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
-
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -84,19 +82,15 @@ public class AuthControllerIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"","any_email","any_email.com"})
+    @ValueSource(strings = {"", "any_email", "any_email.com"})
     @DisplayName("Should return 400 when email is in invalid format")
     void shouldReturn400WhenEmailIsInvalidFormat(String email) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setEmail(email);
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(this.URL + "/local/signup")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
-
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -109,14 +103,11 @@ public class AuthControllerIntegrationTest {
     @DisplayName("Should return 400 when name is null")
     void shouldReturn400WhenNameIsNull(String name) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
-       requestBody.setName(name);
+        requestBody.setName(name);
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(this.URL + "/local/signup")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -126,18 +117,15 @@ public class AuthControllerIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings =  {"Ger","Gervasio"})
+    @ValueSource(strings = {"Ger", "Gervasio"})
     @DisplayName("Should return 400 when not insert a full name")
     void shouldReturn400WhenNotInsertAFullName(String name) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setName(name);
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(this.URL + "/local/signup")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
