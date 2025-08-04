@@ -6,7 +6,6 @@ import com.aierview.backend.auth.infra.persisntence.adapter.UserRepositoryAdapte
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.jpa.repository.UserJpaRepository;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -38,7 +39,7 @@ public class UserRepositoryAdapterTests {
 
         Optional<UserRef> result = this.userRepositoryAdapter.findByEmail(email);
 
-        Assertions.assertTrue(result.isEmpty());
+        assertTrue(result.isEmpty());
         verify(this.userJpaRepository, times(1)).findByEmail(email);
     }
 
@@ -54,10 +55,31 @@ public class UserRepositoryAdapterTests {
 
         Optional<UserRef> result = this.userRepositoryAdapter.findByEmail(email);
 
-        Assertions.assertEquals(savedUserRef.getId(), result.get().getId());
-        Assertions.assertEquals(savedUserRef.getName(), result.get().getName());
-        Assertions.assertEquals(savedUserRef.getEmail(), result.get().getEmail());
-        Assertions.assertEquals(savedUserRef.getRole(), result.get().getRole());
+        assertEquals(savedUserRef.getId(), result.get().getId());
+        assertEquals(savedUserRef.getName(), result.get().getName());
+        assertEquals(savedUserRef.getEmail(), result.get().getEmail());
+        assertEquals(savedUserRef.getRole(), result.get().getRole());
         verify(this.userJpaRepository, times(1)).findByEmail(email);
+    }
+
+    @Test
+    @DisplayName("Should save user entity and return user ref")
+    void shouldSaveUserEntityAndReturnUserRef() {
+        UserRef userRef = AuthTestFixture.anyUserRef();
+        UserJpaEntity entity = AuthTestFixture.anyUserJpaEntity(userRef);
+        UserJpaEntity savedEntity = AuthTestFixture.anyUserJpaEntity(entity);
+        UserRef savedUserRef = AuthTestFixture.anyUserRef(savedEntity);
+
+        when(this.userMapper.userRefToUserJpaEntity(userRef)).thenReturn(entity);
+        when(this.userJpaRepository.save(entity)).thenReturn(savedEntity);
+        when(this.userMapper.userJpaEntityToUserRef(savedEntity)).thenReturn(savedUserRef);
+
+        UserRef result = this.userRepositoryAdapter.save(userRef);
+
+        assertEquals(savedUserRef.getId(), result.getId());
+        assertEquals(savedUserRef.getName(), result.getName());
+        assertEquals(savedUserRef.getEmail(), result.getEmail());
+        assertEquals(savedUserRef.getRole(), result.getRole());
+        verify(this.userJpaRepository, times(1)).save(entity);
     }
 }

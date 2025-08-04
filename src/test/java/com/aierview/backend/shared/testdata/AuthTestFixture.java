@@ -145,4 +145,25 @@ public class AuthTestFixture {
                 .role(userJpaEntity.getRole())
                 .build();
     }
+
+    public static UserJpaEntity anyUserJpaEntity(UserRef userRef) {
+        return UserJpaEntity
+                .builder()
+                .id(userRef.getId())
+                .name(userRef.getName())
+                .email(userRef.getEmail())
+                .role(userRef.getRole())
+                .build();
+    }
+
+    public static UserJpaEntity anyUserJpaEntity(UserJpaEntity userJpaEntity) {
+        return UserJpaEntity
+                .builder()
+                .id(1L)
+                .name(userJpaEntity.getName())
+                .email(userJpaEntity.getEmail())
+                .role(userJpaEntity.getRole())
+                .build();
+    }
+
 }
