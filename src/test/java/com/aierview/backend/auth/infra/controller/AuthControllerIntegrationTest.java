@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -62,6 +63,20 @@ public class AuthControllerIntegrationTest {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+    }
+
+    @Test
+    @DisplayName("Should return 500 when unexpected exception is thrown")
+    void shouldReturn500WhenUnexpectedExceptionIsThrown() throws Exception {
+        postgresContainer.stop();
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isInternalServerError());
     }
 
     @NullSource
@@ -150,5 +165,24 @@ public class AuthControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("data",
                         Matchers.is("Password is required!")));
+    }
+
+    @ParameterizedTest
+    @ValueSource( strings = {"Pass", "Password", "Password123", "123456"})
+    @DisplayName("Should return 400 when password is weak")
+    void shouldReturn400WhenPasswordIsWeak(String password) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
+        requestBody.setPassword(password);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Password must be at least 6 characters " +
+                                "long and must contain at least one uppercase letter, one number, and one special character!")));
     }
 }
