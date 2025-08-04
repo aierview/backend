@@ -2,7 +2,6 @@ package com.aierview.backend.auth.infra.controller;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
-import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.HttpServletTestFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,8 +15,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -58,9 +55,6 @@ public class AuthControllerIntegrationTest {
     @Autowired
     private EntityManager entityManager;
 
-    @Autowired
-    private ILocalSignup localSignup;
-
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
@@ -93,8 +87,8 @@ public class AuthControllerIntegrationTest {
     @Transactional
     @DisplayName("Should return 409 when email is already taken")
     void shouldReturn409WhenEmailIsAlreadyTaken() throws Exception {
-        UserRef userRef =  AuthTestFixture.anyUserRef();
-        UserJpaEntity entity =  AuthTestFixture.anyUserJpaEntity(userRef);
+        UserRef userRef = AuthTestFixture.anyUserRef();
+        UserJpaEntity entity = AuthTestFixture.anyUserJpaEntity(userRef);
         entityManager.persist(entity);
         entityManager.flush();
 
