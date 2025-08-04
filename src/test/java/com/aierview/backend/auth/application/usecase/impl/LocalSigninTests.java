@@ -22,7 +22,6 @@ public class LocalSigninTests {
     private ILocalSignin localSignin;
     private IUserRepository userRepository;
 
-
     @BeforeEach
     void setUp() {
         this.userRepository = mock(IUserRepository.class);

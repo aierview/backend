@@ -17,8 +17,8 @@ public class LocalSignin implements ILocalSignin {
 
     @Override
     public String execute(LocalSigninRequest request) {
-        Optional<UserRef> existingUser =  userRepository.findByEmail(request.getEmail());
-        if(existingUser.isPresent()) throw new EmailAlreadyInUseException(request.getEmail());
-        return  "";
+        Optional<UserRef> existingUser = userRepository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) throw new EmailAlreadyInUseException(request.getEmail());
+        return "";
     }
 }
