@@ -23,8 +23,8 @@ public class AuthTestFixture {
 
     public static UserRef anyUserRef() {
         return UserRef.builder()
-                .name("any_name")
-                .email("any_email")
+                .name("john Snow Smith")
+                .email("example@example.com")
                 .role(UserRole.FULLSTACK)
                 .build();
     }
@@ -32,8 +32,8 @@ public class AuthTestFixture {
     public static UserRef anySavedUserRef() {
         return UserRef.builder()
                 .id(1L)
-                .name("any_name")
-                .email("any_email")
+                .name("john Snow Smith")
+                .email("example@example.com")
                 .role(UserRole.FULLSTACK)
                 .build();
     }
@@ -126,7 +126,7 @@ public class AuthTestFixture {
         authJpaEntity.getUser().setEmail(email);
         UserJpaEntity userJpaEntity = UserJpaEntity.builder()
                 .id(1L)
-                .name("any_name")
+                .name("john Snow Smith")
                 .email(email)
                 .role(UserRole.FULLSTACK)
                 .build();
