@@ -5,6 +5,8 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
+import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
 
 import java.util.UUID;
 
@@ -36,6 +38,17 @@ public class AuthTestFixture {
                 .build();
     }
 
+    public static Auth anyAuth() {
+
+        return Auth
+                .builder()
+                .password(UUID.randomUUID().toString())
+                .provider(AuthProvider.LOCAL)
+                .user(anySavedUserRef())
+                .build();
+    }
+
+
     public static Auth anyAuth(UserRef savedUser) {
         return Auth
                 .builder()
@@ -45,6 +58,7 @@ public class AuthTestFixture {
                 .build();
     }
 
+
     public static Auth anySavedAuth(UserRef savedUser) {
         return Auth
                 .builder()
@@ -52,6 +66,58 @@ public class AuthTestFixture {
                 .password(UUID.randomUUID().toString())
                 .provider(AuthProvider.LOCAL)
                 .user(savedUser)
+                .build();
+    }
+
+    public static Auth anySavedAuth(AuthJpaEntity savedAuth) {
+        UserRef user = UserRef
+                .builder()
+                .id(savedAuth.getUser().getId())
+                .name(savedAuth.getUser().getName())
+                .email(savedAuth.getUser().getEmail())
+                .role(savedAuth.getUser().getRole())
+                .build();
+        return Auth
+                .builder()
+                .id(savedAuth.getId())
+                .password(savedAuth.getPassword())
+                .provider(savedAuth.getProvider())
+                .user(user)
+                .build();
+    }
+
+    public static AuthJpaEntity anyAuthJpaEntity(Auth auth) {
+        UserJpaEntity userJpaEntity = UserJpaEntity
+                .builder()
+                .id(auth.getUser().getId())
+                .name(auth.getUser().getName())
+                .email(auth.getUser().getEmail())
+                .role(auth.getUser().getRole())
+                .build();
+
+        return AuthJpaEntity
+                .builder()
+                .password(auth.getPassword())
+                .provider(auth.getProvider())
+                .user(userJpaEntity)
+                .build();
+    }
+
+    public static AuthJpaEntity anySavedAuthJpaEntity(Auth auth) {
+        UserJpaEntity userJpaEntity = UserJpaEntity
+                .builder()
+                .id(auth.getUser().getId())
+                .name(auth.getUser().getName())
+                .email(auth.getUser().getEmail())
+                .role(auth.getUser().getRole())
+                .build();
+
+        return AuthJpaEntity
+                .builder()
+                .id(1L)
+                .password(auth.getPassword())
+                .provider(auth.getProvider())
+                .user(userJpaEntity)
                 .build();
     }
 }
