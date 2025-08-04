@@ -26,6 +26,8 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public UserRef save(UserRef user) {
-        return null;
+        UserJpaEntity entity = this.userMapper.userRefToUserJpaEntity(user);
+        entity = this.userJpaRepository.save(entity);
+        return this.userMapper.userJpaEntityToUserRef(entity);
     }
 }
