@@ -1,6 +1,5 @@
 package com.aierview.backend.auth.infra.controller;
 
-import com.aierview.backend.auth.domain.model.LocalSignupRequest;
 import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,11 +62,11 @@ public class AuthControllerIntegrationTest {
                 .build();
     }
 
-    @ParameterizedTest
     @NullSource
-    @DisplayName("Should return 400 if email is null or blank")
-    void shouldReturn400IfEmailIsNullOrEmpty(String email) throws Exception {
-        var requestBody = AuthTestFixture.anyLocalSigninRequest();
+    @ParameterizedTest
+    @DisplayName("Should return 400 when email is null")
+    void shouldReturn400WhenEmailIsNull(String email) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setEmail(email);
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
@@ -81,5 +81,47 @@ public class AuthControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("data",
                         Matchers.is("Email is required!")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"","any_email","any_email.com"})
+    @DisplayName("Should return 400 when email is in invalid format")
+    void shouldReturn400WhenEmailIsInvalidFormat(String email) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
+        requestBody.setEmail(email);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(this.URL + "/local/signup")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Invalid email format!")));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should return 400 when name is null or empty")
+    void shouldReturn400WhenNameIsNullOrEmpty(String name) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSignupRequest();
+       requestBody.setName(name);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(this.URL + "/local/signup")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Name is required!")));
     }
 }
