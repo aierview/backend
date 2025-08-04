@@ -14,13 +14,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -168,7 +166,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource( strings = {"Pass", "Password", "Password123", "123456"})
+    @ValueSource(strings = {"Pass", "Password", "Password123", "123456"})
     @DisplayName("Should return 400 when password is weak")
     void shouldReturn400WhenPasswordIsWeak(String password) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();

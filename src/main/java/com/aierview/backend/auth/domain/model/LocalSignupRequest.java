@@ -2,7 +2,6 @@ package com.aierview.backend.auth.domain.model;
 
 import com.aierview.backend.auth.domain.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
