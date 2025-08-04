@@ -27,7 +27,11 @@ public class LocalSignupRequest {
 
     @Schema(example = "John Snow")
     @NotNull(message = "Name is required!")
-    @NotBlank(message = "Name is required!")
+    @Size(min = 5, message = "Please provide your full name!")
+    @Pattern(
+            regexp = "^(?=\\p{L}+\\s+\\p{L}+)[\\p{L} ]+$",
+            message = "Please provide your full name!"
+    )
     private String name;
 
     @Schema(example = "MOBILE")
