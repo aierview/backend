@@ -120,4 +120,29 @@ public class AuthTestFixture {
                 .user(userJpaEntity)
                 .build();
     }
+
+    public static UserJpaEntity anySavedUserJpaEntity(String email) {
+        AuthJpaEntity authJpaEntity = AuthTestFixture.anyAuthJpaEntity(anySavedAuth(anySavedUserRef()));
+        authJpaEntity.getUser().setEmail(email);
+        UserJpaEntity userJpaEntity = UserJpaEntity.builder()
+                .id(1L)
+                .name("any_name")
+                .email(email)
+                .role(UserRole.FULLSTACK)
+                .build();
+
+        authJpaEntity.setUser(userJpaEntity);
+        userJpaEntity.setAuth(authJpaEntity);
+        return userJpaEntity;
+    }
+
+    public static UserRef anyUserRef(UserJpaEntity userJpaEntity) {
+        return UserRef
+                .builder()
+                .id(userJpaEntity.getId())
+                .name(userJpaEntity.getName())
+                .email(userJpaEntity.getEmail())
+                .role(userJpaEntity.getRole())
+                .build();
+    }
 }
