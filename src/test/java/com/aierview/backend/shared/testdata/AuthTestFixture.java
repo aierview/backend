@@ -12,10 +12,10 @@ import java.util.UUID;
 
 public class AuthTestFixture {
 
-    public static LocalSignupRequest anyLocalSigninRequest() {
+    public static LocalSignupRequest anyLocalSignupRequest() {
         return LocalSignupRequest.builder()
                 .email("any_email")
-                .password("any_password")
+                .password("Password123!")
                 .name("any_name")
                 .role(UserRole.FULLSTACK)
                 .build();
