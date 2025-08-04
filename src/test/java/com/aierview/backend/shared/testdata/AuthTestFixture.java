@@ -37,7 +37,7 @@ public class AuthTestFixture {
     }
 
     public static Auth anyAuth(UserRef savedUser) {
-        return  Auth
+        return Auth
                 .builder()
                 .password(UUID.randomUUID().toString())
                 .provider(AuthProvider.LOCAL)
@@ -46,7 +46,7 @@ public class AuthTestFixture {
     }
 
     public static Auth anySavedAuth(UserRef savedUser) {
-        return  Auth
+        return Auth
                 .builder()
                 .id(1L)
                 .password(UUID.randomUUID().toString())

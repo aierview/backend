@@ -10,7 +10,6 @@ import com.aierview.backend.auth.domain.repository.IAuthRepository;
 import com.aierview.backend.auth.domain.repository.IUserRepository;
 import com.aierview.backend.auth.domain.security.IPasswordEncoder;
 
-
 import java.util.Optional;
 
 public class LocalSignup implements ILocalSignup {
@@ -30,7 +29,7 @@ public class LocalSignup implements ILocalSignup {
         if (existingUser.isPresent()) throw new EmailAlreadyInUseException(request.getEmail());
         UserRef user = UserRef
                 .builder().email(request.getEmail()).name(request.getName()).role(request.getRole()).build();
-        user =  this.userRepository.save(user);
+        user = this.userRepository.save(user);
         String encodedPassword = this.passwordEncoder.encode(request.getPassword());
         Auth auth = Auth.builder().provider(AuthProvider.LOCAL).user(user).password(encodedPassword).build();
         this.authRepository.save(auth);
