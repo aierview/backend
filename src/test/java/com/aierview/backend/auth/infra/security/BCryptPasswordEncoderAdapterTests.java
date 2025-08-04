@@ -5,14 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class BCryptPasswordEncoderAdapterTests {
     private BCryptPasswordEncoderAdapter adapter;
     private PasswordEncoder encoder;
