@@ -11,7 +11,7 @@ public class FuncUtils {
     }
 
     public static String formatLowercase(String text) {
-            return text.trim().toLowerCase();
+        return text.trim().toLowerCase();
     }
 }
 

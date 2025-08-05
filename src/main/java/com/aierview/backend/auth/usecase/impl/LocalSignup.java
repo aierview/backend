@@ -40,7 +40,7 @@ public class LocalSignup implements ILocalSignup {
     private void formatRequest(LocalSignupRequest request) {
         String email = FuncUtils.formatLowercase(request.getEmail());
         request.setEmail(email);
-        String name =  FuncUtils.formatToCapitalize(request.getName());
-        request. setName(name);
+        String name = FuncUtils.formatToCapitalize(request.getName());
+        request.setName(name);
     }
 }
