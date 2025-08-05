@@ -1,0 +1,97 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - homolog
+      - main
+
+jobs:
+  backup-and-deploy:
+    name: Backup Supabase + Flyway Migrations + Deploy to Fly.io
+    if: contains(github.event.head_commit.message, '[database]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install pg_dump
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Create Supabase database backup
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+          FILE_NAME="backup_${DATE}.dump"
+          
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            BACKUP_PATH="prod/${FILE_NAME}"
+            FLY_CONFIG="fly.toml"
+          else
+            BACKUP_PATH="homolog/${FILE_NAME}"
+            FLY_CONFIG="fly.homolog.toml"
+          fi
+          
+          pg_dump "$DATABASE_URL" --no-owner --no-privileges -F c -f "$FILE_NAME"
+          
+          echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
+          echo "BACKUP_PATH=${BACKUP_PATH}" >> $GITHUB_ENV
+          echo "FLY_CONFIG=${FLY_CONFIG}" >> $GITHUB_ENV
+
+      - name: Upload backup to Cloudflare R2
+        uses: jakejarvis/s3-sync-action@master
+        env:
+          AWS_S3_BUCKET: ${{ secrets.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_REGION: "auto"
+          S3_ENDPOINT: ${{ secrets.R2_ENDPOINT_URL }}
+          SOURCE_DIR: .
+          DEST_DIR: ${{ env.BACKUP_PATH }}
+        with:
+          args: --exclude "*" --include "${{ env.FILE_NAME }}"
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run Flyway migrations (Maven)
+        run: mvn flyway:migrate
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DB_USER: ${{ secrets.SUPABASE_DB_USER }}
+          DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions@1.4
+        with:
+          args: deploy --remote-only --config ${{ env.FLY_CONFIG }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  deploy-only:
+    name: Deploy to Fly.io (no backup)
+    if: "!contains(github.event.head_commit.message, '[database]')"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set FLY_CONFIG based on branch
+        run: |
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            echo "FLY_CONFIG=fly.toml" >> $GITHUB_ENV
+          else
+            echo "FLY_CONFIG=fly.homolog.toml" >> $GITHUB_ENV
+
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions@1.4
+        with:
+          args: deploy --remote-only --config ${{ env.FLY_CONFIG }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
