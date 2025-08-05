@@ -1,15 +1,17 @@
 name: Deploy Backend
 
 on:
-  push:
+  pull_request:
     branches:
       - homolog
       - main
+    types:
+      - closed   # só dispara quando o PR é fechado (merge ou não)
 
 jobs:
   backup-and-deploy:
     name: Backup Supabase + Flyway Migrations + Deploy to Fly.io
-    if: contains(github.event.pull_request.labels.*.name, 'database')
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'database')
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +28,7 @@ jobs:
           DATE=$(date +"%Y-%m-%d_%H-%M-%S")
           FILE_NAME="backup_${DATE}.dump"
           
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+          if [[ "${GITHUB_BASE_REF}" == "main" ]]; then
             BACKUP_PATH="prod/${FILE_NAME}"
             FLY_CONFIG="fly.toml"
           else
@@ -60,11 +62,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Flyway migrations (Maven)
-        run: mvn flyway:migrate
-        env:
-          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-          DB_USER: ${{ secrets.SUPABASE_DB_USER }}
-          DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: mvn -Dflyway.url=${{ secrets.SUPABASE_DB_URL }} -Dflyway.user=${{ secrets.SUPABASE_DB_USER }} -Dflyway.password=${{ secrets.SUPABASE_DB_PASSWORD }} flyway:migrate
 
       - name: Deploy to Fly.io
         uses: superfly/flyctl-actions@1.4
@@ -75,7 +73,7 @@ jobs:
 
   deploy-only:
     name: Deploy to Fly.io (no backup)
-    if: "!contains(github.event.pull_request.labels.*.name, 'database')"
+    if: github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'database')
     runs-on: ubuntu-latest
 
     steps:
@@ -84,10 +82,11 @@ jobs:
 
       - name: Set FLY_CONFIG based on branch
         run: |
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+          if [[ "${GITHUB_BASE_REF}" == "main" ]]; then
             echo "FLY_CONFIG=fly.toml" >> $GITHUB_ENV
           else
             echo "FLY_CONFIG=fly.homolog.toml" >> $GITHUB_ENV
+          fi
 
       - name: Deploy to Fly.io
         uses: superfly/flyctl-actions@1.4
