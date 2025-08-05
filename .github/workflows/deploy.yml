@@ -38,6 +38,7 @@ jobs:
                     
           pg_dump "postgresql://postgres:${SUPABASE_DB_PASSWORD}@${SUPABASE_DB_HOST}:${SUPABASE_DB_PORT}/${SUPABASE_DB_NAME}?sslmode=require" -F c -f "$FILE_NAME"
 
+          
           echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
           echo "BACKUP_PATH=${BACKUP_PATH}" >> $GITHUB_ENV
           echo "FLY_CONFIG=${FLY_CONFIG}" >> $GITHUB_ENV
