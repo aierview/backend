@@ -34,13 +34,13 @@ jobs:
           
           if [[ "${GITHUB_BASE_REF}" == "main" ]]; then
             BACKUP_PATH="prod/${FILE_NAME}"
-            FLY_CONFIG="fly.toml"
+            FLY_CONFIG="fly.toml"ci/cd
           else
             BACKUP_PATH="homolog/${FILE_NAME}"
             FLY_CONFIG="fly.homolog.toml"
           fi
                     
-          pg_dump "postgresql://postgres:${SUPABASE_DB_PASSWORD}@${SUPABASE_DB_HOST}:${SUPABASE_DB_PORT}/${SUPABASE_DB_NAME}?sslmode=require" -F c -f "$FILE_NAME"
+          pg_dump "postgresql://postgres:$aierview0199@db.uxmviylbufxwnpkrtiix.supabase.co:5432/postgres?sslmode=require" -F c -f "$FILE_NAME"
 
 
           echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
