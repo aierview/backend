@@ -35,9 +35,16 @@ jobs:
             BACKUP_PATH="homolog/${FILE_NAME}"
             FLY_CONFIG="fly.homolog.toml"
           fi
-          
-          pg_dump "$DATABASE_URL" --no-owner --no-privileges -F c -f "$FILE_NAME"
-          
+                    
+          export PGPASSWORD=${{ secrets.SUPABASE_DB_PASSWORD }}
+          pg_dump -h ${{ secrets.SUPABASE_DB_HOST }} \
+                  -p ${{ secrets.SUPABASE_DB_PORT }} \
+                  -U ${{ secrets.SUPABASE_DB_USER }} \
+                  -d ${{ secrets.SUPABASE_DB_NAME }} \
+                  -F c \
+                  -f "$FILE_NAME"
+
+
           echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
           echo "BACKUP_PATH=${BACKUP_PATH}" >> $GITHUB_ENV
           echo "FLY_CONFIG=${FLY_CONFIG}" >> $GITHUB_ENV
