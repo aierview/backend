@@ -9,6 +9,7 @@ public class FuncUtilsTests {
     @Test
     @DisplayName("Should return capitalized string")
     void capitalize() {
+        FuncUtils funcUtils = new FuncUtils();
         String name = " john snow smith ";
         String capitalized = FuncUtils.formatToCapitalize(name);
         Assertions.assertEquals("John Snow Smith", capitalized);
