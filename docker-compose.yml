@@ -15,6 +15,27 @@ services:
     networks:
       - aierview-network
 
+  backend:
+    build:
+      context: .
+    container_name: aierview-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      ## DATABASE CONFIGURATION
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://aierview-db:5432/aierview
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_SHOW_SQL=false
+      - SPRING_DEVTOOLS_RESTART_ENABLED=FALSE
+      - SPRING_DEVTOOLS_LIVERELOAD_ENABLED=FALSE
+    command: mvn spring-boot:run
+    networks:
+      - aierview-network
+
 volumes:
   pgdata:
 
