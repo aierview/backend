@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.infra.config;
+package com.aierview.backend.shared.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
