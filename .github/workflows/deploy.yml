@@ -24,6 +24,10 @@ jobs:
       - name: Create Supabase database backup
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_DB_HOST: ${{ secrets.SUPABASE_DB_HOST }}
+          SUPABASE_DB_PORT: ${{ secrets.SUPABASE_DB_PORT }}
+          SUPABASE_DB_NAME: ${{ secrets.SUPABASE_DB_NAME }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           DATE=$(date +"%Y-%m-%d_%H-%M-%S")
           FILE_NAME="backup_${DATE}.dump"
@@ -38,7 +42,7 @@ jobs:
                     
           pg_dump "postgresql://postgres:${SUPABASE_DB_PASSWORD}@${SUPABASE_DB_HOST}:${SUPABASE_DB_PORT}/${SUPABASE_DB_NAME}?sslmode=require" -F c -f "$FILE_NAME"
 
-          
+
           echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
           echo "BACKUP_PATH=${BACKUP_PATH}" >> $GITHUB_ENV
           echo "FLY_CONFIG=${FLY_CONFIG}" >> $GITHUB_ENV
