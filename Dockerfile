@@ -1,7 +1,7 @@
 FROM maven:3-amazoncorretto-21-alpine AS build
 WORKDIR /app
-COPY ../../src ./src
-COPY ../../pom.xml .
+COPY src ./src
+COPY pom.xml .
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine as prod
