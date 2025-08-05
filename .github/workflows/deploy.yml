@@ -39,7 +39,11 @@ jobs:
             BACKUP_PATH="homolog/${FILE_NAME}"
             FLY_CONFIG="fly.homolog.toml"
           fi
-                    
+                
+
+          dig +short db.uxmviylbufxwnpkrtiix.supabase.co A
+          dig +short db.uxmviylbufxwnpkrtiix.supabase.co AAAA
+
           pg_dump "postgresql://postgres:$aierview0199@db.uxmviylbufxwnpkrtiix.supabase.co:5432/postgres?sslmode=require" -F c -f "$FILE_NAME"
 
 
