@@ -23,7 +23,7 @@ public class AuthTestFixture {
 
     public static UserRef anyUserRef() {
         return UserRef.builder()
-                .name("john Snow Smith")
+                .name("John Snow Smith")
                 .email("example@example.com")
                 .role(UserRole.FULLSTACK)
                 .build();
