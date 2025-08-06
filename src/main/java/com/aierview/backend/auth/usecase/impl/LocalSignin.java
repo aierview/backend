@@ -22,10 +22,10 @@ public class LocalSignin implements ILocalSignin {
 
     @Override
     public String execute(LocalSigninRequest request) {
-        UserRef user =  this.userRepository.findByEmail(request.getEmail())
+        UserRef user = this.userRepository.findByEmail(request.getEmail())
                 .orElseThrow(InvalidCredentialException::new);
-        Auth auth =  this.authRepository.findByUserId(user.getId()).get();
-        if(!passwordComparer.matches(request.getPassword(), auth.getPassword()))
+        Auth auth = this.authRepository.findByUserId(user.getId()).get();
+        if (!passwordComparer.matches(request.getPassword(), auth.getPassword()))
             throw new InvalidCredentialException();
 
         return "";
