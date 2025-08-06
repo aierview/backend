@@ -1,6 +1,7 @@
 package com.aierview.backend.auth.infra.persistence.adapter;
 
 import com.aierview.backend.auth.domain.entity.Auth;
+import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.mapper.AuthMapper;
 import com.aierview.backend.auth.infra.persisntence.adapter.AuthRepositoryAdapter;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
@@ -60,5 +61,24 @@ public class AuthRepositoryAdapterTests {
 
         assertFalse(result.isPresent());
         verify(this.authJpaRepository, times(1)).findByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("Should return optional of auth when auth exists on find by user id")
+    void shouldReturnOptionalAuthWhenAuthExistsOnFindByUserId() {
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Auth savedAuth = AuthTestFixture.anySavedAuth(savedUser);
+        AuthJpaEntity savedAuthJpaEntity = AuthTestFixture.anySavedAuthJpaEntity(savedAuth);
+
+        when(this.authJpaRepository.findByUserId(savedUser.getId())).thenReturn(Optional.of(savedAuthJpaEntity));
+        when(this.authMapper.authJpaEntityToAuth(savedAuthJpaEntity)).thenReturn(savedAuth);
+
+        Optional<Auth> result = this.authRepositoryAdapter.findByUserId(savedUser.getId());
+
+        assertTrue(result.isPresent());
+        assertEquals(savedAuthJpaEntity.getId(), result.get().getId());
+        assertEquals(savedAuthJpaEntity.getUser().getId(), result.get().getUser().getId());
+        verify(this.authJpaRepository, times(1)).findByUserId(savedUser.getId());
+        verify(this.authMapper, times(1)).authJpaEntityToAuth(savedAuthJpaEntity);
     }
 }
