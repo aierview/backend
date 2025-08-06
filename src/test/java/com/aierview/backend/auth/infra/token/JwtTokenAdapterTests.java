@@ -13,26 +13,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.security.Key;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class JwtTokenAdapterTests {
-    private  ITokenGenerator encoder;
-    private  UserMapper userMapper;
-
     private final String secretKey = "3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007w";
     private final long expiration = 1000 * 60 * 60;
+    private ITokenGenerator encoder;
+    private UserMapper userMapper;
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        this.userMapper =  mock(UserMapper.class);
-        this.encoder =  new JwtTokenAdapter(this.userMapper);
+        this.userMapper = mock(UserMapper.class);
+        this.encoder = new JwtTokenAdapter(this.userMapper);
 
         var secretField = JwtTokenAdapter.class.getDeclaredField("secretKey");
         secretField.setAccessible(true);
@@ -51,7 +48,7 @@ public class JwtTokenAdapterTests {
 
         when(this.userMapper.userRefToUserJpaEntity(savedUserRef)).thenReturn(savedUserJpaEntity);
 
-        String token =  this.encoder.generate(savedUserRef);
+        String token = this.encoder.generate(savedUserRef);
 
         assertNotNull(token);
         Claims claims = parseToken(token);

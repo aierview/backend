@@ -4,6 +4,7 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.token.ITokenGenerator;
 import com.aierview.backend.auth.infra.mapper.UserMapper;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.Jwts;
 
 import java.security.Key;
 import java.util.Date;
