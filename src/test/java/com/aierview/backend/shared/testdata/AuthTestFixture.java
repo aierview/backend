@@ -4,6 +4,7 @@ import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
+import com.aierview.backend.auth.domain.model.CookieResponse;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.LocalSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
@@ -174,5 +175,9 @@ public class AuthTestFixture {
                 .email("example@example.com")
                 .password("Password123!")
                 .build();
+    }
+
+    public static CookieResponse anyProdCookieResponse(String name, String value) {
+        return new CookieResponse(name, value, true, true, "NONE", "/");
     }
 }
