@@ -4,6 +4,7 @@ import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
+import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.LocalSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
@@ -166,4 +167,12 @@ public class AuthTestFixture {
                 .build();
     }
 
+
+    public static LocalSigninRequest anyLocalSigninRequest() {
+        return  LocalSigninRequest
+                .builder()
+                .email("example@example.com")
+                .password("Password123!")
+                .build();
+    }
 }
