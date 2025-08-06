@@ -25,8 +25,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @Test
     @Transactional
-    @DisplayName("Should return 409 when email is already taken")
-    void shouldReturn409WhenEmailIsAlreadyTaken() throws Exception {
+    @DisplayName("Should return 409 when email is already taken on signup")
+    void shouldReturn409WhenEmailIsAlreadyTakenOnSignup() throws Exception {
         UserRef userRef = AuthTestFixture.anyUserRef();
         UserJpaEntity entity = AuthTestFixture.anyUserJpaEntity(userRef);
         entityManager.persist(entity);
@@ -47,8 +47,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @NullSource
     @ParameterizedTest
-    @DisplayName("Should return 400 when email is null")
-    void shouldReturn400WhenEmailIsNull(String email) throws Exception {
+    @DisplayName("Should return 400 when email is null on signup")
+    void shouldReturn400WhenEmailIsNullOnSignup(String email) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setEmail(email);
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -64,8 +64,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @ParameterizedTest
     @ValueSource(strings = {"", "any_email", "any_email.com"})
-    @DisplayName("Should return 400 when email is in invalid format")
-    void shouldReturn400WhenEmailIsInvalidFormat(String email) throws Exception {
+    @DisplayName("Should return 400 when email is in invalid format on signup")
+    void shouldReturn400WhenEmailIsInvalidFormatOnSignup(String email) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setEmail(email);
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -81,8 +81,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("Should return 400 when name is null")
-    void shouldReturn400WhenNameIsNull(String name) throws Exception {
+    @DisplayName("Should return 400 when name is null on signup")
+    void shouldReturn400WhenNameIsNullOnSignup(String name) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setName(name);
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -99,8 +99,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @ParameterizedTest
     @ValueSource(strings = {"Ger", "Gervasio"})
-    @DisplayName("Should return 400 when not insert a full name")
-    void shouldReturn400WhenNotInsertAFullName(String name) throws Exception {
+    @DisplayName("Should return 400 when not insert a full name on signup")
+    void shouldReturn400WhenNotInsertAFullNameOnSignup(String name) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setName(name);
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -117,8 +117,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("Should return 400 when password is null")
-    void shouldReturn400WhenPasswordIsNull(String password) throws Exception {
+    @DisplayName("Should return 400 when password is null on signup")
+    void shouldReturn400WhenPasswordIsNullOnSignup(String password) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setPassword(password);
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -135,8 +135,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @ParameterizedTest
     @ValueSource(strings = {"Pass", "Password", "Password123", "123456"})
-    @DisplayName("Should return 400 when password is weak")
-    void shouldReturn400WhenPasswordIsWeak(String password) throws Exception {
+    @DisplayName("Should return 400 when password is weak on signup")
+    void shouldReturn400WhenPasswordIsWeakOnSignup(String password) throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         requestBody.setPassword(password);
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -153,8 +153,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
     }
 
     @Test
-    @DisplayName("Should return 201 on save success")
-    void shouldReturn201WhenSaveSuccess() throws Exception {
+    @DisplayName("Should return 201 on save success on signup")
+    void shouldReturn201WhenSaveSuccessOnSignup() throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
@@ -169,7 +169,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     }
 
-//    LOCAL SIGIN IN TESTS
+//    LOCAL SIGNIN IN TESTS
     private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
 
     @Test
@@ -186,5 +186,22 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("data",
                         Matchers.is("Email or password is incorrect!")));
+    }
+
+    @NullSource
+    @ParameterizedTest
+    @DisplayName("Should return 400 when email is null on signin")
+    void shouldReturn400WhenEmailIsNullOnSignin(String email) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSigninRequest();
+        requestBody.setEmail(email);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Email is required!")));
     }
 }
