@@ -25,7 +25,7 @@ public class AuthRepositoryAdapter implements IAuthRepository {
 
     @Override
     public Optional<Auth> findByUserId(Long userId) {
-        this.authRepository.findByUserId(userId);
-        return Optional.empty();
+        Optional<AuthJpaEntity> entity = this.authRepository.findByUserId(userId);
+        return entity.map(this.authMapper::authJpaEntityToAuth);
     }
 }
