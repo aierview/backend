@@ -37,6 +37,8 @@ public class TestDatabaseErrorTests {
 
     private final String URL = "/api/v1/auth";
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
+    private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
+
 
     @Autowired
     private MockMvc mvc;
@@ -66,13 +68,26 @@ public class TestDatabaseErrorTests {
     }
 
     @Test
-    @DisplayName("Should return 500 when unexpected exception is thrown")
-    void shouldReturn500WhenUnexpectedExceptionIsThrown() throws Exception {
+    @DisplayName("Should return 500 when unexpected exception is thrown on local signup")
+    void shouldReturn500WhenUnexpectedExceptionIsThrownOnLocalSignup() throws Exception {
         var requestBody = AuthTestFixture.anyLocalSignupRequest();
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
                 .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @DisplayName("Should return 500 when unexpected exception is thrown on local signin")
+    void shouldReturn500WhenUnexpectedExceptionIsThrownOnLocalSignin() throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSigninRequest();
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isInternalServerError());
