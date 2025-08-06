@@ -1,6 +1,7 @@
 package com.aierview.backend.auth.domain.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,6 @@ public class LocalSigninRequest {
 
     @Schema(example = "Password123!")
     @NotNull(message = "Password is required!")
+    @NotBlank(message = "Password is required!")
     private String password;
 }
