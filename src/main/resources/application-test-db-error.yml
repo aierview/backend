@@ -1,0 +1,5 @@
+spring:
+   security:
+    jwt:
+      secret-key: any-secret
+      expiration-time: 1000
