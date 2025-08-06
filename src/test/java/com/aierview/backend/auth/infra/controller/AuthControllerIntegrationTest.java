@@ -204,4 +204,21 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(jsonPath("data",
                         Matchers.is("Email is required!")));
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "any_email", "any_email.com"})
+    @DisplayName("Should return 400 when email is in invalid format on signin")
+    void shouldReturn400WhenEmailIsInvalidFormatOnSignin(String email) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSigninRequest();
+        requestBody.setEmail(email);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Invalid email format!")));
+    }
 }
