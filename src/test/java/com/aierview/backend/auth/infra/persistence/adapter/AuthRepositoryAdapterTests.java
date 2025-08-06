@@ -7,7 +7,6 @@ import com.aierview.backend.auth.infra.persisntence.adapter.AuthRepositoryAdapte
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.jpa.repository.AuthJpaRepository;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class AuthRepositoryAdapterTests {
