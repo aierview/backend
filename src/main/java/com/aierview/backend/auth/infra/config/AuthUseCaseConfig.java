@@ -7,6 +7,8 @@ import com.aierview.backend.auth.domain.security.IPasswordComparer;
 import com.aierview.backend.auth.domain.security.IPasswordEncoder;
 import com.aierview.backend.auth.domain.token.ITokenGenerator;
 import com.aierview.backend.auth.usecase.contract.IGenerateCookieResponse;
+import com.aierview.backend.auth.usecase.contract.ILocalSignin;
+import com.aierview.backend.auth.usecase.contract.ILocalSignup;
 import com.aierview.backend.auth.usecase.impl.GenerateCookieResponse;
 import com.aierview.backend.auth.usecase.impl.LocalSignin;
 import com.aierview.backend.auth.usecase.impl.LocalSignup;
@@ -30,13 +32,13 @@ public class AuthUseCaseConfig {
     private String env;
 
     @Bean
-    public LocalSignup localSignup() {
+    public ILocalSignup localSignup() {
         return new LocalSignup(userRepository, passwordEncoder, authRepository);
     }
 
     @Bean
-    public LocalSignin localSignin() {
-        return  new LocalSignin(userRepository,authRepository,passwordComparer,tokenGenerator,generateCookieResponse());
+    public ILocalSignin localSignin() {
+        return new LocalSignin(userRepository, authRepository, passwordComparer, tokenGenerator, generateCookieResponse());
     }
 
     @Bean
