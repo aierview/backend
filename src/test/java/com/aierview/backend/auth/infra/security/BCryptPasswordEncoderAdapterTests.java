@@ -1,6 +1,5 @@
 package com.aierview.backend.auth.infra.security;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ public class BCryptPasswordEncoderAdapterTests {
         boolean result = this.adapter.matches(password, encodedPassword);
 
         assertFalse(result);
-        verify(encoder, Mockito.times(1)).matches(password,encodedPassword);
+        verify(encoder, Mockito.times(1)).matches(password, encodedPassword);
     }
 
 
@@ -62,6 +61,6 @@ public class BCryptPasswordEncoderAdapterTests {
         boolean result = this.adapter.matches(password, encodedPassword);
 
         assertTrue(result);
-        verify(encoder, Mockito.times(1)).matches(password,encodedPassword);
+        verify(encoder, Mockito.times(1)).matches(password, encodedPassword);
     }
 }
