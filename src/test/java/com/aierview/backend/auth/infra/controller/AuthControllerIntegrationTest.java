@@ -11,6 +11,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -220,5 +221,23 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("data",
                         Matchers.is("Invalid email format!")));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should return 400 when password is null on signin")
+    void shouldReturn400WhenPasswordIsNullOnSignin(String password) throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSigninRequest();
+        requestBody.setPassword(password);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Password is required!")));
     }
 }
