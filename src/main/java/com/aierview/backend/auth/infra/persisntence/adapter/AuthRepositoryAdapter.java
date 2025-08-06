@@ -25,6 +25,7 @@ public class AuthRepositoryAdapter implements IAuthRepository {
 
     @Override
     public Optional<Auth> findByUserId(Long userId) {
+        this.authRepository.findByUserId(userId);
         return Optional.empty();
     }
 }
