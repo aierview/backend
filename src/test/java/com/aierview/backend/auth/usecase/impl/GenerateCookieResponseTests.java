@@ -32,4 +32,22 @@ public class GenerateCookieResponseTests {
         Assertions.assertEquals(response.sameSite(),cookieResponse.sameSite());
         Assertions.assertEquals(response.path(),cookieResponse.path());
     }
+
+    @Test
+    @DisplayName("Should return cookie response for homolog env")
+    void shouldReturnCookieResponseForHomologEnv() {
+        String token = UUID.randomUUID().toString();
+        CookieResponse cookieResponse = AuthTestFixture.anyProdCookieResponse(token);
+
+        this.generateCookieResponse = new GenerateCookieResponse(Environment.HOMOLOG);
+        CookieResponse response = this.generateCookieResponse.generate("token", token);
+
+        Assertions.assertNotNull(this.generateCookieResponse);
+        Assertions.assertEquals(response.name(),cookieResponse.name());
+        Assertions.assertEquals(response.value(),cookieResponse.value());
+        Assertions.assertEquals(response.httpOnly(),cookieResponse.httpOnly());
+        Assertions.assertEquals(response.secure(),cookieResponse.secure());
+        Assertions.assertEquals(response.sameSite(),cookieResponse.sameSite());
+        Assertions.assertEquals(response.path(),cookieResponse.path());
+    }
 }
