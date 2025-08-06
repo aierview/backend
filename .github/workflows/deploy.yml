@@ -6,7 +6,7 @@ on:
       - homolog
       - main
     types:
-      - closed   # só dispara quando o PR é fechado (merge ou não)
+      - closed
 
 jobs:
   backup-and-deploy:
