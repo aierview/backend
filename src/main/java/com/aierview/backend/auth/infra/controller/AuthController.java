@@ -34,6 +34,7 @@ public class AuthController {
     @Operation(summary = "Local signup")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST"),
             @ApiResponse(responseCode = "409", description = "CONFLICT"),
             @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
     })
@@ -47,6 +48,7 @@ public class AuthController {
     @Operation(summary = "Local signin")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST"),
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
     })
