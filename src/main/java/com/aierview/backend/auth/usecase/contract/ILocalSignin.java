@@ -1,7 +1,8 @@
 package com.aierview.backend.auth.usecase.contract;
 
+import com.aierview.backend.auth.domain.model.CookieResponse;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 
 public interface ILocalSignin {
-    String execute(LocalSigninRequest request);
+    CookieResponse execute(LocalSigninRequest request);
 }
