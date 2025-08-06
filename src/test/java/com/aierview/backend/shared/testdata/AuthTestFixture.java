@@ -177,7 +177,15 @@ public class AuthTestFixture {
                 .build();
     }
 
-    public static CookieResponse anyProdCookieResponse(String name, String value) {
-        return new CookieResponse(name, value, true, true, "NONE", "/");
+    public static CookieResponse anyProdCookieResponse(String value) {
+        return new CookieResponse("token", value, true, true, "NONE", "/");
+    }
+
+    public static CookieResponse anyHomologCookieResponse(String value) {
+        return new CookieResponse("token", value, true, true, "NONE", "/");
+    }
+
+    public static CookieResponse anyDevCookieResponse(String value) {
+        return new CookieResponse("token", value, true, false, "LAX", "/");
     }
 }
