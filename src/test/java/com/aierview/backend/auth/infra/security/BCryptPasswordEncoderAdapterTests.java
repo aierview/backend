@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 public class BCryptPasswordEncoderAdapterTests {
@@ -31,7 +33,21 @@ public class BCryptPasswordEncoderAdapterTests {
 
         String encoded = adapter.encode(password);
 
-        Assertions.assertEquals(encodedPassword, encoded);
+        assertEquals(encodedPassword, encoded);
         verify(encoder, Mockito.times(1)).encode(password);
+    }
+
+    @Test
+    @DisplayName("Should return false when password does not match")
+    void shouldReturnFalseWhenPasswordDoesNotMatch() {
+        String password = "anyPassword";
+        String encodedPassword = UUID.randomUUID().toString();
+
+        when(this.encoder.matches(password, encodedPassword)).thenReturn(false);
+
+        boolean result = this.adapter.matches(password, encodedPassword);
+
+        assertFalse(result);
+        verify(encoder, Mockito.times(1)).matches(password,encodedPassword);
     }
 }
