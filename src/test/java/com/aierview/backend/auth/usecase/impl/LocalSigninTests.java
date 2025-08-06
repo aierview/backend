@@ -142,4 +142,37 @@ public class LocalSigninTests {
         verify(this.tokenGenerator, times(1)).generate(savedUser);
         verify(this.generateCookieResponse, times(1)).generate(cookieResponse.name(), cookieResponse.value());
     }
+
+    @Test
+    @DisplayName("Should return a CookieResponse with dev config when authentication succeeds and if the environment is dev")
+    void shouldReturnACookieResponseWithDevConfigWhenAuthenticationSucceedsAndIfTheEnvironmentIsDev() {
+        LocalSigninRequest request = AuthTestFixture.anyLocalSigninRequest();
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Auth savedAuth = AuthTestFixture.anySavedAuth(savedUser);
+
+        String token = UUID.randomUUID().toString();
+        CookieResponse cookieResponse = AuthTestFixture.anyDevCookieResponse(token);
+
+        when(this.userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(savedUser));
+        when(this.authRepository.findByUserId(savedUser.getId())).thenReturn(Optional.of(savedAuth));
+        when(this.passwordComparer.matches(request.getPassword(), savedAuth.getPassword())).thenReturn(true);
+        when(this.tokenGenerator.generate(savedUser)).thenReturn(token);
+        when(this.generateCookieResponse.generate(cookieResponse.name(), cookieResponse.value())).thenReturn(cookieResponse);
+
+        CookieResponse response = this.localSignin.execute(request);
+
+
+        assertThat(response.name()).isEqualTo(cookieResponse.name());
+        assertThat(response.value()).isEqualTo(cookieResponse.value());
+        assertThat(response.httpOnly()).isEqualTo(cookieResponse.httpOnly());
+        assertThat(response.secure()).isEqualTo(cookieResponse.secure());
+        assertThat(response.sameSite()).isEqualTo(cookieResponse.sameSite());
+        assertThat(response.path()).isEqualTo(cookieResponse.path());
+
+        verify(this.userRepository, times(1)).findByEmail(request.getEmail());
+        verify(this.authRepository, times(1)).findByUserId(savedUser.getId());
+        verify(this.passwordComparer, times(1)).matches(request.getPassword(), savedAuth.getPassword());
+        verify(this.tokenGenerator, times(1)).generate(savedUser);
+        verify(this.generateCookieResponse, times(1)).generate(cookieResponse.name(), cookieResponse.value());
+    }
 }
