@@ -55,7 +55,7 @@ public class AuthController {
     public ResponseEntity<Response> localSignin(@Valid @RequestBody LocalSigninRequest request, HttpServletResponse httPResponse) {
         CookieResponse cookieResponse = this.localSigninUseCase.execute(request);
         String cookie = FuncUtils.cookieFromCookieResponse(cookieResponse);
-        Response response = Response.builder().statusCode(HttpStatus.OK.value()).build();
+        Response response = Response.builder().data("OK").statusCode(HttpStatus.OK.value()).build();
         httPResponse.addHeader(HttpHeaders.SET_COOKIE, cookie);
         return ResponseEntity.ok().body(response);
     }
