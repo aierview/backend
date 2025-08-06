@@ -148,7 +148,7 @@ public class AuthTestFixture {
     }
 
     public static UserJpaEntity anyUserJpaEntity() {
-       return UserJpaEntity.builder()
+        return UserJpaEntity.builder()
                 .name("john Snow Smith")
                 .email("admin@example.com")
                 .role(UserRole.FULLSTACK)

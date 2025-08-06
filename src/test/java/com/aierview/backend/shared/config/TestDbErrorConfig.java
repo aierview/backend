@@ -17,7 +17,7 @@ public class TestDbErrorConfig {
     }
 
     @Bean
-    public ILocalSignin testDatabaseErrorSigin(){
+    public ILocalSignin testDatabaseErrorSigin() {
         return request -> {
             throw new RuntimeException("Simulated DB error");
         };

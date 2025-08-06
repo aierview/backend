@@ -1,6 +1,5 @@
 package com.aierview.backend.auth.infra.controller;
 
-import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
@@ -28,6 +27,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     //    LOCAL SIGNUP TESTES
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
+    //    LOCAL SIGNIN IN TESTS
+    private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
 
     @Test
     @Transactional
@@ -175,9 +176,6 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     }
 
-//    LOCAL SIGNIN IN TESTS
-    private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
-
     @Test
     @Transactional
     @DisplayName("Should return 401 when user does not exist on signin")
@@ -257,7 +255,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String password = "any_password";
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPassword = passwordEncoder.encode(password);
-        AuthJpaEntity authJpaEntity =  AuthTestFixture.anyAuthJpaEntity(userJpaEntity,hashedPassword);
+        AuthJpaEntity authJpaEntity = AuthTestFixture.anyAuthJpaEntity(userJpaEntity, hashedPassword);
         entityManager.persist(authJpaEntity);
         entityManager.flush();
 
@@ -267,7 +265,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         MockHttpServletRequestBuilder request = HttpServletTestFixture
                 .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
 
-     mvc
+        mvc
                 .perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data",
