@@ -18,7 +18,6 @@ public class BCryptPasswordEncoderAdapter implements IPasswordEncoder, IPassword
 
     @Override
     public boolean matches(String password, String hashedPassword) {
-        this.encoder.matches(password, hashedPassword);
-        return false;
+        return this.encoder.matches(password, hashedPassword);
     }
 }
