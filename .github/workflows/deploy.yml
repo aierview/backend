@@ -10,14 +10,14 @@ on:
 
 jobs:
   backup-and-deploy:
-    name: Backup Supabase + Flyway Migrations + Deploy to Fly.io
+    name: Flyway Migrations + Deploy to Fly.io
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'database')
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        
       - name: Set up Java 21
         uses: actions/setup-java@v3
         with:

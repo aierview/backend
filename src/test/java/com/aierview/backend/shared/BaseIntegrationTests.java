@@ -20,7 +20,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @Testcontainers
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(properties = "spring.profiles.active=test", webEnvironment = RANDOM_PORT)
 public class BaseIntegrationTests {
     @Container
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")

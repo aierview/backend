@@ -8,6 +8,8 @@ import com.aierview.backend.auth.infra.persisntence.jpa.repository.AuthJpaReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class AuthRepositoryAdapter implements IAuthRepository {
@@ -19,5 +21,11 @@ public class AuthRepositoryAdapter implements IAuthRepository {
         AuthJpaEntity entity = this.authMapper.authToAuthJpaEntity(auth);
         entity = this.authRepository.save(entity);
         return this.authMapper.authJpaEntityToAuth(entity);
+    }
+
+    @Override
+    public Optional<Auth> findByUserId(Long userId) {
+        Optional<AuthJpaEntity> entity = this.authRepository.findByUserId(userId);
+        return entity.map(this.authMapper::authJpaEntityToAuth);
     }
 }

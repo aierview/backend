@@ -4,6 +4,8 @@ import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
+import com.aierview.backend.auth.domain.model.CookieResponse;
+import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.LocalSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
@@ -103,6 +105,15 @@ public class AuthTestFixture {
                 .build();
     }
 
+    public static AuthJpaEntity anyAuthJpaEntity(UserJpaEntity userJpaEntity, String hashedPassword) {
+        return AuthJpaEntity
+                .builder()
+                .password(hashedPassword)
+                .provider(AuthProvider.LOCAL)
+                .user(userJpaEntity)
+                .build();
+    }
+
     public static AuthJpaEntity anySavedAuthJpaEntity(Auth auth) {
         UserJpaEntity userJpaEntity = UserJpaEntity
                 .builder()
@@ -136,6 +147,14 @@ public class AuthTestFixture {
         return userJpaEntity;
     }
 
+    public static UserJpaEntity anyUserJpaEntity() {
+        return UserJpaEntity.builder()
+                .name("john Snow Smith")
+                .email("admin@example.com")
+                .role(UserRole.FULLSTACK)
+                .build();
+    }
+
     public static UserRef anyUserRef(UserJpaEntity userJpaEntity) {
         return UserRef
                 .builder()
@@ -166,4 +185,24 @@ public class AuthTestFixture {
                 .build();
     }
 
+
+    public static LocalSigninRequest anyLocalSigninRequest() {
+        return LocalSigninRequest
+                .builder()
+                .email("example@example.com")
+                .password("Password123!")
+                .build();
+    }
+
+    public static CookieResponse anyProdCookieResponse(String value) {
+        return new CookieResponse("token", value, true, true, "NONE", "/");
+    }
+
+    public static CookieResponse anyHomologCookieResponse(String value) {
+        return new CookieResponse("token", value, true, true, "NONE", "/");
+    }
+
+    public static CookieResponse anyDevCookieResponse(String value) {
+        return new CookieResponse("token", value, true, false, "LAX", "/");
+    }
 }

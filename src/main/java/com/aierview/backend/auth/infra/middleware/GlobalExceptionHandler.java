@@ -1,6 +1,7 @@
 package com.aierview.backend.auth.infra.middleware;
 
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
+import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
 import com.aierview.backend.auth.domain.model.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Response> handleEmailAlreadyInUseException(EmailAlreadyInUseException ex) {
         Response response = new Response(HttpStatus.CONFLICT.value(), ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidCredentialException.class)
+    public ResponseEntity<Response> handleInvalidCredentialException(InvalidCredentialException ex) {
+        Response response = new Response(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
