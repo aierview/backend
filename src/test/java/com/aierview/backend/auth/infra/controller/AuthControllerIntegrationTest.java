@@ -19,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AuthControllerIntegrationTest extends BaseIntegrationTests {
+
+    //    LOCAL SIGNUP TESTES
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
 
     @Test
@@ -165,5 +167,24 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(jsonPath("data",
                         Matchers.is("Created")));
 
+    }
+
+//    LOCAL SIGIN IN TESTS
+    private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 401 when user does not exist on signin")
+    void shouldReturn401WhenUserDoesNotExistOnSignin() throws Exception {
+        var requestBody = AuthTestFixture.anyLocalSigninRequest();
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Email or password is incorrect!")));
     }
 }
