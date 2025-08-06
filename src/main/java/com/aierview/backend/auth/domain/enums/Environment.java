@@ -1,4 +1,4 @@
-package com.aierview.backend.shared.enums;
+package com.aierview.backend.auth.domain.enums;
 
 public enum Environment {
     PROD,
