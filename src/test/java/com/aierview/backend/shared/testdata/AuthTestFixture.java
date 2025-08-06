@@ -169,7 +169,7 @@ public class AuthTestFixture {
 
 
     public static LocalSigninRequest anyLocalSigninRequest() {
-        return  LocalSigninRequest
+        return LocalSigninRequest
                 .builder()
                 .email("example@example.com")
                 .password("Password123!")

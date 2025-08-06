@@ -39,8 +39,8 @@ jobs:
             BACKUP_PATH="homolog/${FILE_NAME}"
             FLY_CONFIG="fly.homolog.toml"
           fi
-                
-
+          
+          
           dig +short db.uxmviylbufxwnpkrtiix.supabase.co A
           dig +short db.uxmviylbufxwnpkrtiix.supabase.co AAAA
 
