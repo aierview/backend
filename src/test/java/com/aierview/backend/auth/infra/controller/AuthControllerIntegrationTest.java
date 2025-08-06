@@ -1,6 +1,9 @@
 package com.aierview.backend.auth.infra.controller;
 
+import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.auth.domain.model.LocalSigninRequest;
+import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
 import com.aierview.backend.shared.BaseIntegrationTests;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
@@ -14,10 +17,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
@@ -239,5 +244,37 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("data",
                         Matchers.is("Password is required!")));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 200 and set cookies if succeeds on signin")
+    void shouldReturn200WhenAndSetCookiesIfSucceedsOnSignin() throws Exception {
+        UserJpaEntity userJpaEntity = AuthTestFixture.anyUserJpaEntity();
+        entityManager.persist(userJpaEntity);
+        entityManager.flush();
+
+        String password = "any_password";
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(password);
+        AuthJpaEntity authJpaEntity =  AuthTestFixture.anyAuthJpaEntity(userJpaEntity,hashedPassword);
+        entityManager.persist(authJpaEntity);
+        entityManager.flush();
+
+        var requestBody = new LocalSigninRequest(userJpaEntity.getEmail(), password);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+
+     mvc
+                .perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data",
+                        Matchers.is("OK")))
+                .andExpect(cookie().exists("token"))
+                .andExpect(cookie().value("token", Matchers.notNullValue()))
+                .andExpect(header().string(HttpHeaders.SET_COOKIE, Matchers.containsString("token=")));
+
     }
 }

@@ -105,6 +105,15 @@ public class AuthTestFixture {
                 .build();
     }
 
+    public static AuthJpaEntity anyAuthJpaEntity(UserJpaEntity userJpaEntity, String hashedPassword) {
+        return AuthJpaEntity
+                .builder()
+                .password(hashedPassword)
+                .provider(AuthProvider.LOCAL)
+                .user(userJpaEntity)
+                .build();
+    }
+
     public static AuthJpaEntity anySavedAuthJpaEntity(Auth auth) {
         UserJpaEntity userJpaEntity = UserJpaEntity
                 .builder()
@@ -136,6 +145,14 @@ public class AuthTestFixture {
         authJpaEntity.setUser(userJpaEntity);
         userJpaEntity.setAuth(authJpaEntity);
         return userJpaEntity;
+    }
+
+    public static UserJpaEntity anyUserJpaEntity() {
+       return UserJpaEntity.builder()
+                .name("john Snow Smith")
+                .email("admin@example.com")
+                .role(UserRole.FULLSTACK)
+                .build();
     }
 
     public static UserRef anyUserRef(UserJpaEntity userJpaEntity) {
