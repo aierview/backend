@@ -1,6 +1,6 @@
 package com.aierview.backend.shared.config;
 
-import com.aierview.backend.auth.infra.middleware.JwtAuthenticationFilter;
+import com.aierview.backend.shared.middleware.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

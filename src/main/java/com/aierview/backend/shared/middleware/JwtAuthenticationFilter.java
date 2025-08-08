@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.infra.middleware;
+package com.aierview.backend.shared.middleware;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
