@@ -8,8 +8,8 @@ import com.aierview.backend.auth.domain.model.CookieResponse;
 import com.aierview.backend.auth.domain.model.GoogleAccountModel;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.LocalSignupRequest;
-import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 
 import java.util.UUID;
 

@@ -1,14 +1,14 @@
 package com.aierview.backend.auth.usecase.impl;
 
+import com.aierview.backend.auth.domain.contact.repository.IAuthRepository;
+import com.aierview.backend.auth.domain.contact.repository.IUserRepository;
+import com.aierview.backend.auth.domain.contact.security.IPasswordComparer;
+import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
 import com.aierview.backend.auth.domain.model.CookieResponse;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
-import com.aierview.backend.auth.domain.repository.IAuthRepository;
-import com.aierview.backend.auth.domain.repository.IUserRepository;
-import com.aierview.backend.auth.domain.security.IPasswordComparer;
-import com.aierview.backend.auth.domain.token.ITokenGenerator;
 import com.aierview.backend.auth.usecase.contract.IGenerateCookieResponse;
 import com.aierview.backend.auth.usecase.contract.ILocalSignin;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
