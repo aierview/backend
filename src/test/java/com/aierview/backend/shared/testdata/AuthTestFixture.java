@@ -5,6 +5,7 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
 import com.aierview.backend.auth.domain.model.CookieResponse;
+import com.aierview.backend.auth.domain.model.GoogleAccountModel;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.LocalSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
@@ -204,5 +205,18 @@ public class AuthTestFixture {
 
     public static CookieResponse anyDevCookieResponse(String value) {
         return new CookieResponse("token", value, true, false, "LAX", "/");
+    }
+
+    public static GoogleAccountModel anyGoogleAccountModel() {
+        return  new GoogleAccountModel("John Snow Smith","example@example.com", "any_pic");
+    }
+
+    public static  UserRef anySavedUserRef(GoogleAccountModel googleAccountModel) {
+           return UserRef.builder()
+                .id(1L)
+                .name(googleAccountModel.name())
+                .email(googleAccountModel.email())
+                .role(UserRole.FULLSTACK)
+                .build();
     }
 }
