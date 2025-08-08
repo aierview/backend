@@ -61,6 +61,15 @@ public class AuthTestFixture {
                 .build();
     }
 
+    public static Auth anyGoogleAuth(UserRef savedUser, GoogleAccountModel googleAccountModel) {
+        return Auth
+                .builder()
+                .provider(AuthProvider.GOOGLE)
+                .user(savedUser)
+                .picture(googleAccountModel.picture())
+                .build();
+    }
+
 
     public static Auth anySavedAuth(UserRef savedUser) {
         return Auth
@@ -69,6 +78,16 @@ public class AuthTestFixture {
                 .password(UUID.randomUUID().toString())
                 .provider(AuthProvider.LOCAL)
                 .user(savedUser)
+                .build();
+    }
+
+    public static Auth anyGoogleSavedAuth(UserRef savedUser, GoogleAccountModel accountModel) {
+        return Auth
+                .builder()
+                .id(1L)
+                .provider(AuthProvider.GOOGLE)
+                .user(savedUser)
+                .picture(accountModel.picture())
                 .build();
     }
 
@@ -211,12 +230,18 @@ public class AuthTestFixture {
         return  new GoogleAccountModel("John Snow Smith","example@example.com", "any_pic");
     }
 
+    public static  UserRef anyUserRef(GoogleAccountModel googleAccountModel) {
+        return UserRef.builder()
+                .name(googleAccountModel.name())
+                .email(googleAccountModel.email())
+                .build();
+    }
+
     public static  UserRef anySavedUserRef(GoogleAccountModel googleAccountModel) {
            return UserRef.builder()
                 .id(1L)
                 .name(googleAccountModel.name())
                 .email(googleAccountModel.email())
-                .role(UserRole.FULLSTACK)
                 .build();
     }
 }
