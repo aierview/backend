@@ -38,7 +38,7 @@ public class TestDatabaseErrorTests {
     private final String URL = "/api/v1/auth";
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
     private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
-
+    private final String GOOGLE_SIGNUP_API_URL = "/api/v1/auth/google/signup";
 
     @Autowired
     private MockMvc mvc;
@@ -88,6 +88,20 @@ public class TestDatabaseErrorTests {
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
                 .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isInternalServerError());
+    }
+
+
+    @Test
+    @DisplayName("Should return 500 when unexpected exception is thrown on google signup")
+    void shouldReturn500WhenUnexpectedExceptionIsThrownOnGoogleSignup() throws Exception {
+        String idToken = "any_id_token";
+        String json = new ObjectMapper().writeValueAsString(idToken);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isInternalServerError());
