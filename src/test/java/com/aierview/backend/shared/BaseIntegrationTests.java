@@ -1,6 +1,9 @@
 package com.aierview.backend.shared;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +18,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Testcontainers
@@ -36,12 +40,42 @@ public class BaseIntegrationTests {
     private WebApplicationContext context;
     @Autowired
     private DatabaseCleaner databaseCleaner;
+    private static WireMockServer wireMockServer;
+
+
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
+    }
+
+    @BeforeAll
+    static void startWireMockContainer() {
+        wireMockServer = new WireMockServer(8089);
+        wireMockServer.start();
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
+                .withQueryParam("id_token", equalTo("any_valid_token"))
+                .willReturn(okJson("""
+                {
+                  "email": "example@example.com",
+                  "name": "John Snow Smith",
+                  "picture": "any_picture"
+                }
+            """)));
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
+                .withQueryParam("id_token", equalTo("any_invalid_token"))
+                .willReturn(aResponse().withStatus(400)));
+    }
+
+    @AfterAll
+    static void stopWireMock() {
+        if (wireMockServer != null) {
+            wireMockServer.stop();
+        }
     }
 
     @BeforeEach
