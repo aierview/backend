@@ -31,7 +31,7 @@ public class BaseIntegrationTests {
             .withDatabaseName("testdb")
             .withUsername("testuser")
             .withPassword("testpass");
-
+    private static WireMockServer wireMockServer;
     @Autowired
     protected MockMvc mvc;
     @Autowired
@@ -40,9 +40,6 @@ public class BaseIntegrationTests {
     private WebApplicationContext context;
     @Autowired
     private DatabaseCleaner databaseCleaner;
-    private static WireMockServer wireMockServer;
-
-
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
@@ -59,12 +56,12 @@ public class BaseIntegrationTests {
         wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
                 .withQueryParam("id_token", equalTo("any_valid_token"))
                 .willReturn(okJson("""
-                {
-                  "email": "example@example.com",
-                  "name": "John Snow Smith",
-                  "picture": "any_picture"
-                }
-            """)));
+                            {
+                              "email": "example@example.com",
+                              "name": "John Snow Smith",
+                              "picture": "any_picture"
+                            }
+                        """)));
 
         wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
                 .withQueryParam("id_token", equalTo("any_invalid_token"))
