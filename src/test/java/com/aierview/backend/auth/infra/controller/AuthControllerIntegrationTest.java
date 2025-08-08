@@ -328,4 +328,20 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(jsonPath("data",
                         Matchers.is("Invalid Google account, please provide a valid Google account.")));
     }
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 201 when signup succeeds on google signup")
+    void shouldReturn409WhenSignupSucceedsOnGoogleSignup() throws Exception {
+        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_valid_token");
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Created")));
+    }
 }
