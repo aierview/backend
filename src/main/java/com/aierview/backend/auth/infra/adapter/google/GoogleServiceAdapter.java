@@ -2,6 +2,7 @@ package com.aierview.backend.auth.infra.adapter.google;
 
 import com.aierview.backend.auth.domain.contact.google.IExtractUserDetails;
 import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
+import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,9 @@ public class GoogleServiceAdapter implements IExtractUserDetails {
     private String tokenIfoUrl;
 
     @Override
-    public Optional<GoogleAccountModel> extractUserDetails(String idToken) {
+    public Optional<GoogleAccountModel> extractUserDetails(GoogleSignupRequest request) {
         try {
-            URI uri = UriComponentsBuilder.fromHttpUrl(this.tokenIfoUrl).queryParam("id_token", idToken).build().toUri();
+            URI uri = UriComponentsBuilder.fromHttpUrl(this.tokenIfoUrl).queryParam("id_token", request.idToken()).build().toUri();
             ResponseEntity<GoogleAccountModel> tokenInfo = restTemplate.getForEntity(uri, GoogleAccountModel.class);
             return Optional.ofNullable(tokenInfo.getBody());
         } catch (Exception e) {

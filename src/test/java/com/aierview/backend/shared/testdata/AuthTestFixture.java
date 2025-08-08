@@ -8,6 +8,7 @@ import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
+import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 
@@ -243,5 +244,9 @@ public class AuthTestFixture {
                 .name(googleAccountModel.name())
                 .email(googleAccountModel.email())
                 .build();
+    }
+
+    public static GoogleSignupRequest anyGoogleSignupRequest() {
+        return new GoogleSignupRequest("any_id_token");
     }
 }

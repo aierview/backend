@@ -1,5 +1,7 @@
 package com.aierview.backend.auth.usecase.contract.google;
 
+import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+
 public interface IGoogleSignup {
-    void execute(String idToken);
+    void execute(GoogleSignupRequest request);
 }

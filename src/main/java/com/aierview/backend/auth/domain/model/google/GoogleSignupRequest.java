@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.infra.api.dto;
+package com.aierview.backend.auth.domain.model.google;
 
 import jakarta.validation.constraints.NotBlank;
 
