@@ -1,9 +1,10 @@
-package com.aierview.backend.auth.infra.controller;
+package com.aierview.backend.auth.infra.api.controller;
 
 import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import com.aierview.backend.auth.domain.model.http.Response;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
+import com.aierview.backend.auth.infra.api.dto.GoogleSignupRequest;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
@@ -71,9 +72,8 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "CONFLICT"),
             @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
     })
-    public ResponseEntity<Response> googleSignup(
-            @RequestBody @NotBlank(message = "Id token is required!") String idToken) {
-        this.googleSignupUseCase.execute(idToken);
+    public ResponseEntity<Response> googleSignup(@Valid @RequestBody GoogleSignupRequest request) {
+        this.googleSignupUseCase.execute(request.idToken());
         Response response = Response.builder().data("Created").statusCode(HttpStatus.CREATED.value()).build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

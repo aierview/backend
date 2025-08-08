@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 
 @Service
@@ -20,8 +22,8 @@ public class GoogleServiceAdapter implements IExtractUserDetails {
 
     @Override
     public Optional<GoogleAccountModel> extractUserDetails(String idToken) {
-        ResponseEntity<GoogleAccountModel> tokenInfo =
-                restTemplate.getForEntity(this.tokenIfoUrl + idToken, GoogleAccountModel.class);
+        URI uri = UriComponentsBuilder.fromHttpUrl(this.tokenIfoUrl).queryParam("id_token", idToken).build().toUri();
+        ResponseEntity<GoogleAccountModel> tokenInfo = restTemplate.getForEntity(uri, GoogleAccountModel.class);
         return Optional.ofNullable(tokenInfo.getBody());
     }
 }
