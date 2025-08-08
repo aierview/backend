@@ -297,4 +297,35 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                         Matchers.is("The email "
                                 + userRef.getEmail() + " is already in use.")));
     }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should return 400 when email empty or null on google signup")
+    void shouldReturn409WhenEmailIsEmptyOrNullTakenOnGoogleSignup(String idToken) throws Exception {
+        GoogleSignupRequest requestBody = new GoogleSignupRequest(idToken);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Id token is required!")));
+    }
+
+    @Test
+    @DisplayName("Should return 400 when email id token is invalid on google signup")
+    void shouldReturn409WhenIdTokenIsInvalidOnGoogleSignup() throws Exception {
+        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_invalid_token");
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Invalid Google account, please provide a valid Google account.")));
+    }
 }
