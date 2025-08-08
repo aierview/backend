@@ -19,9 +19,9 @@ public class GoogleServiceAdapter implements IExtractUserDetails {
     private String tokenIfoUrl;
 
     @Override
-    public Optional<GoogleAccountModel> extractUserDetails(String token) {
+    public Optional<GoogleAccountModel> extractUserDetails(String idToken) {
         ResponseEntity<GoogleAccountModel> tokenInfo =
-                restTemplate.getForEntity(this.tokenIfoUrl + token, GoogleAccountModel.class);
+                restTemplate.getForEntity(this.tokenIfoUrl + idToken, GoogleAccountModel.class);
         return Optional.ofNullable(tokenInfo.getBody());
     }
 }
