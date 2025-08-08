@@ -11,7 +11,6 @@ import com.aierview.backend.auth.domain.repository.IUserRepository;
 import com.aierview.backend.auth.usecase.contract.IGoogleSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,17 +33,17 @@ public class GoogleSignupTests {
         this.extractUserDetails = Mockito.mock(IExtractUserDetails.class);
         this.userRepository = Mockito.mock(IUserRepository.class);
         this.authRepository = Mockito.mock(IAuthRepository.class);
-        this.googleSignup =  new GoogleSignup(extractUserDetails,userRepository, authRepository);
+        this.googleSignup = new GoogleSignup(extractUserDetails, userRepository, authRepository);
     }
 
     @Test
     @DisplayName("Should throw InvalidGoogleIdTokenException when Google account is invalid")
     void shouldThrowInvalidGoogleIdTokenExceptionWhenGoogleAccountIsInvalid() {
-        String idToken =  "any_token";
+        String idToken = "any_token";
 
         when(this.extractUserDetails.extract(idToken)).thenReturn(Optional.empty());
 
-        Throwable  exception = Assertions.catchThrowable(() -> this.googleSignup.execute(idToken));
+        Throwable exception = Assertions.catchThrowable(() -> this.googleSignup.execute(idToken));
 
         assertThat(exception).isInstanceOf(InvalidGoogleIdTokenException.class);
         assertThat(exception.getMessage()).isEqualTo("Invalid Google account, please provide a valid Google account.");
@@ -54,14 +53,14 @@ public class GoogleSignupTests {
     @Test
     @DisplayName("Should throw EmailAlreadyInUseException when user already exists on google signup")
     void shouldThrowEmailAlreadyInUseExceptionWhenUserAlreadyExistsOnGoogleSignup() {
-        String idToken =  "any_token";
+        String idToken = "any_token";
         GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
         UserRef savedUser = AuthTestFixture.anySavedUserRef(accountModel);
 
         when(this.extractUserDetails.extract(idToken)).thenReturn(Optional.of(accountModel));
         when(this.userRepository.findByEmail(accountModel.email())).thenReturn(Optional.of(savedUser));
 
-        Throwable  exception = Assertions.catchThrowable(() -> this.googleSignup.execute(idToken));
+        Throwable exception = Assertions.catchThrowable(() -> this.googleSignup.execute(idToken));
 
         assertThat(exception).isInstanceOf(EmailAlreadyInUseException.class);
         assertThat(exception.getMessage()).isEqualTo("The email " + accountModel.email() + " is already in use.");
@@ -72,14 +71,14 @@ public class GoogleSignupTests {
     @Test
     @DisplayName("Should save user and account details on signup success")
     void shouldSaveUserAndAccountDetailsOnSignupSuccess() {
-        String idToken =  "any_token";
+        String idToken = "any_token";
         GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
 
-        UserRef toSaveUser =  AuthTestFixture.anyUserRef(accountModel);
+        UserRef toSaveUser = AuthTestFixture.anyUserRef(accountModel);
         UserRef savedUser = AuthTestFixture.anySavedUserRef(accountModel);
 
-        Auth toSaveAuth =  AuthTestFixture.anyGoogleAuth(savedUser, accountModel);
-        Auth savedAuth =  AuthTestFixture.anyGoogleSavedAuth(savedUser, accountModel);
+        Auth toSaveAuth = AuthTestFixture.anyGoogleAuth(savedUser, accountModel);
+        Auth savedAuth = AuthTestFixture.anyGoogleSavedAuth(savedUser, accountModel);
 
         when(this.extractUserDetails.extract(idToken)).thenReturn(Optional.of(accountModel));
         when(this.userRepository.findByEmail(accountModel.email())).thenReturn(Optional.empty());

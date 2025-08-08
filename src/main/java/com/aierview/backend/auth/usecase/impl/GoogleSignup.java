@@ -27,11 +27,11 @@ public class GoogleSignup implements IGoogleSignup {
     @Override
     public void execute(String idToken) {
         GoogleAccountModel googleAccountModel = this.extractUserDetails.extract(idToken).orElseThrow(InvalidGoogleIdTokenException::new);
-        Optional<UserRef>  existingUser =  this.userRepository.findByEmail(googleAccountModel.email());
-        if(existingUser.isPresent()) throw new EmailAlreadyInUseException(googleAccountModel.email());
-        UserRef user =  UserRef.builder().name(googleAccountModel.name()).email(googleAccountModel.email()).build();
+        Optional<UserRef> existingUser = this.userRepository.findByEmail(googleAccountModel.email());
+        if (existingUser.isPresent()) throw new EmailAlreadyInUseException(googleAccountModel.email());
+        UserRef user = UserRef.builder().name(googleAccountModel.name()).email(googleAccountModel.email()).build();
         user = this.userRepository.save(user);
-        Auth  auth =  Auth.builder().user(user).provider(AuthProvider.GOOGLE).picture(googleAccountModel.picture()).build();
+        Auth auth = Auth.builder().user(user).provider(AuthProvider.GOOGLE).picture(googleAccountModel.picture()).build();
         this.authRepository.save(auth);
     }
 }

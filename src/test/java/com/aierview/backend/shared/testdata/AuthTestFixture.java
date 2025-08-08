@@ -227,18 +227,18 @@ public class AuthTestFixture {
     }
 
     public static GoogleAccountModel anyGoogleAccountModel() {
-        return  new GoogleAccountModel("John Snow Smith","example@example.com", "any_pic");
+        return new GoogleAccountModel("John Snow Smith", "example@example.com", "any_pic");
     }
 
-    public static  UserRef anyUserRef(GoogleAccountModel googleAccountModel) {
+    public static UserRef anyUserRef(GoogleAccountModel googleAccountModel) {
         return UserRef.builder()
                 .name(googleAccountModel.name())
                 .email(googleAccountModel.email())
                 .build();
     }
 
-    public static  UserRef anySavedUserRef(GoogleAccountModel googleAccountModel) {
-           return UserRef.builder()
+    public static UserRef anySavedUserRef(GoogleAccountModel googleAccountModel) {
+        return UserRef.builder()
                 .id(1L)
                 .name(googleAccountModel.name())
                 .email(googleAccountModel.email())
