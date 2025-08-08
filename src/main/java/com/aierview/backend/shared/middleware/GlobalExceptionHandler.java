@@ -1,7 +1,8 @@
-package com.aierview.backend.auth.infra.middleware;
+package com.aierview.backend.shared.middleware;
 
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
+import com.aierview.backend.auth.domain.exceptions.InvalidGoogleIdTokenException;
 import com.aierview.backend.auth.domain.model.http.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,16 +24,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EmailAlreadyInUseException.class)
-    public ResponseEntity<Response> handleEmailAlreadyInUseException(EmailAlreadyInUseException ex) {
-        Response response = new Response(HttpStatus.CONFLICT.value(), ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    @ExceptionHandler(InvalidGoogleIdTokenException.class)
+    public ResponseEntity<Response> handleInvalidGoogleIdTokenExceptionException(InvalidGoogleIdTokenException ex) {
+        Response response = new Response(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidCredentialException.class)
     public ResponseEntity<Response> handleInvalidCredentialException(InvalidCredentialException ex) {
         Response response = new Response(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(EmailAlreadyInUseException.class)
+    public ResponseEntity<Response> handleEmailAlreadyInUseException(EmailAlreadyInUseException ex) {
+        Response response = new Response(HttpStatus.CONFLICT.value(), ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
