@@ -1,11 +1,13 @@
 package com.aierview.backend.auth.infra.controller;
 
-import com.aierview.backend.auth.domain.model.CookieResponse;
-import com.aierview.backend.auth.domain.model.LocalSigninRequest;
-import com.aierview.backend.auth.domain.model.LocalSignupRequest;
-import com.aierview.backend.auth.domain.model.Response;
-import com.aierview.backend.auth.usecase.contract.ILocalSignin;
-import com.aierview.backend.auth.usecase.contract.ILocalSignup;
+import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
+import com.aierview.backend.auth.domain.model.http.Response;
+import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
+import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
+import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
+import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
+import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
 import com.aierview.backend.shared.utils.FuncUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final ILocalSignup localSignupUseCase;
     private final ILocalSignin localSigninUseCase;
+    private final IGoogleSignup googleSignupUseCase;
 
     @PostMapping("/local/signup")
     @Operation(summary = "Local signup")
@@ -58,5 +61,19 @@ public class AuthController {
         Response response = Response.builder().data("OK").statusCode(HttpStatus.OK.value()).build();
         httPResponse.addHeader(HttpHeaders.SET_COOKIE, cookie);
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/google/signup")
+    @Operation(summary = "Google signup")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST"),
+            @ApiResponse(responseCode = "409", description = "CONFLICT"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
+    })
+    public ResponseEntity<Response> googleSignup(@Valid @RequestBody GoogleSignupRequest request) {
+        this.googleSignupUseCase.execute(request);
+        Response response = Response.builder().data("Created").statusCode(HttpStatus.CREATED.value()).build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

@@ -1,9 +1,10 @@
 package com.aierview.backend.auth.infra.controller;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
-import com.aierview.backend.auth.domain.model.LocalSigninRequest;
-import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
+import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
+import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 import com.aierview.backend.shared.BaseIntegrationTests;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.HttpServletTestFixture;
@@ -25,10 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
-    //    LOCAL SIGNUP TESTES
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
-    //    LOCAL SIGNIN IN TESTS
     private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
+    private final String GOOGLE_SIGNUP_API_URL = "/api/v1/auth/google/signup";
 
     @Test
     @Transactional
@@ -274,5 +274,74 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(cookie().value("token", Matchers.notNullValue()))
                 .andExpect(header().string(HttpHeaders.SET_COOKIE, Matchers.containsString("token=")));
 
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 409 when email is already taken on google signup")
+    void shouldReturn409WhenEmailIsAlreadyTakenOnGoogleSignup() throws Exception {
+        UserRef userRef = AuthTestFixture.anyUserRef();
+        UserJpaEntity entity = AuthTestFixture.anyUserJpaEntity(userRef);
+        entityManager.persist(entity);
+        entityManager.flush();
+
+        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_valid_token");
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("data",
+                        Matchers.is("The email "
+                                + userRef.getEmail() + " is already in use.")));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should return 400 when email empty or null on google signup")
+    void shouldReturn409WhenEmailIsEmptyOrNullTakenOnGoogleSignup(String idToken) throws Exception {
+        GoogleSignupRequest requestBody = new GoogleSignupRequest(idToken);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Id token is required!")));
+    }
+
+    @Test
+    @DisplayName("Should return 400 when email id token is invalid on google signup")
+    void shouldReturn409WhenIdTokenIsInvalidOnGoogleSignup() throws Exception {
+        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_invalid_token");
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Invalid Google account, please provide a valid Google account.")));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 201 when signup succeeds on google signup")
+    void shouldReturn409WhenSignupSucceedsOnGoogleSignup() throws Exception {
+        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_valid_token");
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Created")));
     }
 }

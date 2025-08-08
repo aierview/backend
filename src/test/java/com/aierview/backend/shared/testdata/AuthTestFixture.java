@@ -4,11 +4,13 @@ import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
-import com.aierview.backend.auth.domain.model.CookieResponse;
-import com.aierview.backend.auth.domain.model.LocalSigninRequest;
-import com.aierview.backend.auth.domain.model.LocalSignupRequest;
-import com.aierview.backend.auth.infra.persisntence.jpa.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.jpa.entity.UserJpaEntity;
+import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
+import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
+import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
+import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
+import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 
 import java.util.UUID;
 
@@ -60,6 +62,15 @@ public class AuthTestFixture {
                 .build();
     }
 
+    public static Auth anyGoogleAuth(UserRef savedUser, GoogleAccountModel googleAccountModel) {
+        return Auth
+                .builder()
+                .provider(AuthProvider.GOOGLE)
+                .user(savedUser)
+                .picture(googleAccountModel.picture())
+                .build();
+    }
+
 
     public static Auth anySavedAuth(UserRef savedUser) {
         return Auth
@@ -68,6 +79,16 @@ public class AuthTestFixture {
                 .password(UUID.randomUUID().toString())
                 .provider(AuthProvider.LOCAL)
                 .user(savedUser)
+                .build();
+    }
+
+    public static Auth anyGoogleSavedAuth(UserRef savedUser, GoogleAccountModel accountModel) {
+        return Auth
+                .builder()
+                .id(1L)
+                .provider(AuthProvider.GOOGLE)
+                .user(savedUser)
+                .picture(accountModel.picture())
                 .build();
     }
 
@@ -204,5 +225,28 @@ public class AuthTestFixture {
 
     public static CookieResponse anyDevCookieResponse(String value) {
         return new CookieResponse("token", value, true, false, "LAX", "/");
+    }
+
+    public static GoogleAccountModel anyGoogleAccountModel() {
+        return new GoogleAccountModel("John Snow Smith", "example@example.com", "any_pic");
+    }
+
+    public static UserRef anyUserRef(GoogleAccountModel googleAccountModel) {
+        return UserRef.builder()
+                .name(googleAccountModel.name())
+                .email(googleAccountModel.email())
+                .build();
+    }
+
+    public static UserRef anySavedUserRef(GoogleAccountModel googleAccountModel) {
+        return UserRef.builder()
+                .id(1L)
+                .name(googleAccountModel.name())
+                .email(googleAccountModel.email())
+                .build();
+    }
+
+    public static GoogleSignupRequest anyGoogleSignupRequest() {
+        return new GoogleSignupRequest("any_id_token");
     }
 }
