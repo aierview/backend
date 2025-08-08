@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -73,7 +72,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
     })
     public ResponseEntity<Response> googleSignup(
-            @RequestBody @NotBlank( message = "Id token is required!") String idToken) {
+            @RequestBody @NotBlank(message = "Id token is required!") String idToken) {
         this.googleSignupUseCase.execute(idToken);
         Response response = Response.builder().data("Created").statusCode(HttpStatus.CREATED.value()).build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);

@@ -52,6 +52,6 @@ public class AuthUseCaseConfig {
 
     @Bean
     public IGoogleSignup googleSignup() {
-        return new GoogleSignup(extractUserDetails,userRepository, authRepository);
+        return new GoogleSignup(extractUserDetails, userRepository, authRepository);
     }
 }
