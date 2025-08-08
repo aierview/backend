@@ -10,7 +10,9 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class GoogleServiceAdapterTests {
-    private final String tokenInfoUrl = "any_token";
+    private final String tokenInfoUrl = "any_token_info_url";
 
 
     private IExtractUserDetails extractUserDetails;
@@ -39,31 +41,32 @@ public class GoogleServiceAdapterTests {
     @Test
     @DisplayName("Should return optional of empty when request returns null body")
     void shouldReturnOptionalOfEmptyWhenRequestReturnsNullBody() {
-        String token = "any_token";
-
-        when(this.restTemplate.getForEntity(this.tokenInfoUrl + token, GoogleAccountModel.class))
+        String idToken = "any_id_token";
+        URI uri = UriComponentsBuilder.fromHttpUrl(this.tokenInfoUrl).queryParam("id_token", idToken).build().toUri();
+        when(this.restTemplate.getForEntity(uri, GoogleAccountModel.class))
                 .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
-        Optional<GoogleAccountModel> result = this.extractUserDetails.extractUserDetails(token);
+        Optional<GoogleAccountModel> result = this.extractUserDetails.extractUserDetails(idToken);
 
         assertTrue(result.isEmpty());
-        verify(this.restTemplate, Mockito.times(1)).getForEntity(this.tokenInfoUrl + token, GoogleAccountModel.class);
+        verify(this.restTemplate, Mockito.times(1)).getForEntity(uri, GoogleAccountModel.class);
     }
 
     @Test
     @DisplayName("Should return optional of google account model when request succeeds")
     void shouldReturnOptionalOfGoogleAccountModelWhenRequestSucceeds() {
-        String token = "any_token";
+        String idToken = "any_id_token";
         GoogleAccountModel googleAccountModel = AuthTestFixture.anyGoogleAccountModel();
 
-        when(this.restTemplate.getForEntity(this.tokenInfoUrl + token, GoogleAccountModel.class))
+        URI uri = UriComponentsBuilder.fromHttpUrl(this.tokenInfoUrl).queryParam("id_token", idToken).build().toUri();
+        when(this.restTemplate.getForEntity(uri, GoogleAccountModel.class))
                 .thenReturn(new ResponseEntity<>(googleAccountModel, HttpStatus.OK));
 
-        Optional<GoogleAccountModel> result = this.extractUserDetails.extractUserDetails(token);
+        Optional<GoogleAccountModel> result = this.extractUserDetails.extractUserDetails(idToken);
 
         assertTrue(result.isPresent());
         assertEquals(googleAccountModel, result.get());
-        verify(this.restTemplate, Mockito.times(1)).getForEntity(this.tokenInfoUrl + token, GoogleAccountModel.class);
+        verify(this.restTemplate, Mockito.times(1)).getForEntity(uri, GoogleAccountModel.class);
     }
 
 
