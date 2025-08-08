@@ -41,13 +41,13 @@ public class GoogleSignupTests {
     void shouldThrowInvalidGoogleIdTokenExceptionWhenGoogleAccountIsInvalid() {
         String idToken = "any_token";
 
-        when(this.extractUserDetails.extract(idToken)).thenReturn(Optional.empty());
+        when(this.extractUserDetails.extractUserDetails(idToken)).thenReturn(Optional.empty());
 
         Throwable exception = Assertions.catchThrowable(() -> this.googleSignup.execute(idToken));
 
         assertThat(exception).isInstanceOf(InvalidGoogleIdTokenException.class);
         assertThat(exception.getMessage()).isEqualTo("Invalid Google account, please provide a valid Google account.");
-        verify(this.extractUserDetails, Mockito.times(1)).extract(idToken);
+        verify(this.extractUserDetails, Mockito.times(1)).extractUserDetails(idToken);
     }
 
     @Test
@@ -57,14 +57,14 @@ public class GoogleSignupTests {
         GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
         UserRef savedUser = AuthTestFixture.anySavedUserRef(accountModel);
 
-        when(this.extractUserDetails.extract(idToken)).thenReturn(Optional.of(accountModel));
+        when(this.extractUserDetails.extractUserDetails(idToken)).thenReturn(Optional.of(accountModel));
         when(this.userRepository.findByEmail(accountModel.email())).thenReturn(Optional.of(savedUser));
 
         Throwable exception = Assertions.catchThrowable(() -> this.googleSignup.execute(idToken));
 
         assertThat(exception).isInstanceOf(EmailAlreadyInUseException.class);
         assertThat(exception.getMessage()).isEqualTo("The email " + accountModel.email() + " is already in use.");
-        verify(this.extractUserDetails, Mockito.times(1)).extract(idToken);
+        verify(this.extractUserDetails, Mockito.times(1)).extractUserDetails(idToken);
         verify(this.userRepository, Mockito.times(1)).findByEmail(accountModel.email());
     }
 
@@ -80,14 +80,14 @@ public class GoogleSignupTests {
         Auth toSaveAuth = AuthTestFixture.anyGoogleAuth(savedUser, accountModel);
         Auth savedAuth = AuthTestFixture.anyGoogleSavedAuth(savedUser, accountModel);
 
-        when(this.extractUserDetails.extract(idToken)).thenReturn(Optional.of(accountModel));
+        when(this.extractUserDetails.extractUserDetails(idToken)).thenReturn(Optional.of(accountModel));
         when(this.userRepository.findByEmail(accountModel.email())).thenReturn(Optional.empty());
         when(this.userRepository.save(toSaveUser)).thenReturn(savedUser);
         when(this.authRepository.save(toSaveAuth)).thenReturn(savedAuth);
 
         this.googleSignup.execute(idToken);
 
-        verify(this.extractUserDetails, Mockito.times(1)).extract(idToken);
+        verify(this.extractUserDetails, Mockito.times(1)).extractUserDetails(idToken);
         verify(this.userRepository, Mockito.times(1)).findByEmail(accountModel.email());
         verify(this.userRepository, Mockito.times(1)).save(toSaveUser);
         verify(this.authRepository, Mockito.times(1)).save(toSaveAuth);
