@@ -3,3 +3,5 @@ spring:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
       expiration-time: ${JWT_EXPIRATION_TIME}
+google:
+  token-info-url: ${GOOGLE_TOKEN_INFO_URL}

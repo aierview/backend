@@ -3,3 +3,5 @@ spring:
     jwt:
       secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e005G
       expiration-time: 1000
+google:
+  token-info-url: "any_token"

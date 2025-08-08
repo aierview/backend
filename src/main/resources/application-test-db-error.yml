@@ -3,3 +3,5 @@ spring:
     jwt:
       secret-key: any-secret
       expiration-time: 1000
+google:
+  token-info-url: "any_token"
