@@ -1,9 +1,9 @@
 package com.aierview.backend.auth.infra.controller;
 
-import com.aierview.backend.auth.domain.model.CookieResponse;
-import com.aierview.backend.auth.domain.model.LocalSigninRequest;
-import com.aierview.backend.auth.domain.model.LocalSignupRequest;
-import com.aierview.backend.auth.domain.model.Response;
+import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
+import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
+import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
+import com.aierview.backend.auth.domain.model.http.Response;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
 import com.aierview.backend.shared.utils.FuncUtils;

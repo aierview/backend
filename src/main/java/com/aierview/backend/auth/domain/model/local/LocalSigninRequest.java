@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.domain.model;
+package com.aierview.backend.auth.domain.model.local;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

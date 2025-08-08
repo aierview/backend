@@ -6,7 +6,7 @@ import com.aierview.backend.auth.domain.contact.security.IPasswordEncoder;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
-import com.aierview.backend.auth.domain.model.LocalSignupRequest;
+import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,7 @@
 package com.aierview.backend.auth.infra.controller;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
-import com.aierview.backend.auth.domain.model.LocalSigninRequest;
+import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 import com.aierview.backend.shared.BaseIntegrationTests;

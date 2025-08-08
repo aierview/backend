@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.domain.model;
+package com.aierview.backend.auth.domain.model.cookie;
 
 public record CookieResponse(
         String name,

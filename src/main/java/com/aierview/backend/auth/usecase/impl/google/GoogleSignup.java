@@ -8,7 +8,7 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.exceptions.InvalidGoogleIdTokenException;
-import com.aierview.backend.auth.domain.model.GoogleAccountModel;
+import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 
 import java.util.Optional;

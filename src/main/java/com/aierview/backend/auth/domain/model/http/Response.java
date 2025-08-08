@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.domain.model;
+package com.aierview.backend.auth.domain.model.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

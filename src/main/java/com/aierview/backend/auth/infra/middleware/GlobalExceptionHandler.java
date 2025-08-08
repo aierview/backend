@@ -2,7 +2,7 @@ package com.aierview.backend.auth.infra.middleware;
 
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
-import com.aierview.backend.auth.domain.model.Response;
+import com.aierview.backend.auth.domain.model.http.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

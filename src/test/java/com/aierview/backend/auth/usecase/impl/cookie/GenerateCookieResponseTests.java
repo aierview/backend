@@ -1,7 +1,7 @@
 package com.aierview.backend.auth.usecase.impl.cookie;
 
 import com.aierview.backend.auth.domain.enums.Environment;
-import com.aierview.backend.auth.domain.model.CookieResponse;
+import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import com.aierview.backend.auth.usecase.contract.cookie.IGenerateCookieResponse;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.junit.jupiter.api.Assertions;

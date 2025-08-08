@@ -1,6 +1,6 @@
 package com.aierview.backend.shared.utils;
 
-import com.aierview.backend.auth.domain.model.CookieResponse;
+import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import org.springframework.http.ResponseCookie;
 
 import java.util.Arrays;

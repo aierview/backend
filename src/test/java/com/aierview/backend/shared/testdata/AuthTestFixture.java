@@ -4,10 +4,10 @@ import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
-import com.aierview.backend.auth.domain.model.CookieResponse;
-import com.aierview.backend.auth.domain.model.GoogleAccountModel;
-import com.aierview.backend.auth.domain.model.LocalSigninRequest;
-import com.aierview.backend.auth.domain.model.LocalSignupRequest;
+import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
+import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
+import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
+import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 

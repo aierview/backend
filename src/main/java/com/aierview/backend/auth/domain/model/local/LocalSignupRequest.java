@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.domain.model;
+package com.aierview.backend.auth.domain.model.local;
 
 import com.aierview.backend.auth.domain.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
