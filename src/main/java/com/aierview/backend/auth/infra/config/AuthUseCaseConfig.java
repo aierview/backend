@@ -8,10 +8,12 @@ import com.aierview.backend.auth.domain.contact.security.IPasswordEncoder;
 import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
 import com.aierview.backend.auth.domain.enums.Environment;
 import com.aierview.backend.auth.usecase.contract.cookie.IGenerateCookieResponse;
+import com.aierview.backend.auth.usecase.contract.google.IGoogleSignin;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
 import com.aierview.backend.auth.usecase.impl.cookie.GenerateCookieResponse;
+import com.aierview.backend.auth.usecase.impl.google.GoogleSignin;
 import com.aierview.backend.auth.usecase.impl.google.GoogleSignup;
 import com.aierview.backend.auth.usecase.impl.local.LocalSignin;
 import com.aierview.backend.auth.usecase.impl.local.LocalSignup;
@@ -53,5 +55,10 @@ public class AuthUseCaseConfig {
     @Bean
     public IGoogleSignup googleSignup() {
         return new GoogleSignup(extractUserDetails, userRepository, authRepository);
+    }
+
+    @Bean
+    public IGoogleSignin googleSignin() {
+        return new GoogleSignin(extractUserDetails, userRepository, tokenGenerator, generateCookieResponse());
     }
 }

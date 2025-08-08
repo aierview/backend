@@ -1,8 +1,8 @@
 package com.aierview.backend.auth.infra.controller;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
-import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 import com.aierview.backend.shared.BaseIntegrationTests;
@@ -29,6 +29,8 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
     private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
     private final String GOOGLE_SIGNUP_API_URL = "/api/v1/auth/google/signup";
+    private final String GOOGLE_SIGNIN_API_URL = "/api/v1/auth/google/signin";
+
 
     @Test
     @Transactional
@@ -285,7 +287,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         entityManager.persist(entity);
         entityManager.flush();
 
-        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_valid_token");
+        GoogleAuhRequest requestBody = new GoogleAuhRequest("any_valid_token");
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
@@ -300,9 +302,9 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("Should return 400 when email empty or null on google signup")
-    void shouldReturn409WhenEmailIsEmptyOrNullTakenOnGoogleSignup(String idToken) throws Exception {
-        GoogleSignupRequest requestBody = new GoogleSignupRequest(idToken);
+    @DisplayName("Should return 400 when id token empty or null on google signup")
+    void shouldReturn409WhenIdTokenIsEmptyOrNullTakenOnGoogleSignup(String idToken) throws Exception {
+        GoogleAuhRequest requestBody = new GoogleAuhRequest(idToken);
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
@@ -315,9 +317,9 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
     }
 
     @Test
-    @DisplayName("Should return 400 when email id token is invalid on google signup")
+    @DisplayName("Should return 400 when  id token is invalid on google signup")
     void shouldReturn409WhenIdTokenIsInvalidOnGoogleSignup() throws Exception {
-        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_invalid_token");
+        GoogleAuhRequest requestBody = new GoogleAuhRequest("any_invalid_token");
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
@@ -333,7 +335,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
     @Transactional
     @DisplayName("Should return 201 when signup succeeds on google signup")
     void shouldReturn409WhenSignupSucceedsOnGoogleSignup() throws Exception {
-        GoogleSignupRequest requestBody = new GoogleSignupRequest("any_valid_token");
+        GoogleAuhRequest requestBody = new GoogleAuhRequest("any_valid_token");
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
@@ -343,5 +345,82 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("data",
                         Matchers.is("Created")));
+    }
+
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 401 when user does not exist on google signin")
+    void shouldReturn401WhenUserDoesNotExistOnGoogleSignin() throws Exception {
+        var requestBody = AuthTestFixture.anyGoogleAuthRequest();
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Email or password is incorrect!")));
+    }
+
+    @Test
+    @DisplayName("Should return 400 when email id token is invalid on google signin")
+    void shouldReturn409WhenIdTokenIsInvalidOnGoogleSignIn() throws Exception {
+        GoogleAuhRequest requestBody = new GoogleAuhRequest("any_invalid_token");
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Invalid Google account, please provide a valid Google account.")));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should return 400 when id token empty or null on google signin")
+    void shouldReturn409WhenEmailIsIdTokenNullTakenOnGoogleSignup(String idToken) throws Exception {
+        GoogleAuhRequest requestBody = new GoogleAuhRequest(idToken);
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+        mvc
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("data",
+                        Matchers.is("Id token is required!")));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Should return 200 and set cookies if succeeds on google signin")
+    void shouldReturn200WhenAndSetCookiesIfSucceedsOnGoogleSignin() throws Exception {
+        UserJpaEntity userJpaEntity = AuthTestFixture.anyUserJpaEntity();
+        entityManager.persist(userJpaEntity);
+        entityManager.flush();
+
+        AuthJpaEntity authJpaEntity = AuthTestFixture.anyAuthJpaEntity(userJpaEntity, null);
+        entityManager.persist(authJpaEntity);
+        entityManager.flush();
+
+        var requestBody = AuthTestFixture.anyGoogleAuthRequest();
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+
+        MockHttpServletRequestBuilder request = HttpServletTestFixture
+                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+
+        mvc
+                .perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data",
+                        Matchers.is("OK")))
+                .andExpect(cookie().exists("token"))
+                .andExpect(cookie().value("token", Matchers.notNullValue()))
+                .andExpect(header().string(HttpHeaders.SET_COOKIE, Matchers.containsString("token=")));
+
     }
 }

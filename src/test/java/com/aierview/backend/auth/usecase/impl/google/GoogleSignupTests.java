@@ -8,7 +8,7 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.exceptions.InvalidGoogleIdTokenException;
 import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
-import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.assertj.core.api.Assertions;
@@ -40,7 +40,7 @@ public class GoogleSignupTests {
     @Test
     @DisplayName("Should throw InvalidGoogleIdTokenException when Google account is invalid")
     void shouldThrowInvalidGoogleIdTokenExceptionWhenGoogleAccountIsInvalid() {
-        GoogleSignupRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
 
         when(this.extractUserDetails.extractUserDetails(request)).thenReturn(Optional.empty());
 
@@ -54,7 +54,7 @@ public class GoogleSignupTests {
     @Test
     @DisplayName("Should throw EmailAlreadyInUseException when user already exists on google signup")
     void shouldThrowEmailAlreadyInUseExceptionWhenUserAlreadyExistsOnGoogleSignup() {
-        GoogleSignupRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
         GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
         UserRef savedUser = AuthTestFixture.anySavedUserRef(accountModel);
 
@@ -72,7 +72,7 @@ public class GoogleSignupTests {
     @Test
     @DisplayName("Should save user and account details on signup success")
     void shouldSaveUserAndAccountDetailsOnSignupSuccess() {
-        GoogleSignupRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
         GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
 
         UserRef toSaveUser = AuthTestFixture.anyUserRef(accountModel);

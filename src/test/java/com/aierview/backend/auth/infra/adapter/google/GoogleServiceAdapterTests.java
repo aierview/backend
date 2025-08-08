@@ -2,7 +2,7 @@ package com.aierview.backend.auth.infra.adapter.google;
 
 import com.aierview.backend.auth.domain.contact.google.IExtractUserDetails;
 import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
-import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +42,7 @@ public class GoogleServiceAdapterTests {
     @Test
     @DisplayName("Should return optional of empty when request returns null body")
     void shouldReturnOptionalOfEmptyWhenRequestReturnsNullBody() {
-        GoogleSignupRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
         URI uri = UriComponentsBuilder.fromHttpUrl(this.tokenInfoUrl).queryParam("id_token", request.idToken()).build().toUri();
         when(this.restTemplate.getForEntity(uri, GoogleAccountModel.class))
                 .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
@@ -56,7 +56,7 @@ public class GoogleServiceAdapterTests {
     @Test
     @DisplayName("Should return optional of google account model when request succeeds")
     void shouldReturnOptionalOfGoogleAccountModelWhenRequestSucceeds() {
-        GoogleSignupRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
         GoogleAccountModel googleAccountModel = AuthTestFixture.anyGoogleAccountModel();
 
         URI uri = UriComponentsBuilder.fromHttpUrl(this.tokenInfoUrl).queryParam("id_token", request.idToken()).build().toUri();

@@ -6,9 +6,9 @@ import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.enums.UserRole;
 import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
+import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
-import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
 import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 
@@ -171,7 +171,7 @@ public class AuthTestFixture {
     public static UserJpaEntity anyUserJpaEntity() {
         return UserJpaEntity.builder()
                 .name("john Snow Smith")
-                .email("admin@example.com")
+                .email("example@example.com")
                 .role(UserRole.FULLSTACK)
                 .build();
     }
@@ -246,7 +246,7 @@ public class AuthTestFixture {
                 .build();
     }
 
-    public static GoogleSignupRequest anyGoogleSignupRequest() {
-        return new GoogleSignupRequest("any_id_token");
+    public static GoogleAuhRequest anyGoogleAuthRequest() {
+        return new GoogleAuhRequest("any_valid_token");
     }
 }
