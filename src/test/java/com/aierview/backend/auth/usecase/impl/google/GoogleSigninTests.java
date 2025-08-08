@@ -3,14 +3,12 @@ package com.aierview.backend.auth.usecase.impl.google;
 import com.aierview.backend.auth.domain.contact.google.IExtractUserDetails;
 import com.aierview.backend.auth.domain.contact.repository.IUserRepository;
 import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
-import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
 import com.aierview.backend.auth.domain.exceptions.InvalidGoogleIdTokenException;
 import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
 import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
-import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.usecase.contract.cookie.IGenerateCookieResponse;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignin;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
@@ -46,7 +44,7 @@ public class GoogleSigninTests {
     @Test
     @DisplayName("Should throw InvalidGoogleIdTokenException when Google account is invalid")
     void shouldThrowInvalidGoogleIdTokenExceptionWhenGoogleAccountIsInvalid() {
-        GoogleAuhRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
 
         when(this.extractUserDetails.extractUserDetails(request)).thenReturn(Optional.empty());
 
@@ -60,7 +58,7 @@ public class GoogleSigninTests {
     @Test
     @DisplayName("Should throw InvalidCredentialException when user does not exists on find by email ")
     void shouldThrowInvalidCredentialExceptionWhenUserDoesNotExistsOnFindByEmail() {
-        GoogleAuhRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
         GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
 
         when(this.extractUserDetails.extractUserDetails(request)).thenReturn(Optional.of(accountModel));
@@ -76,7 +74,7 @@ public class GoogleSigninTests {
     @Test
     @DisplayName("Should return a CookieResponse with prod config when authentication succeeds and if the environment is prod")
     void shouldReturnACookieResponseWithProdConfigWhenAuthenticationSucceedsAndIfTheEnvironmentIsProd() {
-        GoogleAuhRequest request = AuthTestFixture.anyGoogleSignupRequest();
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
         GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
 

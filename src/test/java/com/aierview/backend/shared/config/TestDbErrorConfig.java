@@ -1,5 +1,6 @@
 package com.aierview.backend.shared.config;
 
+import com.aierview.backend.auth.usecase.contract.google.IGoogleSignin;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
@@ -26,6 +27,13 @@ public class TestDbErrorConfig {
 
     @Bean
     public IGoogleSignup testDatabaseErrorGoogleSignup() {
+        return request -> {
+            throw new RuntimeException("Simulated DB error");
+        };
+    }
+
+    @Bean
+    public IGoogleSignin testDatabaseErrorGoogleSignin() {
         return request -> {
             throw new RuntimeException("Simulated DB error");
         };

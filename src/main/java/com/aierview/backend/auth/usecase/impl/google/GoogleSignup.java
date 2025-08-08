@@ -9,7 +9,7 @@ import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.exceptions.InvalidGoogleIdTokenException;
 import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
-import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class GoogleSignup implements IGoogleSignup {
     }
 
     @Override
-    public void execute(GoogleSignupRequest request) {
+    public void execute(GoogleAuhRequest request) {
         GoogleAccountModel googleAccountModel = this.extractUserDetails.extractUserDetails(request)
                 .orElseThrow(InvalidGoogleIdTokenException::new);
 

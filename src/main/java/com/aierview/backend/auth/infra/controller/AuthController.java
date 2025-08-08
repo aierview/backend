@@ -1,10 +1,11 @@
 package com.aierview.backend.auth.infra.controller;
 
 import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
+import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.domain.model.http.Response;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
-import com.aierview.backend.auth.domain.model.google.GoogleSignupRequest;
+import com.aierview.backend.auth.usecase.contract.google.IGoogleSignin;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
 import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
@@ -32,6 +33,7 @@ public class AuthController {
     private final ILocalSignup localSignupUseCase;
     private final ILocalSignin localSigninUseCase;
     private final IGoogleSignup googleSignupUseCase;
+    private final IGoogleSignin googleSigninUseCase;
 
     @PostMapping("/local/signup")
     @Operation(summary = "Local signup")
@@ -71,9 +73,25 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "CONFLICT"),
             @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
     })
-    public ResponseEntity<Response> googleSignup(@Valid @RequestBody GoogleSignupRequest request) {
+    public ResponseEntity<Response> googleSignup(@Valid @RequestBody GoogleAuhRequest request) {
         this.googleSignupUseCase.execute(request);
         Response response = Response.builder().data("Created").statusCode(HttpStatus.CREATED.value()).build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/google/signin")
+    @Operation(summary = "Google signin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
+    })
+    public ResponseEntity<Response> googleSignin(@Valid @RequestBody GoogleAuhRequest request, HttpServletResponse httPResponse) {
+        CookieResponse cookieResponse = this.googleSigninUseCase.execute(request);
+        String cookie = FuncUtils.cookieFromCookieResponse(cookieResponse);
+        Response response = Response.builder().data("OK").statusCode(HttpStatus.OK.value()).build();
+        httPResponse.addHeader(HttpHeaders.SET_COOKIE, cookie);
+        return ResponseEntity.ok().body(response);
     }
 }
