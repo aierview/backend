@@ -1,8 +1,8 @@
-package com.aierview.backend.auth.usecase.impl;
+package com.aierview.backend.auth.usecase.impl.cookie;
 
 import com.aierview.backend.auth.domain.enums.Environment;
 import com.aierview.backend.auth.domain.model.CookieResponse;
-import com.aierview.backend.auth.usecase.contract.IGenerateCookieResponse;
+import com.aierview.backend.auth.usecase.contract.cookie.IGenerateCookieResponse;
 
 public class GenerateCookieResponse implements IGenerateCookieResponse {
     private final Environment environment;

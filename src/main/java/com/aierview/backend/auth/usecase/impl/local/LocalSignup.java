@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.usecase.impl;
+package com.aierview.backend.auth.usecase.impl.local;
 
 import com.aierview.backend.auth.domain.contact.repository.IAuthRepository;
 import com.aierview.backend.auth.domain.contact.repository.IUserRepository;
@@ -8,7 +8,7 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.model.LocalSignupRequest;
-import com.aierview.backend.auth.usecase.contract.ILocalSignup;
+import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
 import com.aierview.backend.shared.utils.FuncUtils;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.usecase.impl;
+package com.aierview.backend.auth.usecase.impl.local;
 
 import com.aierview.backend.auth.domain.contact.repository.IAuthRepository;
 import com.aierview.backend.auth.domain.contact.repository.IUserRepository;
@@ -9,8 +9,8 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
 import com.aierview.backend.auth.domain.model.CookieResponse;
 import com.aierview.backend.auth.domain.model.LocalSigninRequest;
-import com.aierview.backend.auth.usecase.contract.IGenerateCookieResponse;
-import com.aierview.backend.auth.usecase.contract.ILocalSignin;
+import com.aierview.backend.auth.usecase.contract.cookie.IGenerateCookieResponse;
+import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

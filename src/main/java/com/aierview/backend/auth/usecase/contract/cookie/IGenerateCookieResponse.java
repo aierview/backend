@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.usecase.contract;
+package com.aierview.backend.auth.usecase.contract.cookie;
 
 import com.aierview.backend.auth.domain.model.CookieResponse;
 

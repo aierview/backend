@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.usecase.impl;
+package com.aierview.backend.auth.usecase.impl.google;
 
 import com.aierview.backend.auth.domain.contact.google.IExtractUserDetails;
 import com.aierview.backend.auth.domain.contact.repository.IAuthRepository;
@@ -8,7 +8,7 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.EmailAlreadyInUseException;
 import com.aierview.backend.auth.domain.exceptions.InvalidGoogleIdTokenException;
 import com.aierview.backend.auth.domain.model.GoogleAccountModel;
-import com.aierview.backend.auth.usecase.contract.IGoogleSignup;
+import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

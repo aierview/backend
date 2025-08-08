@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.usecase.contract;
+package com.aierview.backend.auth.usecase.contract.lcoal;
 
 import com.aierview.backend.auth.domain.model.LocalSignupRequest;
 
