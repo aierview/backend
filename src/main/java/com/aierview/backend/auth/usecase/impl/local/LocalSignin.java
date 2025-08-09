@@ -6,6 +6,7 @@ import com.aierview.backend.auth.domain.contact.security.IPasswordComparer;
 import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
 import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
@@ -32,7 +33,8 @@ public class LocalSignin implements ILocalSignin {
         UserRef user = this.userRepository.findByEmail(request.getEmail())
                 .orElseThrow(InvalidCredentialException::new);
         Auth auth = this.authRepository.findByUserId(user.getId()).get();
-        if (!passwordComparer.matches(request.getPassword(), auth.getPassword()))
+        if (!passwordComparer.matches(request.getPassword(), auth.getPassword())
+                || !auth.getProvider().equals(AuthProvider.LOCAL))
             throw new InvalidCredentialException();
         String token = this.tokenGenerator.generate(user);
         return this.generateCookieResponse.generate("token", token);
