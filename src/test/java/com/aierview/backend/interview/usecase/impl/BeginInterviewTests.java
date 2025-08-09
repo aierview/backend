@@ -41,7 +41,7 @@ public class BeginInterviewTests {
         this.questionRepository = mock(IQuestionRepository.class);
         this.interviewEventPublisher = mock(IInterviewEventPublisher.class);
         this.beginInterview = new BeginInterview(getLoggedUser, interviewRepository,
-                generateQuestions, questionRepository,interviewEventPublisher);
+                generateQuestions, questionRepository, interviewEventPublisher);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class BeginInterviewTests {
         BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
 
-        Interview interviewWithNoQuestion =  InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview interviewWithNoQuestion = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterviewWithNoQuestion = InterviewTestFixture.anySavedInterviewWithNoQuestions(interviewWithNoQuestion);
 
         when(this.getLoggedUser.execute()).thenReturn(savedUser);
@@ -80,7 +80,8 @@ public class BeginInterviewTests {
                             .status(interview.getStatus())
                             .createdAt(interview.getCreatedAt())
                             .build();
-                });        when(this.generateQuestions.execute(request,savedInterviewWithNoQuestion.getId())).thenThrow(new UnavailableIAServiceException());
+                });
+        when(this.generateQuestions.execute(request, savedInterviewWithNoQuestion.getId())).thenThrow(new UnavailableIAServiceException());
 
         Throwable exception = Assertions.catchThrowable(() -> this.beginInterview.execute(request));
 
@@ -97,7 +98,7 @@ public class BeginInterviewTests {
         BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
 
-        Interview interviewWithNoQuestion =  InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview interviewWithNoQuestion = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterviewWithNoQuestion = InterviewTestFixture.anySavedInterviewWithNoQuestions(interviewWithNoQuestion);
 
         List<Question> questions = InterviewTestFixture.anyQuestionList(savedInterviewWithNoQuestion);
@@ -120,14 +121,14 @@ public class BeginInterviewTests {
                             .build();
                 });
 
-        when(this.generateQuestions.execute(request,savedInterviewWithNoQuestion.getId())).thenReturn(questions);
+        when(this.generateQuestions.execute(request, savedInterviewWithNoQuestion.getId())).thenReturn(questions);
         when(this.questionRepository.saveAll(questions)).thenReturn(savedQuestions);
         when(this.interviewRepository.update(savedInterviewWithQuestion)).thenReturn(savedInterviewWithQuestion);
         doNothing().when(this.interviewEventPublisher).publishFirstQuestion(savedQuestions.getFirst());
 
-         this.beginInterview.execute(request);
+        this.beginInterview.execute(request);
 
-         verify(this.getLoggedUser, times(1)).execute();
+        verify(this.getLoggedUser, times(1)).execute();
         verify(this.interviewRepository).save(any(Interview.class));
         verify(this.generateQuestions, times(1)).execute(request, savedInterviewWithNoQuestion.getId());
         verify(this.questionRepository, times(1)).saveAll(questions);
