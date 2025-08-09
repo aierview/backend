@@ -1,6 +1,7 @@
 package com.aierview.backend.auth.infra.controller;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
@@ -365,7 +366,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
     }
 
     @Test
-    @DisplayName("Should return 400 when email id token is invalid on google signin")
+    @DisplayName("Should return 400 when  id token is invalid on google signin")
     void shouldReturn409WhenIdTokenIsInvalidOnGoogleSignIn() throws Exception {
         GoogleAuhRequest requestBody = new GoogleAuhRequest("any_invalid_token");
         String json = new ObjectMapper().writeValueAsString(requestBody);
@@ -404,6 +405,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         entityManager.flush();
 
         AuthJpaEntity authJpaEntity = AuthTestFixture.anyAuthJpaEntity(userJpaEntity, null);
+        authJpaEntity.setProvider(AuthProvider.GOOGLE);
         entityManager.persist(authJpaEntity);
         entityManager.flush();
 
