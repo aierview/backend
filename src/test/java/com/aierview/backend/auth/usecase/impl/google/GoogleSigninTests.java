@@ -130,4 +130,72 @@ public class GoogleSigninTests {
         verify(this.generateCookieResponse, times(1)).generate(cookieResponse.name(), cookieResponse.value());
         verify(authRepository, times(1)).findByUserId(savedAuth.getId());
     }
+
+    @Test
+    @DisplayName("Should return a CookieResponse with =homolog config when authentication succeeds and if the environment is prod")
+    void shouldReturnACookieResponseWithHomologConfigWhenAuthenticationSucceedsAndIfTheEnvironmentIsProd() {
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
+        GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Auth savedAuth = AuthTestFixture.anySavedAuth(savedUser);
+        savedAuth.setProvider(AuthProvider.GOOGLE);
+
+        String token = UUID.randomUUID().toString();
+        CookieResponse cookieResponse = AuthTestFixture.anyHomologCookieResponse(token);
+
+        when(this.extractUserDetails.extractUserDetails(request)).thenReturn(Optional.of(accountModel));
+        when(this.userRepository.findByEmail(accountModel.email())).thenReturn(Optional.of(savedUser));
+        when(this.authRepository.findByUserId(savedAuth.getId())).thenReturn(Optional.of(savedAuth));
+        when(this.tokenGenerator.generate(savedUser)).thenReturn(token);
+        when(this.generateCookieResponse.generate(cookieResponse.name(), cookieResponse.value())).thenReturn(cookieResponse);
+
+
+        CookieResponse response = this.googleSignin.execute(request);
+
+        assertThat(response.name()).isEqualTo(cookieResponse.name());
+        assertThat(response.value()).isEqualTo(cookieResponse.value());
+        assertThat(response.httpOnly()).isEqualTo(cookieResponse.httpOnly());
+        assertThat(response.secure()).isEqualTo(cookieResponse.secure());
+        assertThat(response.sameSite()).isEqualTo(cookieResponse.sameSite());
+        assertThat(response.path()).isEqualTo(cookieResponse.path());
+
+        verify(this.userRepository, times(1)).findByEmail(accountModel.email());
+        verify(this.tokenGenerator, times(1)).generate(savedUser);
+        verify(this.generateCookieResponse, times(1)).generate(cookieResponse.name(), cookieResponse.value());
+        verify(authRepository, times(1)).findByUserId(savedAuth.getId());
+    }
+
+    @Test
+    @DisplayName("Should return a CookieResponse with dev config when authentication succeeds and if the environment is prod")
+    void shouldReturnACookieResponseWithDevConfigWhenAuthenticationSucceedsAndIfTheEnvironmentIsProd() {
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
+        GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Auth savedAuth = AuthTestFixture.anySavedAuth(savedUser);
+        savedAuth.setProvider(AuthProvider.GOOGLE);
+
+        String token = UUID.randomUUID().toString();
+        CookieResponse cookieResponse = AuthTestFixture.anyDevCookieResponse(token);
+
+        when(this.extractUserDetails.extractUserDetails(request)).thenReturn(Optional.of(accountModel));
+        when(this.userRepository.findByEmail(accountModel.email())).thenReturn(Optional.of(savedUser));
+        when(this.authRepository.findByUserId(savedAuth.getId())).thenReturn(Optional.of(savedAuth));
+        when(this.tokenGenerator.generate(savedUser)).thenReturn(token);
+        when(this.generateCookieResponse.generate(cookieResponse.name(), cookieResponse.value())).thenReturn(cookieResponse);
+
+
+        CookieResponse response = this.googleSignin.execute(request);
+
+        assertThat(response.name()).isEqualTo(cookieResponse.name());
+        assertThat(response.value()).isEqualTo(cookieResponse.value());
+        assertThat(response.httpOnly()).isEqualTo(cookieResponse.httpOnly());
+        assertThat(response.secure()).isEqualTo(cookieResponse.secure());
+        assertThat(response.sameSite()).isEqualTo(cookieResponse.sameSite());
+        assertThat(response.path()).isEqualTo(cookieResponse.path());
+
+        verify(this.userRepository, times(1)).findByEmail(accountModel.email());
+        verify(this.tokenGenerator, times(1)).generate(savedUser);
+        verify(this.generateCookieResponse, times(1)).generate(cookieResponse.name(), cookieResponse.value());
+        verify(authRepository, times(1)).findByUserId(savedAuth.getId());
+    }
 }
