@@ -23,7 +23,7 @@ public class KafkaInterviewEventPublisherTests {
     @BeforeEach
     void setUp() {
         this.kafkaTemplate =  Mockito.mock(KafkaTemplate.class);
-        this.interviewEventPublisher = interviewEventPublisher =  new KafkaInterviewEventPublisher(kafkaTemplate);
+        this.interviewEventPublisher  =  new KafkaInterviewEventPublisher(kafkaTemplate);
     }
 
     @Test
