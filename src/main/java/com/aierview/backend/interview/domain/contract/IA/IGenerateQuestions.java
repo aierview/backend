@@ -1,4 +1,4 @@
-package com.aierview.backend.interview.usecase.contract;
+package com.aierview.backend.interview.domain.contract.IA;
 
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;

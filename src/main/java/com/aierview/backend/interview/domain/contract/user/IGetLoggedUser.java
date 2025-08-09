@@ -1,4 +1,4 @@
-package com.aierview.backend.interview.usecase.contract;
+package com.aierview.backend.interview.domain.contract.user;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
 
