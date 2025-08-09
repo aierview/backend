@@ -11,7 +11,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -22,8 +21,8 @@ public class GeminiServiceAdapterTests {
 
     @BeforeEach
     void setUp() {
-        this.geminiFunctUtils =  Mockito.mock(GeminiFunctUtils.class);
-        this.generateQuestions =  new GeminiServiceAdapter(geminiFunctUtils);
+        this.geminiFunctUtils = Mockito.mock(GeminiFunctUtils.class);
+        this.generateQuestions = new GeminiServiceAdapter(geminiFunctUtils);
     }
 
     @Test
@@ -31,7 +30,7 @@ public class GeminiServiceAdapterTests {
     void shouldThrowUnavailableIAServiceExceptionIfGetResponseThrows() {
         BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
         Long interviewId = 1L;
-        String prompt =  InterviewTestFixture.generateQuestionsPrompt(request);
+        String prompt = InterviewTestFixture.generateQuestionsPrompt(request);
 
         Mockito.when(this.geminiFunctUtils.generateQuestionsPrompt(request)).thenReturn(prompt);
         Mockito.when(this.geminiFunctUtils.getResponse(prompt)).thenThrow(new RuntimeException("Any_exception"));
@@ -50,19 +49,19 @@ public class GeminiServiceAdapterTests {
         BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
         Interview interviewRef = Interview.builder().id(1L).build();
 
-        String prompt =  InterviewTestFixture.generateQuestionsPrompt(request);
+        String prompt = InterviewTestFixture.generateQuestionsPrompt(request);
 
         List<String> questionsText = InterviewTestFixture.anyQuestionsStringList();
 
         Mockito.when(this.geminiFunctUtils.generateQuestionsPrompt(request)).thenReturn(prompt);
         Mockito.when(this.geminiFunctUtils.getResponse(prompt)).thenReturn(questionsText);
 
-        List<Question> result =  this.generateQuestions.execute(request,interviewRef.getId());
+        List<Question> result = this.generateQuestions.execute(request, interviewRef.getId());
 
         Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.size()).isEqualTo(questionsText.size()-1);
+        Assertions.assertThat(result.size()).isEqualTo(questionsText.size() - 1);
         Assertions.assertThat(result.getFirst().getQuestion()).isEqualTo(questionsText.getFirst());
-        Assertions.assertThat(result.getLast().getQuestion()).isEqualTo(questionsText.get(questionsText.size()-2));
+        Assertions.assertThat(result.getLast().getQuestion()).isEqualTo(questionsText.get(questionsText.size() - 2));
         Mockito.verify(this.geminiFunctUtils, Mockito.times(1)).generateQuestionsPrompt(request);
         Mockito.verify(geminiFunctUtils, Mockito.times(1)).getResponse(prompt);
 

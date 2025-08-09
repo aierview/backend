@@ -28,7 +28,7 @@ public class GeminiServiceAdapter implements IGenerateQuestions {
                     .map(q -> Question
                             .builder().question(q).interview(interviewRef).build())
                     .collect(Collectors.toList());
-        }catch (Exception e) {
+        } catch (Exception e) {
             //log strategy
             throw new UnavailableIAServiceException();
         }

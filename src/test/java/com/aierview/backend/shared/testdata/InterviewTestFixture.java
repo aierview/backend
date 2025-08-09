@@ -9,7 +9,6 @@ import com.aierview.backend.interview.domain.enums.InterviewRole;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
-import com.aierview.backend.shared.utils.GeminiFunctUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -87,7 +86,7 @@ public class InterviewTestFixture {
         return List.of(anyQuestion(anySavedInterview), anyQuestion(anySavedInterview));
     }
 
-    public static List<String> anyQuestionsStringList(){
+    public static List<String> anyQuestionsStringList() {
         return List.of("any_question", "any_question_2", "");
     }
 
