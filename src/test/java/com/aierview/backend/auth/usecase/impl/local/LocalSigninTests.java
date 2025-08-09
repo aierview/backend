@@ -6,6 +6,7 @@ import com.aierview.backend.auth.domain.contact.security.IPasswordComparer;
 import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
 import com.aierview.backend.auth.domain.model.cookie.CookieResponse;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
@@ -75,6 +76,29 @@ public class LocalSigninTests {
         verify(this.userRepository, times(1)).findByEmail(request.getEmail());
         verify(this.authRepository, times(1)).findByUserId(savedUser.getId());
         verify(this.passwordComparer, times(1)).matches(request.getPassword(), savedAuth.getPassword());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidCredentialsException when auth provider is not local")
+    void shouldThrowInvalidCredentialsExceptionWhenAuthProviderIsNotLocal() {
+        LocalSigninRequest request = AuthTestFixture.anyLocalSigninRequest();
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Auth savedAuth = AuthTestFixture.anySavedAuth(savedUser);
+        savedAuth.setProvider(AuthProvider.GOOGLE);
+
+        when(this.userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(savedUser));
+        when(this.authRepository.findByUserId(savedUser.getId())).thenReturn(Optional.of(savedAuth));
+        when(this.passwordComparer.matches(request.getPassword(), savedAuth.getPassword())).thenReturn(true);
+        when(authRepository.findByUserId(savedUser.getId())).thenReturn(Optional.of(savedAuth));
+
+        Throwable exception = catchThrowable(() -> this.localSignin.execute(request));
+
+        assertThat(exception).isInstanceOf(InvalidCredentialException.class);
+        assertThat(exception.getMessage()).isEqualTo("Email or password is incorrect!");
+        verify(this.userRepository, times(1)).findByEmail(request.getEmail());
+        verify(this.authRepository, times(1)).findByUserId(savedUser.getId());
+        verify(this.passwordComparer, times(1)).matches(request.getPassword(), savedAuth.getPassword());
+        verify(this.authRepository, times(1)).findByUserId(savedUser.getId());
     }
 
     @Test
