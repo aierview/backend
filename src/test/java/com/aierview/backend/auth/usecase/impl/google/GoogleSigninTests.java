@@ -1,8 +1,10 @@
 package com.aierview.backend.auth.usecase.impl.google;
 
 import com.aierview.backend.auth.domain.contact.google.IExtractUserDetails;
+import com.aierview.backend.auth.domain.contact.repository.IAuthRepository;
 import com.aierview.backend.auth.domain.contact.repository.IUserRepository;
 import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
+import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.exceptions.InvalidCredentialException;
 import com.aierview.backend.auth.domain.exceptions.InvalidGoogleIdTokenException;
@@ -31,6 +33,7 @@ public class GoogleSigninTests {
     private  IUserRepository userRepository;
     private  ITokenGenerator tokenGenerator;
     private  IGenerateCookieResponse generateCookieResponse;
+    private IAuthRepository authRepository;
 
     @BeforeEach
     void setUp() {
@@ -38,7 +41,9 @@ public class GoogleSigninTests {
         this.userRepository = Mockito.mock(IUserRepository.class);
         this.tokenGenerator = Mockito.mock(ITokenGenerator.class);
         this.generateCookieResponse = Mockito.mock(IGenerateCookieResponse.class);
-        this.googleSignin =  new GoogleSignin(extractUserDetails, userRepository, tokenGenerator, generateCookieResponse);
+        this.authRepository = Mockito.mock(IAuthRepository.class);
+        this.googleSignin =  new GoogleSignin(extractUserDetails, userRepository,
+                tokenGenerator, generateCookieResponse,authRepository);
     }
 
     @Test
@@ -69,6 +74,26 @@ public class GoogleSigninTests {
         assertThat(exception).isInstanceOf(InvalidCredentialException.class);
         assertThat(exception.getMessage()).isEqualTo("Email or password is incorrect!");
         verify(this.userRepository, times(1)).findByEmail(accountModel.email());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidCredentialException when auth provider is not google")
+    void shouldThrowInvalidCredentialExceptionWhenAuthProviderIsNotGoogle() {
+        GoogleAuhRequest request = AuthTestFixture.anyGoogleAuthRequest();
+        GoogleAccountModel accountModel = AuthTestFixture.anyGoogleAccountModel();
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Auth savedAuth = AuthTestFixture.anySavedAuth(savedUser);
+
+        when(this.extractUserDetails.extractUserDetails(request)).thenReturn(Optional.of(accountModel));
+        when(this.userRepository.findByEmail(accountModel.email())).thenReturn(Optional.of(savedUser));
+        when(this.authRepository.findByUserId(savedAuth.getId())).thenReturn(Optional.of(savedAuth));
+
+        Throwable exception = catchThrowable(() -> this.googleSignin.execute(request));
+
+        assertThat(exception).isInstanceOf(InvalidCredentialException.class);
+        assertThat(exception.getMessage()).isEqualTo("Email or password is incorrect!");
+        verify(this.userRepository, times(1)).findByEmail(accountModel.email());
+        verify(this.authRepository, times(1)).findByUserId(savedAuth.getId());
     }
 
     @Test
