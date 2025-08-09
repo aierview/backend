@@ -166,11 +166,11 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>com/aierview/backend/auth/infra/mapper/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/model/**/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/mapper/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/model/**/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/entity/*.class</exclude>
                                 <exclude>com/aierview/backend/BackendApplication.class</exclude>
-                                <exclude>com/aierview/backend/auth/infra/persisntence/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/persisntence/entity/*.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -183,11 +183,11 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>com/aierview/backend/auth/infra/mapper/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/model/**/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/mapper/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/model/**/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/entity/*.class</exclude>
                                 <exclude>com/aierview/backend/BackendApplication.class</exclude>
-                                <exclude>com/aierview/backend/auth/infra/persisntence/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/persisntence/entity/*.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -214,11 +214,11 @@
                                         </limit>
                                     </limits>
                                     <excludes>
-                                        <exclude>com/aierview/backend/auth/infra/mapper/*.class</exclude>
-                                        <exclude>com/aierview/backend/auth/domain/model/**/*.class</exclude>
-                                        <exclude>com/aierview/backend/auth/domain/entity/*.class</exclude>
+                                        <exclude>com/aierview/backend/**/infra/mapper/*.class</exclude>
+                                        <exclude>com/aierview/backend/**/domain/model/**/*.class</exclude>
+                                        <exclude>com/aierview/backend/**/domain/entity/*.class</exclude>
                                         <exclude>com/aierview/backend/BackendApplication.class</exclude>
-                                        <exclude>com/aierview/backend/auth/infra/persisntence/entity/*.class</exclude>
+                                        <exclude>com/aierview/backend/**/infra/persisntence/entity/*.class</exclude>
                                     </excludes>
                                 </rule>
                             </rules>
