@@ -16,23 +16,23 @@ import java.util.List;
 
 public class QuestionRepositoryAdapterTests {
     private IQuestionRepository questionRepository;
-    private  QuestionMapper questionMapper;
+    private QuestionMapper questionMapper;
     private QuestionJpaRepository questionJpaRepository;
 
     @BeforeEach
     void setUp() {
         this.questionMapper = Mockito.mock(QuestionMapper.class);
-        this.questionJpaRepository =  Mockito.mock(QuestionJpaRepository.class);
-        this.questionRepository = new QuestionRepositoryAdapter(questionMapper,questionJpaRepository);
+        this.questionJpaRepository = Mockito.mock(QuestionJpaRepository.class);
+        this.questionRepository = new QuestionRepositoryAdapter(questionMapper, questionJpaRepository);
     }
 
     @Test
     @DisplayName("Should save question list an return")
     void shouldSaveQuestionListAnReturn() {
-        List<Question> toSaveQuestionList  = InterviewTestFixture.anyQuestionList();
-        List<QuestionJpaEntity> toSaveQuestionJpaList =  InterviewTestFixture.anyQuestionJpaList(toSaveQuestionList);
+        List<Question> toSaveQuestionList = InterviewTestFixture.anyQuestionList();
+        List<QuestionJpaEntity> toSaveQuestionJpaList = InterviewTestFixture.anyQuestionJpaList(toSaveQuestionList);
 
-        List<QuestionJpaEntity> savedQuestionJpaList =  InterviewTestFixture.anySavedQuestionJpaList(toSaveQuestionList);
+        List<QuestionJpaEntity> savedQuestionJpaList = InterviewTestFixture.anySavedQuestionJpaList(toSaveQuestionList);
         List<Question> savedQuestionList = InterviewTestFixture.anySavedQuestionList(savedQuestionJpaList);
 
         Mockito.when(this.questionMapper.mapToJpa(toSaveQuestionList)).thenReturn(toSaveQuestionJpaList);
@@ -43,8 +43,8 @@ public class QuestionRepositoryAdapterTests {
 
         Assertions.assertThat(savedQuestions).hasSize(toSaveQuestionJpaList.size());
 
-        Mockito.verify(this.questionMapper,Mockito.times(1)).mapToJpa(toSaveQuestionList);
-        Mockito.verify(this.questionJpaRepository,Mockito.times(1)).saveAll(toSaveQuestionJpaList);
-        Mockito.verify(this.questionMapper,Mockito.times(1)).mapToEntity(savedQuestionJpaList);
+        Mockito.verify(this.questionMapper, Mockito.times(1)).mapToJpa(toSaveQuestionList);
+        Mockito.verify(this.questionJpaRepository, Mockito.times(1)).saveAll(toSaveQuestionJpaList);
+        Mockito.verify(this.questionMapper, Mockito.times(1)).mapToEntity(savedQuestionJpaList);
     }
 }

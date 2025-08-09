@@ -96,7 +96,7 @@ public class InterviewTestFixture {
     }
 
     public static List<QuestionJpaEntity> anyQuestionJpaList(List<Question> questions) {
-       return questions.stream()
+        return questions.stream()
                 .map(q -> QuestionJpaEntity.builder().question(q.getQuestion()).build())
                 .toList();
     }

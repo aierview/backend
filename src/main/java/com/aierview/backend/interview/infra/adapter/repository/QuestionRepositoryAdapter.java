@@ -6,7 +6,6 @@ import com.aierview.backend.interview.infra.mapper.QuestionMapper;
 import com.aierview.backend.interview.infra.persistence.entity.QuestionJpaEntity;
 import com.aierview.backend.interview.infra.persistence.repository.QuestionJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class QuestionRepositoryAdapter implements IQuestionRepository {
 
     @Override
     public List<Question> saveAll(List<Question> questions) {
-        List<QuestionJpaEntity> entities =  this.questionMapper.mapToJpa(questions);
+        List<QuestionJpaEntity> entities = this.questionMapper.mapToJpa(questions);
         entities = this.questionJpaRepository.saveAll(entities);
         return this.questionMapper.mapToEntity(entities);
     }
