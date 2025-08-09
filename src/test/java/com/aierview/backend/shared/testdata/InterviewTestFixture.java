@@ -39,11 +39,25 @@ public class InterviewTestFixture {
         return anyInterviewWithNoQuestions;
     }
 
-    public static Question anyQuestion () {
-        return Question.builder().question("any_question").build();
+    public static Question anyQuestion (Interview anySavedInterview) {
+        return Question.builder().interview(anySavedInterview).question("any_question").build();
     }
 
-    public  static List<Question> anyQuestionList () {
-        return List.of(anyQuestion(), anyQuestion());
+    public static Question anySavedQuestion (Interview anySavedInterview) {
+        return Question.builder().id(1L).interview(anySavedInterview).question("any_question").build();
+    }
+
+    public  static List<Question> anyQuestionList (Interview anySavedInterview) {
+        return List.of(anyQuestion(anySavedInterview), anyQuestion(anySavedInterview));
+    }
+
+    public  static List<Question> anySavedQuestionList (Interview anySavedInterview) {
+        return List.of(anySavedQuestion(anySavedInterview), anySavedQuestion(anySavedInterview));
+    }
+
+    public static Interview anySavedStartedInterviewWithQuestions(Interview anyInterviewWithNoQuestions, List<Question> questions) {
+        anyInterviewWithNoQuestions.setStatus(InterviewStatus.STARTED);
+        anyInterviewWithNoQuestions.setQuestions(questions);
+        return anyInterviewWithNoQuestions;
     }
 }
