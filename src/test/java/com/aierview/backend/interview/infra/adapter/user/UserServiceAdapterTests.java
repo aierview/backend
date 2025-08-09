@@ -3,7 +3,6 @@ package com.aierview.backend.interview.infra.adapter.user;
 import com.aierview.backend.auth.infra.mapper.UserMapper;
 import com.aierview.backend.interview.domain.contract.user.IGetLoggedUser;
 import com.aierview.backend.interview.domain.exceptions.UserNotAuthenticatedException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class UserServiceAdapterTests {
     private IGetLoggedUser getLoggedUser;
@@ -22,7 +21,7 @@ public class UserServiceAdapterTests {
     @BeforeEach
     void setUp() {
         this.userMapper = Mockito.mock(UserMapper.class);
-        this.getLoggedUser =  new UserServiceAdapter(userMapper);
+        this.getLoggedUser = new UserServiceAdapter(userMapper);
     }
 
     @Test
