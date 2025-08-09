@@ -1,4 +1,4 @@
-package com.aierview.backend.interview.infra.adapter;
+package com.aierview.backend.interview.infra.adapter.repository;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.interview.domain.contract.repository.IInterviewRepository;
