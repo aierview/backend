@@ -249,4 +249,15 @@ public class AuthTestFixture {
     public static GoogleAuhRequest anyGoogleAuthRequest() {
         return new GoogleAuhRequest("any_valid_token");
     }
+
+    public static UserRef anySavedUser(UserJpaEntity savedUserJpaEntity) {
+        return  UserRef
+                .builder()
+                .id(savedUserJpaEntity.getId())
+                .name(savedUserJpaEntity.getName())
+                .email(savedUserJpaEntity.getEmail())
+                .role(savedUserJpaEntity.getRole())
+                .build();
+
+    }
 }

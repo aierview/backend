@@ -1,9 +1,11 @@
 package com.aierview.backend.interview.usecase.impl;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.interview.domain.contract.IA.IGenerateQuestions;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewEventPublisher;
 import com.aierview.backend.interview.domain.contract.repository.IInterviewRepository;
 import com.aierview.backend.interview.domain.contract.repository.IQuestionRepository;
+import com.aierview.backend.interview.domain.contract.user.IGetLoggedUser;
 import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
@@ -11,8 +13,6 @@ import com.aierview.backend.interview.domain.exceptions.UnavailableIAServiceExce
 import com.aierview.backend.interview.domain.exceptions.UserNotAuthenticatedException;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import com.aierview.backend.interview.usecase.contract.IBeginInterview;
-import com.aierview.backend.interview.usecase.contract.IGenerateQuestions;
-import com.aierview.backend.interview.usecase.contract.IGetLoggedUser;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.InterviewTestFixture;
 import org.assertj.core.api.Assertions;
@@ -25,7 +25,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class BeginInterviewTests {
+public class BeginInterviewJpaEntityTests {
     private IBeginInterview beginInterview;
     private IGetLoggedUser getLoggedUser;
     private IInterviewRepository interviewRepository;
