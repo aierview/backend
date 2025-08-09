@@ -55,4 +55,35 @@ public class InterviewJpaEntityRepositoryAdapterTests {
         Mockito.verify(interviewJpaRepository, Mockito.times(1)).save(toInterviewJpaEntity);
         Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewJpaEntityToInterview(savedInterviewJpaEntity);
     }
+
+    @Test
+    @DisplayName("Should update interview and return")
+    void shouldUpdateInterviewAndReturnUpdatedInterview() {
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+
+        InterviewJpaEntity toInterviewJpaEntity = InterviewTestFixture.anyInterviewJpaEntityWithNoQuestions(toSaveInterview);
+        InterviewJpaEntity savedInterviewJpaEntity = InterviewTestFixture.anySavedInterviewJpaEntityWithNoQuestions(toInterviewJpaEntity);
+
+        Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(savedInterviewJpaEntity);
+
+        Mockito.when(this.interviewMapper.interviewToInterviewJpaEntity(toSaveInterview)).thenReturn(toInterviewJpaEntity);
+        Mockito.when(this.interviewJpaRepository.save(toInterviewJpaEntity)).thenReturn(savedInterviewJpaEntity);
+        Mockito.when(this.interviewMapper.interviewJpaEntityToInterview(savedInterviewJpaEntity)).thenReturn(savedInterview);
+
+        Interview result = this.interviewRepository.update(toSaveInterview);
+
+        Assertions.assertEquals(result.getId(), savedInterviewJpaEntity.getId());
+        Assertions.assertEquals(result.getStack(), savedInterview.getStack());
+        Assertions.assertEquals(result.getRole(), savedInterview.getRole());
+        Assertions.assertEquals(result.getLevel(), savedInterview.getLevel());
+        Assertions.assertEquals(result.getStatus(), savedInterview.getStatus());
+        Assertions.assertEquals(result.getCreatedAt(), savedInterview.getCreatedAt());
+
+        Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewToInterviewJpaEntity(toSaveInterview);
+        Mockito.verify(interviewJpaRepository, Mockito.times(1)).save(toInterviewJpaEntity);
+        Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewJpaEntityToInterview(savedInterviewJpaEntity);
+
+    }
 }
