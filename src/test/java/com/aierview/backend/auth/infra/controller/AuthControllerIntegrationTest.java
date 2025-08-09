@@ -46,7 +46,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isConflict())
@@ -64,7 +64,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -81,7 +81,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -98,7 +98,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -116,7 +116,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -134,7 +134,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -152,7 +152,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -169,7 +169,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -187,7 +187,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isUnauthorized())
@@ -204,7 +204,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -221,7 +221,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -238,7 +238,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
 
         mvc
                 .perform(request)
@@ -266,7 +266,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
 
         mvc
                 .perform(request)
@@ -292,7 +292,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isConflict())
@@ -309,7 +309,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -324,7 +324,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -340,7 +340,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isCreated())
@@ -357,7 +357,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isUnauthorized())
@@ -372,7 +372,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -388,7 +388,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -413,7 +413,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
 
         mvc
                 .perform(request)

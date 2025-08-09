@@ -5,7 +5,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class HttpServletTestFixture {
-    public static MockHttpServletRequestBuilder anyMockMvcRequestBuilder(String url, String json) {
+    public static MockHttpServletRequestBuilder anyPostMockMvcRequestBuilder(String url, String json) {
         return MockMvcRequestBuilders
                 .post(url)
                 .accept(MediaType.APPLICATION_JSON)
