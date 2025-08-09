@@ -4,10 +4,7 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.interview.domain.enums.InterviewLevel;
 import com.aierview.backend.interview.domain.enums.InterviewRole;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"questions"})
 public class Interview {
     private Long id;
     private String stack;
