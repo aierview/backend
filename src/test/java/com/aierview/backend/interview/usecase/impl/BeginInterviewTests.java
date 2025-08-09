@@ -6,11 +6,15 @@ import com.aierview.backend.interview.domain.exceptions.UserNotAuthenticatedExce
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import com.aierview.backend.interview.usecase.contract.IBeginInterview;
 import com.aierview.backend.interview.usecase.contract.IGetLoggedUser;
+import com.aierview.backend.shared.testdata.InterviewTestFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 public class BeginInterviewTests {
     private IBeginInterview beginInterview;
@@ -18,26 +22,21 @@ public class BeginInterviewTests {
 
     @BeforeEach
     void setUp() {
-        this.getLoggedUser = Mockito.mock(IGetLoggedUser.class);
+        this.getLoggedUser = mock(IGetLoggedUser.class);
         this.beginInterview = new BeginInterview(getLoggedUser);
     }
 
     @Test
     @DisplayName("Should throw UserNotAuthenticatedException if user is not authenticate")
     void shouldThrowUserNotAuthenticatedExceptionIfUserIsNotAuthenticated() {
-        BeginInterviewRequest request = BeginInterviewRequest
-                .builder()
-                .interviewLevel(InterviewLevel.MIDLEVEL)
-                .role(InterviewRole.FULLSTACK)
-                .stack("any stack")
-                .build();
+        BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
 
-        Mockito.when(this.getLoggedUser.execute()).thenThrow(new UserNotAuthenticatedException());
+        when(this.getLoggedUser.execute()).thenThrow(new UserNotAuthenticatedException());
 
         Throwable exception = Assertions.catchThrowable(() -> this.beginInterview.execute(request));
 
-        Assertions.assertThat(exception).isInstanceOf(UserNotAuthenticatedException.class);
-        Assertions.assertThat(exception.getMessage()).isEqualTo("User is not authenticated!");
-        Mockito.verify(this.getLoggedUser, Mockito.times(1)).execute();
+        assertThat(exception).isInstanceOf(UserNotAuthenticatedException.class);
+        assertThat(exception.getMessage()).isEqualTo("User is not authenticated!");
+        verify(this.getLoggedUser, times(1)).execute();
     }
 }
