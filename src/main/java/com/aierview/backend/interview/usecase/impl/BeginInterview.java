@@ -19,7 +19,7 @@ public class BeginInterview implements IBeginInterview {
     @Override
     public Interview execute(BeginInterviewRequest request) {
         UserRef user = this.getLoggedUser.execute();
-        this.generateInterview.execute(request,user);
+        this.generateInterview.execute(request, user);
         return null;
     }
 }
