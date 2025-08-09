@@ -7,10 +7,11 @@ import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements IUserRepository {
     private final UserJpaRepository userJpaRepository;

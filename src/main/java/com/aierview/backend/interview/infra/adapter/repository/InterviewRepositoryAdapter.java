@@ -6,9 +6,10 @@ import com.aierview.backend.interview.infra.mapper.InterviewMapper;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
 import com.aierview.backend.interview.infra.persistence.repository.InterviewJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
+
+@Repository
 @RequiredArgsConstructor
 public class InterviewRepositoryAdapter implements IInterviewRepository {
     private final InterviewMapper interviewMapper;

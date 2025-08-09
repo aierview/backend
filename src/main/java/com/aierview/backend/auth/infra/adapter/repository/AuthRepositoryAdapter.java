@@ -7,10 +7,11 @@ import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
 import com.aierview.backend.auth.infra.persisntence.repository.AuthJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class AuthRepositoryAdapter implements IAuthRepository {
     private final AuthMapper authMapper;
