@@ -23,6 +23,6 @@ public class InterviewRepositoryAdapter implements IInterviewRepository {
 
     @Override
     public Interview update(Interview interview) {
-       return this.save(interview);
+        return this.save(interview);
     }
 }
