@@ -9,6 +9,7 @@ import com.aierview.backend.interview.domain.enums.InterviewRole;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
+import com.aierview.backend.interview.infra.persistence.entity.QuestionJpaEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -77,6 +78,10 @@ public class InterviewTestFixture {
         return Question.builder().interview(anySavedInterview).question("any_question").build();
     }
 
+    public static Question anyQuestion() {
+        return Question.builder().question("any_question").build();
+    }
+
 
     public static Question anySavedQuestion(Interview anySavedInterview) {
         return Question.builder().id(1L).interview(anySavedInterview).question("any_question").build();
@@ -85,6 +90,29 @@ public class InterviewTestFixture {
     public static List<Question> anyQuestionList(Interview anySavedInterview) {
         return List.of(anyQuestion(anySavedInterview), anyQuestion(anySavedInterview));
     }
+
+    public static List<Question> anyQuestionList() {
+        return List.of(anyQuestion(), anyQuestion());
+    }
+
+    public static List<QuestionJpaEntity> anyQuestionJpaList(List<Question> questions) {
+       return questions.stream()
+                .map(q -> QuestionJpaEntity.builder().question(q.getQuestion()).build())
+                .toList();
+    }
+
+    public static List<QuestionJpaEntity> anySavedQuestionJpaList(List<Question> questions) {
+        return questions.stream()
+                .map(q -> QuestionJpaEntity.builder().id(1L).question(q.getQuestion()).build())
+                .toList();
+    }
+
+    public static List<Question> anySavedQuestionList(List<QuestionJpaEntity> questions) {
+        return questions.stream()
+                .map(q -> Question.builder().id(q.getId()).question(q.getQuestion()).build())
+                .toList();
+    }
+
 
     public static List<String> anyQuestionsStringList() {
         return List.of("any_question", "any_question_2", "");
