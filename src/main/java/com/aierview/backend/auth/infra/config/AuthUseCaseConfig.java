@@ -59,6 +59,7 @@ public class AuthUseCaseConfig {
 
     @Bean
     public IGoogleSignin googleSignin() {
-        return new GoogleSignin(extractUserDetails, userRepository, tokenGenerator, generateCookieResponse());
+        return new GoogleSignin(extractUserDetails, userRepository,
+                tokenGenerator, generateCookieResponse(), authRepository);
     }
 }
