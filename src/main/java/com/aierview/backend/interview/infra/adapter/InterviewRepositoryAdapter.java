@@ -17,7 +17,7 @@ public class InterviewRepositoryAdapter implements IInterviewRepository {
     @Override
     public Interview save(Interview interview) {
         InterviewJpaEntity entity = this.interviewMapper.interviewToInterviewJpaEntity(interview);
-        entity =  this.interviewJpaRepository.save(entity);
+        entity = this.interviewJpaRepository.save(entity);
         return this.interviewMapper.interviewJpaEntityToInterview(entity);
     }
 

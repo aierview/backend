@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class InterviewJpaEntityRepositoryAdapterTests {
@@ -53,7 +52,7 @@ public class InterviewJpaEntityRepositoryAdapterTests {
         Assertions.assertEquals(result.getCreatedAt(), savedInterview.getCreatedAt());
 
         Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewToInterviewJpaEntity(toSaveInterview);
-        Mockito.verify(interviewJpaRepository,Mockito.times(1)).save(toInterviewJpaEntity);
+        Mockito.verify(interviewJpaRepository, Mockito.times(1)).save(toInterviewJpaEntity);
         Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewJpaEntityToInterview(savedInterviewJpaEntity);
     }
 }

@@ -9,7 +9,6 @@ import com.aierview.backend.interview.domain.enums.InterviewRole;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
-import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.List;

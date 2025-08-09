@@ -251,7 +251,7 @@ public class AuthTestFixture {
     }
 
     public static UserRef anySavedUser(UserJpaEntity savedUserJpaEntity) {
-        return  UserRef
+        return UserRef
                 .builder()
                 .id(savedUserJpaEntity.getId())
                 .name(savedUserJpaEntity.getName())
