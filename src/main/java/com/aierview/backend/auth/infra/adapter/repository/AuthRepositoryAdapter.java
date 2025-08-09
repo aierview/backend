@@ -18,14 +18,14 @@ public class AuthRepositoryAdapter implements IAuthRepository {
 
     @Override
     public Auth save(Auth auth) {
-        AuthJpaEntity entity = this.authMapper.authToAuthJpaEntity(auth);
+        AuthJpaEntity entity = this.authMapper.mapToJpa(auth);
         entity = this.authRepository.save(entity);
-        return this.authMapper.authJpaEntityToAuth(entity);
+        return this.authMapper.mapToEntity(entity);
     }
 
     @Override
     public Optional<Auth> findByUserId(Long userId) {
         Optional<AuthJpaEntity> entity = this.authRepository.findByUserId(userId);
-        return entity.map(this.authMapper::authJpaEntityToAuth);
+        return entity.map(this.authMapper::mapToEntity);
     }
 }

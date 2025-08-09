@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AuthMapper {
-    AuthJpaEntity authToAuthJpaEntity(Auth auth);
+    AuthJpaEntity mapToJpa(Auth auth);
 
-    Auth authJpaEntityToAuth(AuthJpaEntity auth);
+    Auth mapToEntity(AuthJpaEntity auth);
 }

@@ -31,7 +31,7 @@ public class JwtTokenAdapter implements ITokenGenerator {
 
     @Override
     public String generate(UserRef userRef) {
-        UserJpaEntity entity = this.userMapper.userRefToUserJpaEntity(userRef);
+        UserJpaEntity entity = this.userMapper.mapToJpa(userRef);
         return this.generateToken(entity);
     }
 

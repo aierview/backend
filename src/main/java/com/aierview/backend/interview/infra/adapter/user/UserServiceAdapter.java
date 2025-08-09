@@ -19,6 +19,6 @@ public class UserServiceAdapter implements IGetLoggedUser {
     public UserRef execute() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserDetails)) throw new UserNotAuthenticatedException();
-        return this.userMapper.userJpaEntityToUserRef((UserJpaEntity) principal);
+        return this.userMapper.mapToEntity((UserJpaEntity) principal);
     }
 }

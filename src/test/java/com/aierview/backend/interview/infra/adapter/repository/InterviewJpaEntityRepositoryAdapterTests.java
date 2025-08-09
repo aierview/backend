@@ -38,9 +38,9 @@ public class InterviewJpaEntityRepositoryAdapterTests {
 
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(savedInterviewJpaEntity);
 
-        Mockito.when(this.interviewMapper.interviewToInterviewJpaEntity(toSaveInterview)).thenReturn(toInterviewJpaEntity);
+        Mockito.when(this.interviewMapper.mapToJpa(toSaveInterview)).thenReturn(toInterviewJpaEntity);
         Mockito.when(this.interviewJpaRepository.save(toInterviewJpaEntity)).thenReturn(savedInterviewJpaEntity);
-        Mockito.when(this.interviewMapper.interviewJpaEntityToInterview(savedInterviewJpaEntity)).thenReturn(savedInterview);
+        Mockito.when(this.interviewMapper.mapToEntity(savedInterviewJpaEntity)).thenReturn(savedInterview);
 
         Interview result = this.interviewRepository.save(toSaveInterview);
 
@@ -51,9 +51,9 @@ public class InterviewJpaEntityRepositoryAdapterTests {
         Assertions.assertEquals(result.getStatus(), savedInterview.getStatus());
         Assertions.assertEquals(result.getCreatedAt(), savedInterview.getCreatedAt());
 
-        Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewToInterviewJpaEntity(toSaveInterview);
+        Mockito.verify(this.interviewMapper, Mockito.times(1)).mapToJpa(toSaveInterview);
         Mockito.verify(interviewJpaRepository, Mockito.times(1)).save(toInterviewJpaEntity);
-        Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewJpaEntityToInterview(savedInterviewJpaEntity);
+        Mockito.verify(this.interviewMapper, Mockito.times(1)).mapToEntity(savedInterviewJpaEntity);
     }
 
     @Test
@@ -68,9 +68,9 @@ public class InterviewJpaEntityRepositoryAdapterTests {
 
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(savedInterviewJpaEntity);
 
-        Mockito.when(this.interviewMapper.interviewToInterviewJpaEntity(toSaveInterview)).thenReturn(toInterviewJpaEntity);
+        Mockito.when(this.interviewMapper.mapToJpa(toSaveInterview)).thenReturn(toInterviewJpaEntity);
         Mockito.when(this.interviewJpaRepository.save(toInterviewJpaEntity)).thenReturn(savedInterviewJpaEntity);
-        Mockito.when(this.interviewMapper.interviewJpaEntityToInterview(savedInterviewJpaEntity)).thenReturn(savedInterview);
+        Mockito.when(this.interviewMapper.mapToEntity(savedInterviewJpaEntity)).thenReturn(savedInterview);
 
         Interview result = this.interviewRepository.update(toSaveInterview);
 
@@ -81,9 +81,9 @@ public class InterviewJpaEntityRepositoryAdapterTests {
         Assertions.assertEquals(result.getStatus(), savedInterview.getStatus());
         Assertions.assertEquals(result.getCreatedAt(), savedInterview.getCreatedAt());
 
-        Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewToInterviewJpaEntity(toSaveInterview);
+        Mockito.verify(this.interviewMapper, Mockito.times(1)).mapToJpa(toSaveInterview);
         Mockito.verify(interviewJpaRepository, Mockito.times(1)).save(toInterviewJpaEntity);
-        Mockito.verify(this.interviewMapper, Mockito.times(1)).interviewJpaEntityToInterview(savedInterviewJpaEntity);
+        Mockito.verify(this.interviewMapper, Mockito.times(1)).mapToEntity(savedInterviewJpaEntity);
 
     }
 }

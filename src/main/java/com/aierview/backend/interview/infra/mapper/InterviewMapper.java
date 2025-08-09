@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 
 @Mapper()
 public interface InterviewMapper {
-    InterviewJpaEntity interviewToInterviewJpaEntity(Interview interview);
+    InterviewJpaEntity mapToJpa(Interview interview);
 
-    Interview interviewJpaEntityToInterview(InterviewJpaEntity interviewJpaEntity);
+    Interview mapToEntity(InterviewJpaEntity interviewJpaEntity);
 }

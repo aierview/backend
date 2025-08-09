@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserJpaEntity userRefToUserJpaEntity(UserRef user);
+    UserJpaEntity mapToJpa(UserRef user);
 
-    UserRef userJpaEntityToUserRef(UserJpaEntity user);
+    UserRef mapToEntity(UserJpaEntity user);
 }

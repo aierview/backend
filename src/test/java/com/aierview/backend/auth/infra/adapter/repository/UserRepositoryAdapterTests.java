@@ -48,7 +48,7 @@ public class UserRepositoryAdapterTests {
         UserRef savedUserRef = AuthTestFixture.anyUserRef(savedUserJpaEntity);
 
         when(this.userJpaRepository.findByEmail(email)).thenReturn(Optional.of(savedUserJpaEntity));
-        when(this.userMapper.userJpaEntityToUserRef(savedUserJpaEntity)).thenReturn(savedUserRef);
+        when(this.userMapper.mapToEntity(savedUserJpaEntity)).thenReturn(savedUserRef);
 
         Optional<UserRef> result = this.userRepositoryAdapter.findByEmail(email);
 
@@ -67,9 +67,9 @@ public class UserRepositoryAdapterTests {
         UserJpaEntity savedEntity = AuthTestFixture.anyUserJpaEntity(entity);
         UserRef savedUserRef = AuthTestFixture.anyUserRef(savedEntity);
 
-        when(this.userMapper.userRefToUserJpaEntity(userRef)).thenReturn(entity);
+        when(this.userMapper.mapToJpa(userRef)).thenReturn(entity);
         when(this.userJpaRepository.save(entity)).thenReturn(savedEntity);
-        when(this.userMapper.userJpaEntityToUserRef(savedEntity)).thenReturn(savedUserRef);
+        when(this.userMapper.mapToEntity(savedEntity)).thenReturn(savedUserRef);
 
         UserRef result = this.userRepositoryAdapter.save(userRef);
 

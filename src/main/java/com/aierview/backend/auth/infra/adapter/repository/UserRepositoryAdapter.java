@@ -20,14 +20,14 @@ public class UserRepositoryAdapter implements IUserRepository {
     public Optional<UserRef> findByEmail(String email) {
         Optional<UserJpaEntity> entity = this.userJpaRepository.findByEmail(email);
         if (entity.isEmpty()) return Optional.empty();
-        UserRef userRef = this.userMapper.userJpaEntityToUserRef(entity.get());
+        UserRef userRef = this.userMapper.mapToEntity(entity.get());
         return Optional.of(userRef);
     }
 
     @Override
     public UserRef save(UserRef user) {
-        UserJpaEntity entity = this.userMapper.userRefToUserJpaEntity(user);
+        UserJpaEntity entity = this.userMapper.mapToJpa(user);
         entity = this.userJpaRepository.save(entity);
-        return this.userMapper.userJpaEntityToUserRef(entity);
+        return this.userMapper.mapToEntity(entity);
     }
 }

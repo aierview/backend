@@ -54,7 +54,7 @@ public class UserServiceAdapterTests {
         Mockito.when(authenticationMock.getPrincipal()).thenReturn(new UserJpaEntity());
         SecurityContextHolder.setContext(securityContextMock);
 
-        Mockito.when(this.userMapper.userJpaEntityToUserRef(Mockito.any(UserJpaEntity.class)))
+        Mockito.when(this.userMapper.mapToEntity(Mockito.any(UserJpaEntity.class)))
                 .thenReturn(Mockito.mock(UserRef.class));
 
         UserRef result = this.getLoggedUser.execute();
