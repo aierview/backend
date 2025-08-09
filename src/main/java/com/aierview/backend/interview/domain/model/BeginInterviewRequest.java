@@ -1,7 +1,8 @@
-package com.aierview.backend.auth.domain.model.interview;
+package com.aierview.backend.interview.domain.model;
 
-import com.aierview.backend.auth.domain.enums.UserLevel;
+import com.aierview.backend.interview.domain.enums.InterviewLevel;
 import com.aierview.backend.auth.domain.enums.UserRole;
+import com.aierview.backend.interview.domain.enums.InterviewRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BeginInterviewRequest {
-    private UserRole role;
-    private UserLevel userLevel;
+    private InterviewRole role;
+    private InterviewLevel interviewLevel;
     private String stack;
 }
