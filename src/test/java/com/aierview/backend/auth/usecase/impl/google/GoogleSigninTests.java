@@ -30,21 +30,21 @@ import static org.mockito.Mockito.*;
 
 public class GoogleSigninTests {
     private IGoogleSignin googleSignin;
-    private  IExtractUserDetails extractUserDetails;
-    private  IUserRepository userRepository;
-    private  ITokenGenerator tokenGenerator;
-    private  IGenerateCookieResponse generateCookieResponse;
+    private IExtractUserDetails extractUserDetails;
+    private IUserRepository userRepository;
+    private ITokenGenerator tokenGenerator;
+    private IGenerateCookieResponse generateCookieResponse;
     private IAuthRepository authRepository;
 
     @BeforeEach
     void setUp() {
-        this.extractUserDetails =  mock(IExtractUserDetails.class);
+        this.extractUserDetails = mock(IExtractUserDetails.class);
         this.userRepository = mock(IUserRepository.class);
         this.tokenGenerator = mock(ITokenGenerator.class);
         this.generateCookieResponse = mock(IGenerateCookieResponse.class);
         this.authRepository = mock(IAuthRepository.class);
-        this.googleSignin =  new GoogleSignin(extractUserDetails, userRepository,
-                tokenGenerator, generateCookieResponse,authRepository);
+        this.googleSignin = new GoogleSignin(extractUserDetails, userRepository,
+                tokenGenerator, generateCookieResponse, authRepository);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class GoogleSigninTests {
         when(this.generateCookieResponse.generate(cookieResponse.name(), cookieResponse.value())).thenReturn(cookieResponse);
 
 
-        CookieResponse response =  this.googleSignin.execute(request);
+        CookieResponse response = this.googleSignin.execute(request);
 
         assertThat(response.name()).isEqualTo(cookieResponse.name());
         assertThat(response.value()).isEqualTo(cookieResponse.value());

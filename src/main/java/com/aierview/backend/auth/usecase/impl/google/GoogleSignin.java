@@ -39,8 +39,8 @@ public class GoogleSignin implements IGoogleSignin {
 
         UserRef user = this.userRepository.findByEmail(googleAccountModel.email())
                 .orElseThrow(InvalidCredentialException::new);
-        Auth auth =  this.authRepository.findByUserId(user.getId()).get();
-        if(!auth.getProvider().equals(AuthProvider.GOOGLE)) throw new InvalidCredentialException();
+        Auth auth = this.authRepository.findByUserId(user.getId()).get();
+        if (!auth.getProvider().equals(AuthProvider.GOOGLE)) throw new InvalidCredentialException();
         String token = this.tokenGenerator.generate(user);
         return this.generateCookieResponse.generate("token", token);
     }
