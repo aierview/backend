@@ -1,6 +1,8 @@
 package com.aierview.backend.interview.infra.adapter.user;
 
+import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.mapper.UserMapper;
+import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
 import com.aierview.backend.interview.domain.contract.user.IGetLoggedUser;
 import com.aierview.backend.interview.domain.exceptions.UserNotAuthenticatedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +41,23 @@ public class UserServiceAdapterTests {
 
         assertThat(exception).isInstanceOf(UserNotAuthenticatedException.class);
         assertThat(exception.getMessage()).isEqualTo("User is not authenticated!");
+    }
 
+    @Test
+    @DisplayName("Should return user if is  authenticated")
+    void shouldThrowReturnUserIfIsAuthenticated() {
+        SecurityContext securityContextMock = Mockito.mock(SecurityContext.class);
+        Authentication authenticationMock = Mockito.mock(Authentication.class);
+
+
+        Mockito.when(securityContextMock.getAuthentication()).thenReturn(authenticationMock);
+        Mockito.when(authenticationMock.getPrincipal()).thenReturn(new UserJpaEntity());
+        SecurityContextHolder.setContext(securityContextMock);
+
+        Mockito.when(this.userMapper.userJpaEntityToUserRef(Mockito.any(UserJpaEntity.class)))
+                .thenReturn(Mockito.mock(UserRef.class));
+
+        UserRef result = this.getLoggedUser.execute();
+        assertThat(result).isNotNull();
     }
 }
