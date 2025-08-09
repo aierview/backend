@@ -24,5 +24,5 @@ public class Interview {
     private InterviewLevel level;
     private InterviewStatus status;
     private LocalDateTime createdAt;
-    private List<Questions> questions;
+    private List<Question> questions;
 }
