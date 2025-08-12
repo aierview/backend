@@ -152,4 +152,31 @@ public class GeminiFunctUtilsTests {
         assertThat(exception.getMessage()).isEqualTo("We sorry! IA Service not available at this time, please try again later.");
         Mockito.verify(restTemplate, Mockito.times(1)).postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class));
     }
+
+
+    @Test
+    @DisplayName("Should return list of string o success")
+    void shouldReturnListOfStringOfSuccess() {
+        BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
+        String prompt = InterviewTestFixture.generateQuestionsPrompt(request);
+
+        Map<String, Object> fakePart = new HashMap<>();
+        fakePart.put("text", "Primeira linha ## Segunda linha");
+
+        Map<String, Object> fakeContent = new HashMap<>();
+        fakeContent.put("parts", List.of(fakePart));
+
+        Map<String, Object> fakeCandidate = new HashMap<>();
+        fakeCandidate.put("content", fakeContent);
+
+        Map<String, Object> fakeResponse = new HashMap<>();
+        fakeResponse.put("candidates", List.of(fakeCandidate));
+
+        when(this.restTemplate.postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class))).thenReturn(fakeResponse);
+
+        List<String> result = this.geminiFunctUtils.getResponse(prompt);
+
+        Assertions.assertEquals(2, result.size());
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class));
+    }
 }
