@@ -1,5 +1,6 @@
-package com.aierview.backend.shared;
+package com.aierview.backend.auth;
 
+import com.aierview.backend.shared.DatabaseCleaner;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.HttpServletTestFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test-db-error")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public class TestDatabaseErrorTests {
+public class AuthTestDatabaseError {
     @Container
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("testdb")

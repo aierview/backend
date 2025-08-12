@@ -1,4 +1,4 @@
-package com.aierview.backend.shared.config;
+package com.aierview.backend.auth.infra.config;
 
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignin;
 import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile("test-db-error")
-public class TestDbErrorConfig {
+public class AuthUseCaseTestsConfig {
     @Bean
     public ILocalSignup testDatabaseErrorLocalSignup() {
         return request -> {
