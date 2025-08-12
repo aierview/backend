@@ -43,7 +43,7 @@ public class GeminiFunctUtils {
         return prompt.toString();
     }
 
-    public List<String> getResponse(String prompt)  {
+    public List<String> getResponse(String prompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> requestBody = new HashMap<>();
