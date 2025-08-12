@@ -3,7 +3,7 @@ package com.aierview.backend.interview.infra.adapter.publisher;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewEventPublisher;
 import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.Question;
-import com.aierview.backend.interview.infra.dto.FirstQuestionEvent;
+import com.aierview.backend.interview.infra.dto.NextQuestionEvent;
 import com.aierview.backend.shared.testdata.InterviewTestFixture;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ public class KafkaInterviewEventPublisherTests {
         question.setId(1L);
         question.setInterview(Interview.builder().id(1L).build());
 
-        FirstQuestionEvent payload = new FirstQuestionEvent(question.getInterview().getId(), question.getId(), question.getQuestion());
+        NextQuestionEvent payload = new NextQuestionEvent(question.getInterview().getId(), question.getId(), question.getQuestion());
 
         SendResult<String, Object> fakeResult =
                 new SendResult<>(null, new RecordMetadata(null, 0, 0, 0, Long.valueOf(0), 0, 0));

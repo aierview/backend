@@ -42,7 +42,6 @@ public class BeginInterview implements IBeginInterview {
         interview = this.interviewRepository.save(interview);
         List<Question> questions = this.generateQuestions.execute(request, interview.getId());
         questions = this.questionRepository.saveAll(questions);
-        interview.setQuestions(questions);
         interview.setStatus(InterviewStatus.STARTED);
         this.interviewRepository.update(interview);
         this.interviewCacheRepository.put(interview);

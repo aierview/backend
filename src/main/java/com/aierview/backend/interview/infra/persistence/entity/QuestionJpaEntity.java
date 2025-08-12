@@ -1,5 +1,6 @@
 package com.aierview.backend.interview.infra.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class QuestionJpaEntity {
     private String feedback;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "interview_id")
     private InterviewJpaEntity interview;
 }

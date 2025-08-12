@@ -1,7 +1,12 @@
+google:
+  token-info-url: ${GOOGLE_TOKEN_INFO_URL}
+
 spring:
   security:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
       expiration-time: ${JWT_EXPIRATION_TIME}
-google:
-  token-info-url: ${GOOGLE_TOKEN_INFO_URL}
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

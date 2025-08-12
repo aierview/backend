@@ -14,9 +14,13 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +35,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(properties = "spring.profiles.active=test", webEnvironment = RANDOM_PORT)
 public class BaseIntegrationTests {
     @Container
+    static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.2.1"))
+            .withExposedPorts(9093);
+
+    @Container
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("testdb")
             .withUsername("testuser")
@@ -41,8 +49,6 @@ public class BaseIntegrationTests {
     @Autowired
     protected EntityManager entityManager;
     @Autowired
-    private WebApplicationContext context;
-    @Autowired
     private DatabaseCleaner databaseCleaner;
 
     @DynamicPropertySource
@@ -50,6 +56,7 @@ public class BaseIntegrationTests {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
+        registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
     }
 
     @BeforeAll
@@ -89,14 +96,6 @@ public class BaseIntegrationTests {
         }
     }
 
-    @BeforeEach
-    public void setup() {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
-        databaseCleaner.clearDatabase();
-    }
-
     private static String fakeResponse() {
         Map<String, Object> fakePart = new HashMap<>();
         fakePart.put("text", "Primeira linha ## Segunda linha");
@@ -109,6 +108,17 @@ public class BaseIntegrationTests {
 
         Map<String, Object> fakeResponse = new HashMap<>();
         fakeResponse.put("candidates", List.of(fakeCandidate));
-        return fakeResponse.toString();
+
+        try {
+            return new ObjectMapper().writeValueAsString(fakeResponse);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @BeforeEach
+    public void setup() {
+        databaseCleaner.clearDatabase();
     }
 }
