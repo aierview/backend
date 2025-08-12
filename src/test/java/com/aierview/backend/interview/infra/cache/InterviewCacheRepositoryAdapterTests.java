@@ -33,4 +33,19 @@ public class InterviewCacheRepositoryAdapterTests {
 
         Assertions.assertEquals(toSaveInterview.getId(), result.getInterviewId());
     }
+
+    @Test
+    @DisplayName("Should remove interview on cache")
+    void shouldRemoveInterviewOnCache() {
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
+
+
+        this.interviewCacheRepository.put(savedInterview);
+        this.interviewCacheRepository.remove(savedInterview.getId());
+        InterviewState result = this.interviewCacheRepository.get(savedInterview.getId());
+
+        Assertions.assertNull(result);
+    }
 }
