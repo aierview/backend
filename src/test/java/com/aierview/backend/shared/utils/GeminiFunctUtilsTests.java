@@ -1,6 +1,6 @@
 package com.aierview.backend.shared.utils;
 
-import com.aierview.backend.auth.infra.adapter.token.JwtTokenAdapter;
+import com.aierview.backend.interview.domain.exceptions.UnavailableIAServiceException;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import com.aierview.backend.shared.testdata.InterviewTestFixture;
 import org.junit.jupiter.api.Assertions;
@@ -8,10 +8,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 public class GeminiFunctUtilsTests {
-    private final String apikey = "any_api_key";
+    private final String apiKey = "any_api_key";
     private final String apiUrl = "any_api_url";
 
     private GeminiFunctUtils geminiFunctUtils;
@@ -19,12 +28,12 @@ public class GeminiFunctUtilsTests {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        this.restTemplate =  Mockito.mock(RestTemplate.class);
+        this.restTemplate = mock(RestTemplate.class);
         this.geminiFunctUtils = new GeminiFunctUtils(restTemplate);
 
         var apikeyField = GeminiFunctUtils.class.getDeclaredField("apiKey");
         apikeyField.setAccessible(true);
-        apikeyField.set(geminiFunctUtils, apikey);
+        apikeyField.set(geminiFunctUtils, apiKey);
 
         var apiUrlField = GeminiFunctUtils.class.getDeclaredField("apiUrl");
         apiUrlField.setAccessible(true);
@@ -35,9 +44,24 @@ public class GeminiFunctUtilsTests {
     @DisplayName("Should return question prompt with correct role, stack and level")
     void shouldReturnQuestionPromptWithCorrectRoleStackAndLevel() {
         BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
-        String prompt =  InterviewTestFixture.generateQuestionsPrompt(request);
+        String prompt = InterviewTestFixture.generateQuestionsPrompt(request);
 
         String result = this.geminiFunctUtils.generateQuestionsPrompt(request);
         Assertions.assertEquals(result, prompt);
+    }
+
+    @Test
+    @DisplayName("Should throw UnavailableIAServiceException when response is null")
+    void shouldThrowUnavailableIAServiceExceptionWhenResponseIsNull() {
+        BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
+        String prompt = InterviewTestFixture.generateQuestionsPrompt(request);
+
+        when(this.restTemplate.postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class))).thenReturn(null);
+
+        Throwable exception = catchThrowable(() -> this.geminiFunctUtils.getResponse(prompt));
+
+        assertThat(exception).isInstanceOf(UnavailableIAServiceException.class);
+        assertThat(exception.getMessage()).isEqualTo("We sorry! IA Service not available at this time, please try again later.");
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class));
     }
 }
