@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("!test-db-error")
+@Profile({"!test-interview-db-error"})
 @RequiredArgsConstructor
 public class InterviewUseCaseConfig {
     private final IGetLoggedUser getLoggedUser;

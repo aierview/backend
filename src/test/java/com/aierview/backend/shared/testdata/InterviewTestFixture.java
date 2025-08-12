@@ -10,9 +10,12 @@ import com.aierview.backend.interview.domain.enums.InterviewStatus;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
 import com.aierview.backend.interview.infra.persistence.entity.QuestionJpaEntity;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InterviewTestFixture {
     public static BeginInterviewRequest anyBeginInterviewRequest() {
@@ -141,5 +144,25 @@ public class InterviewTestFixture {
         prompt.append("Uma pergunta por linha.\n");
         prompt.append("Adicione ## ao final de cada pergunta para indicar o término da pergunta.\n");
         return prompt.toString();
+    }
+
+    public static String fakeResponse() {
+        Map<String, Object> fakePart = new HashMap<>();
+        fakePart.put("text", "Primeira linha ## Segunda linha");
+
+        Map<String, Object> fakeContent = new HashMap<>();
+        fakeContent.put("parts", List.of(fakePart));
+
+        Map<String, Object> fakeCandidate = new HashMap<>();
+        fakeCandidate.put("content", fakeContent);
+
+        Map<String, Object> fakeResponse = new HashMap<>();
+        fakeResponse.put("candidates", List.of(fakeCandidate));
+
+        try {
+            return new org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(fakeResponse);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

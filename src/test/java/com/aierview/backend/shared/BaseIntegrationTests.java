@@ -5,15 +5,8 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -27,16 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
 
 @Testcontainers
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-@SpringBootTest(properties = "spring.profiles.active=test", webEnvironment = RANDOM_PORT)
 public class BaseIntegrationTests {
     @Container
-    static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.2.1"))
-            .withExposedPorts(9093);
+    static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.2.1"));
 
     @Container
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")
@@ -44,12 +33,13 @@ public class BaseIntegrationTests {
             .withUsername("testuser")
             .withPassword("testpass");
     private static WireMockServer wireMockServer;
-    @Autowired
-    protected MockMvc mvc;
-    @Autowired
-    protected EntityManager entityManager;
-    @Autowired
-    private DatabaseCleaner databaseCleaner;
+    protected final EntityManager entityManager;
+    protected final DatabaseCleaner databaseCleaner;
+
+    public BaseIntegrationTests(EntityManager em, DatabaseCleaner dc) {
+        this.entityManager = em;
+        this.databaseCleaner = dc;
+    }
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
@@ -122,3 +112,4 @@ public class BaseIntegrationTests {
         databaseCleaner.clearDatabase();
     }
 }
+

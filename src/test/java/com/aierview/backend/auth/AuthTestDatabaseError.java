@@ -1,11 +1,10 @@
 package com.aierview.backend.auth;
 
-import com.aierview.backend.shared.DatabaseCleaner;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.HttpServletTestFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -30,13 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-db-error")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public class AuthTestDatabaseError {
+
     @Container
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("testdb")
             .withUsername("testuser")
             .withPassword("testpass");
 
-    private final String URL = "/api/v1/auth";
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
     private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
     private final String GOOGLE_SIGNUP_API_URL = "/api/v1/auth/google/signup";
@@ -47,13 +44,7 @@ public class AuthTestDatabaseError {
     private MockMvc mvc;
 
     @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
     private EntityManager entityManager;
-
-    @Autowired
-    private DatabaseCleaner databaseCleaner;
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
@@ -62,13 +53,11 @@ public class AuthTestDatabaseError {
         registry.add("spring.datasource.password", postgresContainer::getPassword);
     }
 
-    @BeforeEach
-    public void setup() {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
-        databaseCleaner.clearDatabase();
+    @AfterAll
+    static void db() {
+        postgresContainer.close();
     }
+
 
     @Test
     @DisplayName("Should return 500 when unexpected exception is thrown on local signup")
