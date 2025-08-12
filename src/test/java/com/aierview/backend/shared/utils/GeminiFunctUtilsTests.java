@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,6 +76,24 @@ public class GeminiFunctUtilsTests {
 
         Map<String, Object> fakeResponse = new HashMap<>();
         fakeResponse.put("foo", "bar");
+
+        when(this.restTemplate.postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class))).thenReturn(fakeResponse);
+
+        Throwable exception = catchThrowable(() -> this.geminiFunctUtils.getResponse(prompt));
+
+        assertThat(exception).isInstanceOf(UnavailableIAServiceException.class);
+        assertThat(exception.getMessage()).isEqualTo("We sorry! IA Service not available at this time, please try again later.");
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class));
+    }
+
+    @Test
+    @DisplayName("Should throw UnavailableIAServiceException when response candidates is empty")
+    void shouldThrowUnavailableIAServiceExceptionWhenResponseCandidatesIsEmpty() {
+        BeginInterviewRequest request = InterviewTestFixture.anyBeginInterviewRequest();
+        String prompt = InterviewTestFixture.generateQuestionsPrompt(request);
+
+        Map<String, Object> fakeResponse = new HashMap<>();
+        fakeResponse.put("candidates", List.of());
 
         when(this.restTemplate.postForObject(any(URI.class), any(HttpEntity.class), eq(Map.class))).thenReturn(fakeResponse);
 
