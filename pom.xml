@@ -181,7 +181,7 @@
                                 <exclude>com/aierview/backend/**/domain/model/**/*.class</exclude>
                                 <exclude>com/aierview/backend/**/domain/entity/*.class</exclude>
                                 <exclude>com/aierview/backend/BackendApplication.class</exclude>
-                                <exclude>com/aierview/backend/**/infra/persisntence/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/persistence/entity/*.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>

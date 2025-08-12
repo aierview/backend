@@ -5,7 +5,8 @@ import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
 import org.mapstruct.Mapper;
 
-@Mapper()
+@Mapper(componentModel = "spring")
+
 public interface InterviewMapper {
     InterviewJpaEntity mapToJpa(Interview interview);
 

@@ -1,6 +1,6 @@
 package com.aierview.backend.interview.infra.persistence.entity;
 
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 import com.aierview.backend.interview.domain.enums.InterviewLevel;
 import com.aierview.backend.interview.domain.enums.InterviewRole;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;

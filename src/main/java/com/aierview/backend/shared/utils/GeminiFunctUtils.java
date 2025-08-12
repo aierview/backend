@@ -1,6 +1,6 @@
 package com.aierview.backend.shared.utils;
 
-import com.aierview.backend.interview.domain.exceptions.ServiceUnavailableException;
+import com.aierview.backend.interview.domain.exceptions.UnavailableIAServiceException;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,9 +43,7 @@ public class GeminiFunctUtils {
         return prompt.toString();
     }
 
-    public List<String> getResponse(String prompt) throws ServiceUnavailableException {
-        String errorMessage = "Error getting response from AI";
-
+    public List<String> getResponse(String prompt)  {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> requestBody = new HashMap<>();
@@ -59,14 +57,14 @@ public class GeminiFunctUtils {
         URI uri = UriComponentsBuilder.fromHttpUrl(this.apiUrl).queryParam("key", this.apiKey).build().toUri();
         Map<String, Object> response = restTemplate.postForObject(uri, requestEntity, Map.class);
         if (response == null || !response.containsKey("candidates"))
-            throw new ServiceUnavailableException(errorMessage);
+            throw new UnavailableIAServiceException();
 
         List<Map<String, Object>> candidates = (List<Map<String, Object>>) response.get("candidates");
-        if (candidates.isEmpty()) throw new ServiceUnavailableException(errorMessage);
+        if (candidates.isEmpty()) throw new UnavailableIAServiceException();
 
         content = (Map<String, Object>) candidates.get(0).get("content");
         List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
-        if (parts == null || parts.isEmpty()) throw new ServiceUnavailableException(errorMessage);
+        if (parts == null || parts.isEmpty()) throw new UnavailableIAServiceException();
         List<String> responseText = Arrays.stream(((String) parts.get(0).get("text")).split("##"))
                 .map(String::trim)
                 .collect(Collectors.toList());

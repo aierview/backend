@@ -1,6 +1,6 @@
-package com.aierview.backend.auth.infra.persisntence.repository;
+package com.aierview.backend.auth.infra.persistence.repository;
 
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

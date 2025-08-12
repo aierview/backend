@@ -9,8 +9,8 @@ import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
 import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
-import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 
 import java.util.UUID;
 

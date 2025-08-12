@@ -1,4 +1,4 @@
-package com.aierview.backend.auth.infra.persisntence.entity;
+package com.aierview.backend.auth.infra.persistence.entity;
 
 import com.aierview.backend.auth.domain.enums.UserRole;
 import jakarta.persistence.*;

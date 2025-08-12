@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper()
+@Mapper(componentModel = "spring")
 public interface QuestionMapper {
     List<QuestionJpaEntity> mapToJpa(List<Question> questions);
 

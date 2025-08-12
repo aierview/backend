@@ -42,6 +42,6 @@ public class KafkaInterviewEventPublisherTests {
                 .thenReturn(CompletableFuture.completedFuture(fakeResult));
 
         this.interviewEventPublisher.publishFirstQuestion(question);
-        Mockito.verify(this.kafkaTemplate, Mockito.times(1)).send("first-question-topic", payload);
+        Mockito.verify(this.kafkaTemplate, Mockito.times(1)).send("interview.next-question-text", payload);
     }
 }

@@ -15,6 +15,6 @@ public class KafkaInterviewEventPublisher implements IInterviewEventPublisher {
     @Override
     public void publishFirstQuestion(Question question) {
         FirstQuestionEvent payload = new FirstQuestionEvent(question.getInterview().getId(), question.getId(), question.getQuestion());
-        kafkaTemplate.send("first-question-topic", payload);
+        kafkaTemplate.send("interview.next-question-text", payload);
     }
 }

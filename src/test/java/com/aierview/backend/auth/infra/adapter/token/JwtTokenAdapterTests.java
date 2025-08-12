@@ -3,7 +3,7 @@ package com.aierview.backend.auth.infra.adapter.token;
 import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.mapper.UserMapper;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,7 +1,7 @@
 package com.aierview.backend.shared.testdata;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.enums.InterviewLevel;

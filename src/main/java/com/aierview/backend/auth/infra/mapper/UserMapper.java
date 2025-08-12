@@ -1,7 +1,7 @@
 package com.aierview.backend.auth.infra.mapper;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

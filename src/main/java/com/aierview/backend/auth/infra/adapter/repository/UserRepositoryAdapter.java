@@ -3,8 +3,8 @@ package com.aierview.backend.auth.infra.adapter.repository;
 import com.aierview.backend.auth.domain.contact.repository.IUserRepository;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.mapper.UserMapper;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.repository.UserJpaRepository;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
