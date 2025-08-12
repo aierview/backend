@@ -2,6 +2,7 @@ package com.aierview.backend.interview.usecase.impl;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.interview.domain.contract.IA.IGenerateQuestions;
+import com.aierview.backend.interview.domain.contract.cache.IInterviewCacheRepository;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewEventPublisher;
 import com.aierview.backend.interview.domain.contract.repository.IInterviewRepository;
 import com.aierview.backend.interview.domain.contract.repository.IQuestionRepository;
@@ -20,14 +21,17 @@ public class BeginInterview implements IBeginInterview {
     private final IInterviewRepository interviewRepository;
     private final IGenerateQuestions generateQuestions;
     private final IQuestionRepository questionRepository;
+    private final IInterviewCacheRepository interviewCacheRepository;
     private final IInterviewEventPublisher interviewEventPublisher;
 
-    public BeginInterview(IGetLoggedUser getLoggedUser, IInterviewRepository interviewRepository, IGenerateQuestions generateQuestions,
-                          IQuestionRepository questionRepository, IInterviewEventPublisher interviewEventPublisher) {
+    public BeginInterview(IGetLoggedUser getLoggedUser, IInterviewRepository interviewRepository,
+                          IGenerateQuestions generateQuestions, IQuestionRepository questionRepository,
+                          IInterviewCacheRepository interviewCacheRepository, IInterviewEventPublisher interviewEventPublisher) {
         this.getLoggedUser = getLoggedUser;
         this.interviewRepository = interviewRepository;
         this.generateQuestions = generateQuestions;
         this.questionRepository = questionRepository;
+        this.interviewCacheRepository = interviewCacheRepository;
         this.interviewEventPublisher = interviewEventPublisher;
     }
 
@@ -41,6 +45,7 @@ public class BeginInterview implements IBeginInterview {
         interview.setQuestions(questions);
         interview.setStatus(InterviewStatus.STARTED);
         this.interviewRepository.update(interview);
+        this.interviewCacheRepository.put(interview);
         this.interviewEventPublisher.publishFirstQuestion(questions.getFirst());
     }
 

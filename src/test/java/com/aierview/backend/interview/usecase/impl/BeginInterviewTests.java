@@ -2,6 +2,7 @@ package com.aierview.backend.interview.usecase.impl;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.interview.domain.contract.IA.IGenerateQuestions;
+import com.aierview.backend.interview.domain.contract.cache.IInterviewCacheRepository;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewEventPublisher;
 import com.aierview.backend.interview.domain.contract.repository.IInterviewRepository;
 import com.aierview.backend.interview.domain.contract.repository.IQuestionRepository;
@@ -25,12 +26,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class BeginInterviewJpaEntityTests {
+public class BeginInterviewTests {
     private IBeginInterview beginInterview;
     private IGetLoggedUser getLoggedUser;
     private IInterviewRepository interviewRepository;
     private IGenerateQuestions generateQuestions;
     private IQuestionRepository questionRepository;
+    private IInterviewCacheRepository interviewCacheRepository;
     private IInterviewEventPublisher interviewEventPublisher;
 
     @BeforeEach
@@ -39,9 +41,10 @@ public class BeginInterviewJpaEntityTests {
         this.interviewRepository = mock(IInterviewRepository.class);
         this.generateQuestions = mock(IGenerateQuestions.class);
         this.questionRepository = mock(IQuestionRepository.class);
+        this.interviewCacheRepository = mock(IInterviewCacheRepository.class);
         this.interviewEventPublisher = mock(IInterviewEventPublisher.class);
         this.beginInterview = new BeginInterview(getLoggedUser, interviewRepository,
-                generateQuestions, questionRepository, interviewEventPublisher);
+                generateQuestions, questionRepository, interviewCacheRepository, interviewEventPublisher);
     }
 
     @Test
@@ -124,6 +127,7 @@ public class BeginInterviewJpaEntityTests {
         when(this.generateQuestions.execute(request, savedInterviewWithNoQuestion.getId())).thenReturn(questions);
         when(this.questionRepository.saveAll(questions)).thenReturn(savedQuestions);
         when(this.interviewRepository.update(savedInterviewWithQuestion)).thenReturn(savedInterviewWithQuestion);
+        doNothing().when(this.interviewCacheRepository).put(savedInterviewWithQuestion);
         doNothing().when(this.interviewEventPublisher).publishFirstQuestion(savedQuestions.getFirst());
 
         this.beginInterview.execute(request);
