@@ -18,6 +18,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -53,6 +57,7 @@ public class BaseIntegrationTests {
         wireMockServer = new WireMockServer(8089);
         wireMockServer.start();
 
+        //GOOGLE -  get token info
         wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
                 .withQueryParam("id_token", equalTo("any_valid_token"))
                 .willReturn(okJson("""
@@ -65,6 +70,15 @@ public class BaseIntegrationTests {
 
         wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
                 .withQueryParam("id_token", equalTo("any_invalid_token"))
+                .willReturn(aResponse().withStatus(400)));
+
+        // GEMINI - generate questions
+        wireMockServer.stubFor(post(urlPathEqualTo("/gemini/generateContent"))
+                .withQueryParam("key", equalTo("any_valid_api_key"))
+                .willReturn(okJson(fakeResponse())));
+
+        wireMockServer.stubFor(post(urlPathEqualTo("/gemini/generateContent"))
+                .withQueryParam("key", equalTo("any_invalid_api_key"))
                 .willReturn(aResponse().withStatus(400)));
     }
 
@@ -81,5 +95,20 @@ public class BaseIntegrationTests {
                 .webAppContextSetup(context)
                 .build();
         databaseCleaner.clearDatabase();
+    }
+
+    private static String fakeResponse() {
+        Map<String, Object> fakePart = new HashMap<>();
+        fakePart.put("text", "Primeira linha ## Segunda linha");
+
+        Map<String, Object> fakeContent = new HashMap<>();
+        fakeContent.put("parts", List.of(fakePart));
+
+        Map<String, Object> fakeCandidate = new HashMap<>();
+        fakeCandidate.put("content", fakeContent);
+
+        Map<String, Object> fakeResponse = new HashMap<>();
+        fakeResponse.put("candidates", List.of(fakeCandidate));
+        return fakeResponse.toString();
     }
 }
