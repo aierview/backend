@@ -113,7 +113,7 @@ def main():
             payload = {
                 "questionId": question_id,
                 "text": text,
-                "audio_url": audio_url
+                "audioUrl": audio_url
             }
 
             producer.produce(
