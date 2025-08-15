@@ -2,14 +2,18 @@ version: '3.9'
 
 services:
   zookeeper:
+    container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.4.4
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - 22181:2181
+    networks:
+      - aierview-network
 
   kafka:
+    container_name: kafka
     image: confluentinc/cp-kafka:7.4.4
     depends_on:
       - zookeeper
@@ -23,14 +27,38 @@ services:
         KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
         KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - aierview-network
 
   kafdrop:
+    container_name: kafdrop
     image: obsidiandynamics/kafdrop
+    depends_on:
+      - kafka
     ports:
       - "9000:9000"
     environment:
       KAFKA_BROKERCONNECT: kafka:9092
       JVM_OPTS: "-Xms32M -Xmx64M"
+    networks:
+      - aierview-network
+
+  tts-service:
+    build:
+      context: tts-service/
+    container_name: tts-service
+    depends_on:
+      - kafka
+    ports:
+      - "4000:4000"
+    environment:
+      - KAFKA_BOOTSTRAP=kafka:9092
+      - R2_ENDPOINT
+      - R2_ACCESS_KEY
+      - R2_SECRET_KEY
+
+    networks:
+      - aierview-network
 
   db:
     container_name: aierview-db
@@ -48,7 +76,7 @@ services:
 
   backend:
     build:
-      context: ../..
+      context: .
     container_name: aierview-backend
     ports:
       - "8080:8080"
