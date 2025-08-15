@@ -1,13 +1,13 @@
-import os
-import json
-import uuid
 import boto3
+import json
 import numpy as np
+import os
 import soundfile as sf
-from kokoro import KPipeline
-from dotenv import load_dotenv
+import uuid
 from botocore.client import Config
 from confluent_kafka import Consumer, Producer
+from dotenv import load_dotenv
+from kokoro import KPipeline
 
 # LOADING ENV
 load_dotenv()
@@ -23,7 +23,6 @@ R2_BUCKET = os.getenv("R2_BUCKET", "meu-bucket")
 R2_ACCESS_KEY = os.getenv("R2_ACCESS_KEY")
 R2_SECRET_KEY = os.getenv("R2_SECRET_KEY")
 R2_AUDIO_FILE_PATH = os.getenv("R2_AUDIO_FILE_PATH")
-
 
 # Kafka Consumer config
 consumer_conf = {
@@ -49,6 +48,7 @@ s3_client = boto3.client(
     config=Config(signature_version='s3v4')
 )
 
+
 def generate_audio(text: str) -> str:
     lang_code = 'p'
     audio_chunks = []
@@ -56,16 +56,17 @@ def generate_audio(text: str) -> str:
     output_file = f"/tmp/{file_name}"
 
     pipeline = KPipeline(lang_code)
-    generator =  pipeline(text, "pf_dora")
+    generator = pipeline(text, "pf_dora")
     for gs, ps, audio in generator:
         audio_chunks.append(audio)
 
-    complete_audio =  np.concatenate(audio_chunks)
-    sf.write(output_file, complete_audio,samplerate=25000)
+    complete_audio = np.concatenate(audio_chunks)
+    sf.write(output_file, complete_audio, samplerate=25000)
 
     audio_url = upload_audio_r2(output_file, f"{R2_AUDIO_FILE_PATH}/{file_name}")
     os.remove(output_file)
     return audio_url
+
 
 def upload_audio_r2(file_path: str, object_name: str = None) -> str:
     if object_name is None:
@@ -80,11 +81,13 @@ def upload_audio_r2(file_path: str, object_name: str = None) -> str:
         print(f"❌ Erro no upload para R2: {e}")
         raise
 
+
 def delivery_report(err, msg):
     if err:
         print(f"Erro ao enviar mensagem: {err}")
     else:
         print(f"Mensagem enviada para {msg.topic()} [{msg.partition()}]")
+
 
 def main():
     consumer.subscribe([TOPIC_IN])
@@ -122,6 +125,7 @@ def main():
 
         except Exception as e:
             print(f"Erro processando mensagem: {e}")
+
 
 if __name__ == "__main__":
     main()
