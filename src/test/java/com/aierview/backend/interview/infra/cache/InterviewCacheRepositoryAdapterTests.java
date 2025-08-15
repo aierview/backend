@@ -58,7 +58,29 @@ public class InterviewCacheRepositoryAdapterTests {
         assertInstanceOf(InterviewState.class, captured);
         InterviewState state = (InterviewState) captured;
         assertEquals(savedInterview.getId(), state.getInterviewId());
-        assertEquals(questions, state.getQuestions());    }
+        assertEquals(questions, state.getQuestions());
+    }
+
+
+    @Test
+    @DisplayName("Should get cached interview state")
+    void shouldGetCachedInterviewState() {
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
+        List<Question> questions =  InterviewTestFixture.anyQuestionList(savedInterview);
+        savedInterview.setQuestions(questions);
+
+        InterviewState savedInterviewState = new InterviewState(savedInterview.getId(),savedInterview.getQuestions());
+
+        when(valueOperations.get("interview:" + savedInterview.getId())).thenReturn(savedInterviewState);
+
+        InterviewState result = this.interviewCacheRepository.get(savedInterview.getId());
+
+        assertNotNull(result);
+        assertEquals(savedInterview.getId(), result.getInterviewId());
+        assertEquals(savedInterview.getQuestions(), result.getQuestions());
+    }
 
     @Test
     @DisplayName("Should remove interview on cache")
