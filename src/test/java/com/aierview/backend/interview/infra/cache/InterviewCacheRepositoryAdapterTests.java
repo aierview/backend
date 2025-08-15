@@ -50,7 +50,7 @@ public class InterviewCacheRepositoryAdapterTests {
         this.interviewCacheRepository.put(savedInterview);
 
         ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-        verify(valueOperations).set(eq("interview:" + savedInterview.getId()), captor.capture());
+        verify(this.valueOperations).set(eq("interview:" + savedInterview.getId()), captor.capture());
 
         Object captured = captor.getValue();
 
@@ -73,13 +73,15 @@ public class InterviewCacheRepositoryAdapterTests {
 
         InterviewState savedInterviewState = new InterviewState(savedInterview.getId(),savedInterview.getQuestions());
 
-        when(valueOperations.get("interview:" + savedInterview.getId())).thenReturn(savedInterviewState);
+        when(this.valueOperations.get("interview:" + savedInterview.getId())).thenReturn(savedInterviewState);
 
         InterviewState result = this.interviewCacheRepository.get(savedInterview.getId());
 
         assertNotNull(result);
         assertEquals(savedInterview.getId(), result.getInterviewId());
         assertEquals(savedInterview.getQuestions(), result.getQuestions());
+
+        verify(this.valueOperations, times(1)).get("interview:" + savedInterview.getId());
     }
 
     @Test
@@ -88,12 +90,13 @@ public class InterviewCacheRepositoryAdapterTests {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
         Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
+        List<Question> questions =  InterviewTestFixture.anyQuestionList(savedInterview);
+        savedInterview.setQuestions(questions);
 
+        when(this.redisTemplate.delete("interview:" + savedInterview.getId())).thenReturn(true);
 
-        this.interviewCacheRepository.put(savedInterview);
         this.interviewCacheRepository.remove(savedInterview.getId());
-        InterviewState result = this.interviewCacheRepository.get(savedInterview.getId());
 
-        Assertions.assertNull(result);
+        verify(this.redisTemplate, times(1)).delete("interview:" + savedInterview.getId());
     }
 }
