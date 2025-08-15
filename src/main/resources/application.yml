@@ -2,12 +2,20 @@ google:
   token-info-url: ${GOOGLE_TOKEN_INFO_URL}
 
 spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   security:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
       expiration-time: ${JWT_EXPIRATION_TIME}
   kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.value.default.type: com.aierview.backend.interview.domain.model.CurrentQuestion
