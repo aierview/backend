@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class KafkaInterviewEventPublisher implements IInterviewEventPublisher {
+public class KafkaInterviewEventPublisherAdapter implements IInterviewEventPublisher {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public void publishFirstQuestion(Question question) {
+    public void publish(Question question) {
         NextQuestionEvent payload = new NextQuestionEvent(question.getInterview().getId(), question.getId(), question.getQuestion());
         kafkaTemplate.send("interview.next-question-text", payload);
     }
