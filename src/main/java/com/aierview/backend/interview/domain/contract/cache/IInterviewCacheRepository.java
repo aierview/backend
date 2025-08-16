@@ -9,4 +9,6 @@ public interface IInterviewCacheRepository {
     InterviewState get(Long interviewId);
 
     void remove(Long interviewId);
+
+    void revalidate(Long interviewId, InterviewState newState);
 }
