@@ -9,7 +9,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface QuestionMapper {
-    List<QuestionJpaEntity> mapToJpa(List<Question> questions);
+    Question mapToEntity(QuestionJpaEntity questionJpaEntity);
 
-    List<Question> mapToEntity(List<QuestionJpaEntity> questionJpaEntities);
+    QuestionJpaEntity mapToJpa(Question question);
+
+    List<QuestionJpaEntity> mapToListJpa(List<Question> questions);
+
+    List<Question> mapToListEntity(List<QuestionJpaEntity> questionJpaEntities);
 }
