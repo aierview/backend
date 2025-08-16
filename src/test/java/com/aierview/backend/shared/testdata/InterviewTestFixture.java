@@ -3,11 +3,15 @@ package com.aierview.backend.shared.testdata;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 import com.aierview.backend.interview.domain.entity.Interview;
+import com.aierview.backend.interview.domain.entity.InterviewState;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.enums.InterviewLevel;
 import com.aierview.backend.interview.domain.enums.InterviewRole;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
+import com.aierview.backend.interview.domain.model.CurrentQuestion;
+import com.aierview.backend.interview.domain.model.OnAnswerReceivedRequest;
+import com.aierview.backend.interview.domain.model.OnQuestionReceivedRequest;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
 import com.aierview.backend.interview.infra.persistence.entity.QuestionJpaEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
@@ -122,7 +126,11 @@ public class InterviewTestFixture {
     }
 
     public static List<Question> anySavedQuestionList(Interview anySavedInterview) {
-        return List.of(anySavedQuestion(anySavedInterview), anySavedQuestion(anySavedInterview));
+        Question question = anyQuestion(anySavedInterview);
+        question.setId(1L);
+        Question question1 =   anySavedQuestion(anySavedInterview);
+        question1.setId(2L);
+        return List.of(question, question1);
     }
 
     public static Interview anySavedStartedInterviewWithQuestions(Interview anyInterviewWithNoQuestions, List<Question> questions) {
@@ -164,5 +172,48 @@ public class InterviewTestFixture {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static CurrentQuestion anyCurrentQuestion() {
+        return new CurrentQuestion(1L, "any_question", "any_audio_url");
+    }
+
+    public static CurrentQuestion anyCurrentQuestion(Question question) {
+        return new CurrentQuestion(question.getId(),  question.getQuestion(), question.getAudioUrl());
+    }
+
+    public static Question anySavedQuestion(Question question, String audioUrl) {
+        question.setAudioUrl(audioUrl);
+        return question;
+    }
+
+    public static Question anySavedQuestion(Question question) {
+        question.setAudioUrl("any_audio_url");
+        return question;
+    }
+
+    public  static InterviewState anySavedInterviewState(Interview interview, Question question) {
+        return new InterviewState(interview.getId(),List.of(question));
+    }
+
+    public  static InterviewState anySavedInterviewState(InterviewState interviewState,List<Question> questions) {
+        interviewState.setQuestions(questions);
+        interviewState.setCurrentQuestionIndex(1);
+        interviewState.setStatus(questions.getLast().getId(), "READY_FOR_SEND");
+        return interviewState;
+    }
+
+    public  static InterviewState anySavedInterviewState(Long interviewId,List<Question> questions) {
+        InterviewState interviewState = new InterviewState(interviewId,questions);
+        interviewState.setStatus(questions.getLast().getId(), "READY_FOR_SEND");
+        return interviewState;
+    }
+
+    public static OnQuestionReceivedRequest anyOnQuestionReceivedRequest() {
+        return new OnQuestionReceivedRequest(1L);
+    }
+
+    public static OnAnswerReceivedRequest anyOnQuestionOnAnswerReceivedRequest() {
+        return new OnAnswerReceivedRequest("any_answer", 1L);
     }
 }
