@@ -36,16 +36,18 @@ public class BeginInterview implements IBeginInterview {
     }
 
     @Override
-    public void execute(BeginInterviewRequest request) {
+    public Long execute(BeginInterviewRequest request) {
         UserRef user = this.getLoggedUser.execute();
         Interview interview = this.buildInterview(request, user);
         interview = this.interviewRepository.save(interview);
         List<Question> questions = this.generateQuestions.execute(request, interview.getId());
         questions = this.questionRepository.saveAll(questions);
         interview.setStatus(InterviewStatus.STARTED);
-        this.interviewRepository.update(interview);
+        interview = this.interviewRepository.update(interview);
+        interview.setQuestions(questions);
         this.interviewCacheRepository.put(interview);
-        this.interviewEventPublisher.publishFirstQuestion(questions.getFirst());
+        this.interviewEventPublisher.publish(questions.getFirst());
+        return interview.getId();
     }
 
     private Interview buildInterview(BeginInterviewRequest request, UserRef user) {
