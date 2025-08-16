@@ -25,7 +25,7 @@ public class SendCurrentQuestion implements ISendCurrentQuestion {
     public void execute(CurrentQuestion currentQuestion) {
         Question existingQuestion = this.questionRepository.findById(currentQuestion.questionId())
                 .orElseThrow(UnavailableNextQuestionException::new);
-        existingQuestion.setAudioUrl(currentQuestion.audio_url());
+        existingQuestion.setAudioUrl(currentQuestion.audioUrl());
         this.questionRepository.save(existingQuestion);
         Interview interview = existingQuestion.getInterview();
         InterviewState interviewState = this.interviewCacheRepository.get(interview.getId());
