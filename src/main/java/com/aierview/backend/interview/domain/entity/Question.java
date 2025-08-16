@@ -10,6 +10,7 @@ import lombok.*;
 public class Question {
     private Long id;
     private String question;
+    private String audioUrl;
     private String answer;
     private String feedback;
     private Interview interview;
