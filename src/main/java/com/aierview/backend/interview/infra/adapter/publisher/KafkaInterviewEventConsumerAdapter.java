@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class InterviewEventConsumerAdapter implements IInterviewEventConsumer {
+public class KafkaInterviewEventConsumerAdapter implements IInterviewEventConsumer {
     private final ISendCurrentQuestion sendCurrentQuestion;
 
     @Override
