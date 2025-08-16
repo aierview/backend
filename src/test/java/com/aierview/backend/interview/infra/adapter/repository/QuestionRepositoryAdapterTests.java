@@ -77,4 +77,20 @@ public class QuestionRepositoryAdapterTests {
         Assertions.assertThat(question).isEmpty();
         Mockito.verify(this.questionJpaRepository, Mockito.times(1)).findById(questionId);
     }
+
+    @Test
+    @DisplayName("Should return optional of Question if exists on findbyid")
+    void shouldReturnOptionalOfQuestionIfQuestionExistsOnFindbyid() {
+        Question question = InterviewTestFixture.anyQuestion();
+        QuestionJpaEntity questionJpaEntity =  InterviewTestFixture.anyQuestionJpaList(List.of(question)).get(0);
+        Question savedQuestion = InterviewTestFixture.anySavedQuestion(question);
+        QuestionJpaEntity savedJpaQuestion = InterviewTestFixture.anySavedQuestionJpaList(List.of(savedQuestion)).get(0);
+
+        Mockito.when(this.questionJpaRepository.findById(question.getId())).thenReturn(Optional.of(questionJpaEntity));
+        Mockito.when(this.questionMapper.mapToEntity(Mockito.any(QuestionJpaEntity.class))).thenReturn(savedQuestion);
+        Optional<Question> result = questionRepository.findById(question.getId());
+        Assertions.assertThat(result).isNotEmpty();
+        Mockito.verify(this.questionJpaRepository, Mockito.times(1)).findById(question.getId());
+    }
+
 }
