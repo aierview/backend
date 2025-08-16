@@ -16,19 +16,19 @@ import org.springframework.kafka.support.SendResult;
 import java.util.concurrent.CompletableFuture;
 
 
-public class KafkaInterviewEventPublisherTests {
+public class KafkaInterviewEventPublisherAdapterTests {
     private IInterviewEventPublisher interviewEventPublisher;
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     @BeforeEach
     void setUp() {
         this.kafkaTemplate = Mockito.mock(KafkaTemplate.class);
-        this.interviewEventPublisher = new KafkaInterviewEventPublisher(kafkaTemplate);
+        this.interviewEventPublisher = new KafkaInterviewEventPublisherAdapter(kafkaTemplate);
     }
 
     @Test
     @DisplayName("Should publish first question on topic first-question-topic")
-    void shouldPublishFirstQuestionOnTopicFirstQuestionTopic() {
+    void shouldPublishFirstQuestionOnTopicTopic() {
         Question question = InterviewTestFixture.anyQuestion();
         question.setId(1L);
         question.setInterview(Interview.builder().id(1L).build());
@@ -41,7 +41,7 @@ public class KafkaInterviewEventPublisherTests {
         Mockito.when(kafkaTemplate.send("first-question-topic", payload))
                 .thenReturn(CompletableFuture.completedFuture(fakeResult));
 
-        this.interviewEventPublisher.publishFirstQuestion(question);
+        this.interviewEventPublisher.publish(question);
         Mockito.verify(this.kafkaTemplate, Mockito.times(1)).send("interview.next-question-text", payload);
     }
 }
