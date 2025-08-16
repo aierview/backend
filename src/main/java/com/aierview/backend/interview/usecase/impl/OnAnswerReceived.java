@@ -8,10 +8,10 @@ import com.aierview.backend.interview.domain.entity.InterviewState;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.exceptions.UnavailableNextQuestionException;
 import com.aierview.backend.interview.domain.model.CurrentQuestion;
+import com.aierview.backend.interview.domain.model.OnAnswerReceivedRequest;
 import com.aierview.backend.interview.usecase.contract.IOnAnswerReceived;
 
 public class OnAnswerReceived implements IOnAnswerReceived {
-
     private final IQuestionRepository questionRepository;
     private final IInterviewCacheRepository interviewCacheRepository;
     private final IInterviewWebSocketPublisher interviewWebSocketPublisher;
@@ -23,11 +23,11 @@ public class OnAnswerReceived implements IOnAnswerReceived {
     }
 
     @Override
-    public void execute(String answer, Long questionId) {
-        Question existingQuestion = this.questionRepository.findById(questionId)
+    public void execute(OnAnswerReceivedRequest request) {
+        Question existingQuestion = this.questionRepository.findById(request.questionId())
                 .orElseThrow(UnavailableNextQuestionException::new);
         //implement processing question with stt
-        existingQuestion.setAnswer(answer);
+        existingQuestion.setAnswer(request.answer());
         this.questionRepository.save(existingQuestion);
 
         Interview interview = existingQuestion.getInterview();
