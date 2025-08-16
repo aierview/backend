@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -82,7 +81,7 @@ public class QuestionRepositoryAdapterTests {
     @DisplayName("Should return optional of Question if exists on findbyid")
     void shouldReturnOptionalOfQuestionIfQuestionExistsOnFindbyid() {
         Question question = InterviewTestFixture.anyQuestion();
-        QuestionJpaEntity questionJpaEntity =  InterviewTestFixture.anyQuestionJpaList(List.of(question)).get(0);
+        QuestionJpaEntity questionJpaEntity = InterviewTestFixture.anyQuestionJpaList(List.of(question)).get(0);
         Question savedQuestion = InterviewTestFixture.anySavedQuestion(question);
         QuestionJpaEntity savedJpaQuestion = InterviewTestFixture.anySavedQuestionJpaList(List.of(savedQuestion)).get(0);
 

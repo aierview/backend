@@ -24,10 +24,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 public class SendCurrentQuestionTests {
-    private  ISendCurrentQuestion sendCurrentQuestion;
-    private  IInterviewWebSocketPublisher interviewWebSocketPublisher;
-    private  IInterviewCacheRepository interviewCacheRepository;
-    private  IQuestionRepository questionRepository;
+    private ISendCurrentQuestion sendCurrentQuestion;
+    private IInterviewWebSocketPublisher interviewWebSocketPublisher;
+    private IInterviewCacheRepository interviewCacheRepository;
+    private IQuestionRepository questionRepository;
 
 
     @BeforeEach
@@ -57,14 +57,14 @@ public class SendCurrentQuestionTests {
     void shouldPublishFirstQuestionToWebSocket() {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
 
-        Interview toSaveInterview =  InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
 
         Question question = InterviewTestFixture.anySavedQuestion(savedInterview);
         CurrentQuestion currentQuestion = InterviewTestFixture.anyCurrentQuestion(question);
-        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audioUrl());
+        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question, currentQuestion.audioUrl());
 
-        InterviewState interviewState =  InterviewTestFixture.anySavedInterviewState(savedInterview, question);
+        InterviewState interviewState = InterviewTestFixture.anySavedInterviewState(savedInterview, question);
 
         when(this.questionRepository.findById(currentQuestion.questionId())).thenReturn(Optional.of(question));
         when(this.questionRepository.save(questionWihAudioUrl)).thenReturn(questionWihAudioUrl);
@@ -75,8 +75,8 @@ public class SendCurrentQuestionTests {
         Mockito.verify(this.questionRepository, times(1)).findById(currentQuestion.questionId());
         Mockito.verify(this.questionRepository, times(1)).save(questionWihAudioUrl);
         Mockito.verify(this.interviewCacheRepository, times(1)).get(savedInterview.getId());
-        Mockito.verify(this.interviewWebSocketPublisher, times(1)).execute(interviewState.getInterviewId(),currentQuestion);
-        Mockito.verify(this.interviewCacheRepository, times(1)).revalidate(interviewState.getInterviewId(),interviewState);
+        Mockito.verify(this.interviewWebSocketPublisher, times(1)).execute(interviewState.getInterviewId(), currentQuestion);
+        Mockito.verify(this.interviewCacheRepository, times(1)).revalidate(interviewState.getInterviewId(), interviewState);
     }
 
     @Test
@@ -84,17 +84,17 @@ public class SendCurrentQuestionTests {
     void shouldSetStatusToReadyForSendWhenQuestionIsTheFirstQuestion() {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
 
-        Interview toSaveInterview =  InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
 
         Question question = InterviewTestFixture.anySavedQuestion(savedInterview);
         CurrentQuestion currentQuestion = InterviewTestFixture.anyCurrentQuestion(question);
-        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audioUrl());
-        Question questionWihAudioUrl1 = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audioUrl());
+        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question, currentQuestion.audioUrl());
+        Question questionWihAudioUrl1 = InterviewTestFixture.anySavedQuestion(question, currentQuestion.audioUrl());
 
-        InterviewState interviewState =  InterviewTestFixture.anySavedInterviewState(savedInterview, question);
-        InterviewState interviewStateWFCACK =  InterviewTestFixture
-                .anySavedInterviewState(interviewState, List.of(questionWihAudioUrl,questionWihAudioUrl1));
+        InterviewState interviewState = InterviewTestFixture.anySavedInterviewState(savedInterview, question);
+        InterviewState interviewStateWFCACK = InterviewTestFixture
+                .anySavedInterviewState(interviewState, List.of(questionWihAudioUrl, questionWihAudioUrl1));
 
         when(this.questionRepository.findById(currentQuestion.questionId())).thenReturn(Optional.of(question));
         when(this.questionRepository.save(questionWihAudioUrl)).thenReturn(questionWihAudioUrl);
@@ -105,8 +105,8 @@ public class SendCurrentQuestionTests {
         Mockito.verify(this.questionRepository, times(1)).findById(currentQuestion.questionId());
         Mockito.verify(this.questionRepository, times(1)).save(questionWihAudioUrl);
         Mockito.verify(this.interviewCacheRepository, times(1)).get(savedInterview.getId());
-        Mockito.verify(this.interviewWebSocketPublisher, times(0)).execute(interviewStateWFCACK.getInterviewId(),currentQuestion);
-        Mockito.verify(this.interviewCacheRepository, times(1)).revalidate(interviewStateWFCACK.getInterviewId(),interviewStateWFCACK);
+        Mockito.verify(this.interviewWebSocketPublisher, times(0)).execute(interviewStateWFCACK.getInterviewId(), currentQuestion);
+        Mockito.verify(this.interviewCacheRepository, times(1)).revalidate(interviewStateWFCACK.getInterviewId(), interviewStateWFCACK);
 
     }
 }

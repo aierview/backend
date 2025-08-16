@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
 
 public class IInterviewWebSocketPublisherAdapterTests {
     private IInterviewWebSocketPublisher interviewWebSocketPublisher;
@@ -16,8 +15,8 @@ public class IInterviewWebSocketPublisherAdapterTests {
 
     @BeforeEach
     void setUp() {
-        this.simpMessagingTemplate =  Mockito.mock(SimpMessagingTemplate.class);
-        this.interviewWebSocketPublisher =  new InterviewWebSocketPublisherAdapter(simpMessagingTemplate);
+        this.simpMessagingTemplate = Mockito.mock(SimpMessagingTemplate.class);
+        this.interviewWebSocketPublisher = new InterviewWebSocketPublisherAdapter(simpMessagingTemplate);
     }
 
     @Test
@@ -25,8 +24,8 @@ public class IInterviewWebSocketPublisherAdapterTests {
     void shouldCondTopicToTopicToInterview() {
         Long interviewId = 1L;
         CurrentQuestion currentQuestion = InterviewTestFixture.anyCurrentQuestion();
-        Mockito.doNothing().when(this.simpMessagingTemplate).convertAndSend("/topic/interview/"+interviewId, currentQuestion);
+        Mockito.doNothing().when(this.simpMessagingTemplate).convertAndSend("/topic/interview/" + interviewId, currentQuestion);
         this.interviewWebSocketPublisher.execute(interviewId, currentQuestion);
-        Mockito.verify(simpMessagingTemplate, Mockito.times(1)).convertAndSend("/topic/interview/"+interviewId, currentQuestion);
+        Mockito.verify(simpMessagingTemplate, Mockito.times(1)).convertAndSend("/topic/interview/" + interviewId, currentQuestion);
     }
 }

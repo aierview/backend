@@ -13,6 +13,6 @@ public class InterviewWebSocketPublisherAdapter implements IInterviewWebSocketPu
 
     @Override
     public void execute(Long interviewId, CurrentQuestion currentQuestion) {
-        messagingTemplate.convertAndSend("/topic/interview/"+interviewId, currentQuestion);
+        messagingTemplate.convertAndSend("/topic/interview/" + interviewId, currentQuestion);
     }
 }

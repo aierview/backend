@@ -8,7 +8,6 @@ import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.InterviewState;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.exceptions.UnavailableNextQuestionException;
-import com.aierview.backend.interview.domain.model.CurrentQuestion;
 import com.aierview.backend.interview.domain.model.OnAnswerReceivedRequest;
 import com.aierview.backend.interview.usecase.contract.IOnAnswerReceived;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class OnAnswerReceivedTests {
-    private  IOnAnswerReceived onAnswerReceived;
+    private IOnAnswerReceived onAnswerReceived;
     private IQuestionRepository questionRepository;
     private IInterviewCacheRepository interviewCacheRepository;
     private IInterviewWebSocketPublisher interviewWebSocketPublisher;
@@ -33,7 +32,7 @@ public class OnAnswerReceivedTests {
         this.questionRepository = Mockito.mock(IQuestionRepository.class);
         this.interviewCacheRepository = Mockito.mock(IInterviewCacheRepository.class);
         this.interviewWebSocketPublisher = Mockito.mock(IInterviewWebSocketPublisher.class);
-        this.onAnswerReceived =  new OnAnswerReceived(questionRepository, interviewCacheRepository, interviewWebSocketPublisher);
+        this.onAnswerReceived = new OnAnswerReceived(questionRepository, interviewCacheRepository, interviewWebSocketPublisher);
     }
 
 
@@ -52,13 +51,13 @@ public class OnAnswerReceivedTests {
     void shouldPublishNetxQuestionToWebsocket() {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
 
-        Interview toSaveInterview =  InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
 
         List<Question> questions = InterviewTestFixture.anySavedQuestionList(savedInterview);
         OnAnswerReceivedRequest request = InterviewTestFixture.anyOnQuestionOnAnswerReceivedRequest();
 
-        InterviewState interviewState =  InterviewTestFixture.anySavedInterviewState(savedInterview.getId(), questions);
+        InterviewState interviewState = InterviewTestFixture.anySavedInterviewState(savedInterview.getId(), questions);
 
         Mockito.when(this.questionRepository.findById(request.questionId())).thenReturn(Optional.of(questions.getFirst()));
         Mockito.when(this.interviewCacheRepository.get(interviewState.getInterviewId())).thenReturn(interviewState);

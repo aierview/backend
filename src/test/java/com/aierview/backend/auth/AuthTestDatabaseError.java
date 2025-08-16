@@ -69,7 +69,7 @@ public class AuthTestDatabaseError {
     }
 
     @BeforeAll
-    static void beforeAll()  {
+    static void beforeAll() {
         redisContainer.start();
     }
 

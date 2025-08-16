@@ -128,7 +128,7 @@ public class InterviewTestFixture {
     public static List<Question> anySavedQuestionList(Interview anySavedInterview) {
         Question question = anyQuestion(anySavedInterview);
         question.setId(1L);
-        Question question1 =   anySavedQuestion(anySavedInterview);
+        Question question1 = anySavedQuestion(anySavedInterview);
         question1.setId(2L);
         return List.of(question, question1);
     }
@@ -179,7 +179,7 @@ public class InterviewTestFixture {
     }
 
     public static CurrentQuestion anyCurrentQuestion(Question question) {
-        return new CurrentQuestion(question.getId(),  question.getQuestion(), question.getAudioUrl());
+        return new CurrentQuestion(question.getId(), question.getQuestion(), question.getAudioUrl());
     }
 
     public static Question anySavedQuestion(Question question, String audioUrl) {
@@ -192,19 +192,19 @@ public class InterviewTestFixture {
         return question;
     }
 
-    public  static InterviewState anySavedInterviewState(Interview interview, Question question) {
-        return new InterviewState(interview.getId(),List.of(question));
+    public static InterviewState anySavedInterviewState(Interview interview, Question question) {
+        return new InterviewState(interview.getId(), List.of(question));
     }
 
-    public  static InterviewState anySavedInterviewState(InterviewState interviewState,List<Question> questions) {
+    public static InterviewState anySavedInterviewState(InterviewState interviewState, List<Question> questions) {
         interviewState.setQuestions(questions);
         interviewState.setCurrentQuestionIndex(1);
         interviewState.setStatus(questions.getLast().getId(), "READY_FOR_SEND");
         return interviewState;
     }
 
-    public  static InterviewState anySavedInterviewState(Long interviewId,List<Question> questions) {
-        InterviewState interviewState = new InterviewState(interviewId,questions);
+    public static InterviewState anySavedInterviewState(Long interviewId, List<Question> questions) {
+        InterviewState interviewState = new InterviewState(interviewId, questions);
         interviewState.setStatus(questions.getLast().getId(), "READY_FOR_SEND");
         return interviewState;
     }
