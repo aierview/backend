@@ -8,19 +8,17 @@ import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.infra.adapter.cache.InterviewCacheRepositoryAdapter;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.InterviewTestFixture;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.AssertionsKt.assertNotNull;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +42,7 @@ public class InterviewCacheRepositoryAdapterTests {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
         Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
-        List<Question> questions =  InterviewTestFixture.anyQuestionList(savedInterview);
+        List<Question> questions = InterviewTestFixture.anyQuestionList(savedInterview);
         savedInterview.setQuestions(questions);
 
         this.interviewCacheRepository.put(savedInterview);
@@ -68,10 +66,10 @@ public class InterviewCacheRepositoryAdapterTests {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
         Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
-        List<Question> questions =  InterviewTestFixture.anyQuestionList(savedInterview);
+        List<Question> questions = InterviewTestFixture.anyQuestionList(savedInterview);
         savedInterview.setQuestions(questions);
 
-        InterviewState savedInterviewState = new InterviewState(savedInterview.getId(),savedInterview.getQuestions());
+        InterviewState savedInterviewState = new InterviewState(savedInterview.getId(), savedInterview.getQuestions());
 
         when(this.valueOperations.get("interview:" + savedInterview.getId())).thenReturn(savedInterviewState);
 
@@ -90,7 +88,7 @@ public class InterviewCacheRepositoryAdapterTests {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
         Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
-        List<Question> questions =  InterviewTestFixture.anyQuestionList(savedInterview);
+        List<Question> questions = InterviewTestFixture.anyQuestionList(savedInterview);
         savedInterview.setQuestions(questions);
 
         when(this.redisTemplate.delete("interview:" + savedInterview.getId())).thenReturn(true);
@@ -106,11 +104,39 @@ public class InterviewCacheRepositoryAdapterTests {
         UserRef savedUser = AuthTestFixture.anySavedUserRef();
         Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
         Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
-        List<Question> questions =  InterviewTestFixture.anyQuestionList(savedInterview);
+        List<Question> questions = InterviewTestFixture.anyQuestionList(savedInterview);
         savedInterview.setQuestions(questions);
 
-        InterviewState savedInterviewState = new InterviewState(savedInterview.getId(),savedInterview.getQuestions());
+        InterviewState savedInterviewState = new InterviewState(savedInterview.getId(), savedInterview.getQuestions());
         when(this.valueOperations.get("interview:" + savedInterview.getId())).thenReturn(savedInterviewState);
+        savedInterviewState.setCurrentQuestionIndex(2);
+
+        this.interviewCacheRepository.revalidate(savedInterviewState.getInterviewId(), savedInterviewState);
+
+        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
+        verify(this.valueOperations).set(eq("interview:" + savedInterview.getId()), captor.capture());
+
+        Object captured = captor.getValue();
+
+        assertNotNull(captured);
+        assertInstanceOf(InterviewState.class, captured);
+        InterviewState state = (InterviewState) captured;
+        assertEquals(savedInterview.getId(), state.getInterviewId());
+        assertEquals(2, state.getCurrentQuestionIndex());
+        assertEquals(questions, state.getQuestions());
+    }
+
+    @Test
+    @DisplayName("Should put cached value if not exists")
+    void shouldPutCachedValueIfNotExists() {
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
+        List<Question> questions = InterviewTestFixture.anyQuestionList(savedInterview);
+        savedInterview.setQuestions(questions);
+
+        InterviewState savedInterviewState = new InterviewState(savedInterview.getId(), savedInterview.getQuestions());
+        when(this.valueOperations.get("interview:" + savedInterview.getId())).thenReturn(null);
         savedInterviewState.setCurrentQuestionIndex(2);
 
         this.interviewCacheRepository.revalidate(savedInterviewState.getInterviewId(), savedInterviewState);
