@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.Optional;
 
 public class QuestionRepositoryAdapterTests {
     private IQuestionRepository questionRepository;
@@ -67,4 +68,13 @@ public class QuestionRepositoryAdapterTests {
         Mockito.verify(this.questionMapper, Mockito.times(1)).mapToListEntity(savedQuestionJpaList);
     }
 
+    @Test
+    @DisplayName("Should return optional of empty when question does not exist")
+    void shouldReturnOptionalOfEmptyWhenQuestionDoesNotExist() {
+        Long questionId = 1L;
+        Mockito.when(this.questionJpaRepository.findById(questionId)).thenReturn(Optional.empty());
+        Optional<Question> question = questionRepository.findById(questionId);
+        Assertions.assertThat(question).isEmpty();
+        Mockito.verify(this.questionJpaRepository, Mockito.times(1)).findById(questionId);
+    }
 }
