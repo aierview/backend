@@ -126,9 +126,9 @@ public class BeginInterviewTests {
 
         when(this.generateQuestions.execute(request, savedInterviewWithNoQuestion.getId())).thenReturn(questions);
         when(this.questionRepository.saveAll(questions)).thenReturn(savedQuestions);
-        when(this.interviewRepository.update(savedInterviewWithQuestion)).thenReturn(savedInterviewWithQuestion);
+        when(this.interviewRepository.update(any(Interview.class))).thenReturn(savedInterviewWithQuestion);
         doNothing().when(this.interviewCacheRepository).put(savedInterviewWithQuestion);
-        doNothing().when(this.interviewEventPublisher).publishFirstQuestion(savedQuestions.getFirst());
+        doNothing().when(this.interviewEventPublisher).publish(savedQuestions.getFirst());
 
         this.beginInterview.execute(request);
 
@@ -145,6 +145,6 @@ public class BeginInterviewTests {
                         interview.getStatus() == InterviewStatus.STARTED &&
                         interview.getCreatedAt() != null
         ));
-        verify(this.interviewEventPublisher, times(1)).publishFirstQuestion(savedQuestions.getFirst());
+        verify(this.interviewEventPublisher, times(1)).publish(savedQuestions.getFirst());
     }
 }
