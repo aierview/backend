@@ -31,8 +31,8 @@ public class InterviewController {
             @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
     })
     public ResponseEntity<Response> beginInterviewUse(@Valid @RequestBody BeginInterviewRequest request) {
-        this.beginInterviewUseCase.execute(request);
-        Response response = Response.builder().data("202").statusCode(HttpStatus.ACCEPTED.value()).build();
+        Long interviewId = this.beginInterviewUseCase.execute(request);
+        Response response = Response.builder().data(interviewId).statusCode(HttpStatus.ACCEPTED.value()).build();
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 }
