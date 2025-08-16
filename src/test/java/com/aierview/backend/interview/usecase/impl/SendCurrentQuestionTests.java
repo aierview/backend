@@ -62,7 +62,7 @@ public class SendCurrentQuestionTests {
 
         Question question = InterviewTestFixture.anySavedQuestion(savedInterview);
         CurrentQuestion currentQuestion = InterviewTestFixture.anyCurrentQuestion(question);
-        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audio_url());
+        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audioUrl());
 
         InterviewState interviewState =  InterviewTestFixture.anySavedInterviewState(savedInterview, question);
 
@@ -89,8 +89,8 @@ public class SendCurrentQuestionTests {
 
         Question question = InterviewTestFixture.anySavedQuestion(savedInterview);
         CurrentQuestion currentQuestion = InterviewTestFixture.anyCurrentQuestion(question);
-        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audio_url());
-        Question questionWihAudioUrl1 = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audio_url());
+        Question questionWihAudioUrl = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audioUrl());
+        Question questionWihAudioUrl1 = InterviewTestFixture.anySavedQuestion(question,currentQuestion.audioUrl());
 
         InterviewState interviewState =  InterviewTestFixture.anySavedInterviewState(savedInterview, question);
         InterviewState interviewStateWFCACK =  InterviewTestFixture
