@@ -99,4 +99,32 @@ public class InterviewCacheRepositoryAdapterTests {
 
         verify(this.redisTemplate, times(1)).delete("interview:" + savedInterview.getId());
     }
+
+    @Test
+    @DisplayName("Should revalidate cached value if exists")
+    void shouldRevalidateCachedValueIfExists() {
+        UserRef savedUser = AuthTestFixture.anySavedUserRef();
+        Interview toSaveInterview = InterviewTestFixture.anyInterviewWithNoQuestions(savedUser);
+        Interview savedInterview = InterviewTestFixture.anySavedInterviewWithNoQuestions(toSaveInterview);
+        List<Question> questions =  InterviewTestFixture.anyQuestionList(savedInterview);
+        savedInterview.setQuestions(questions);
+
+        InterviewState savedInterviewState = new InterviewState(savedInterview.getId(),savedInterview.getQuestions());
+        when(this.valueOperations.get("interview:" + savedInterview.getId())).thenReturn(savedInterviewState);
+        savedInterviewState.setCurrentQuestionIndex(2);
+
+        this.interviewCacheRepository.revalidate(savedInterviewState.getInterviewId(), savedInterviewState);
+
+        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
+        verify(this.valueOperations).set(eq("interview:" + savedInterview.getId()), captor.capture());
+
+        Object captured = captor.getValue();
+
+        assertNotNull(captured);
+        assertInstanceOf(InterviewState.class, captured);
+        InterviewState state = (InterviewState) captured;
+        assertEquals(savedInterview.getId(), state.getInterviewId());
+        assertEquals(2, state.getCurrentQuestionIndex());
+        assertEquals(questions, state.getQuestions());
+    }
 }
