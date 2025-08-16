@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -24,6 +25,24 @@ public class QuestionRepositoryAdapterTests {
         this.questionMapper = Mockito.mock(QuestionMapper.class);
         this.questionJpaRepository = Mockito.mock(QuestionJpaRepository.class);
         this.questionRepository = new QuestionRepositoryAdapter(questionMapper, questionJpaRepository);
+    }
+
+    @Test
+    @DisplayName("Should save question")
+    void shouldSaveQuestion() {
+        Question toSaveQuestion = InterviewTestFixture.anyQuestion();
+        QuestionJpaEntity toSaveEntity = InterviewTestFixture.anyQuestionJpaList(List.of(toSaveQuestion)).get(0);
+
+        Question savedQuestion = InterviewTestFixture.anySavedQuestion(toSaveQuestion);
+        QuestionJpaEntity savedEntity = InterviewTestFixture.anySavedQuestionJpaList(List.of(savedQuestion)).get(0);
+
+        Mockito.when(this.questionMapper.mapToJpa(toSaveQuestion)).thenReturn(toSaveEntity);
+        Mockito.when(this.questionJpaRepository.save(toSaveEntity)).thenReturn(toSaveEntity);
+
+        this.questionRepository.save(toSaveQuestion);
+
+        Mockito.verify(this.questionMapper, Mockito.times(1)).mapToJpa(toSaveQuestion);
+        Mockito.verify(this.questionJpaRepository, Mockito.times(1)).save(toSaveEntity);
     }
 
     @Test
@@ -47,4 +66,5 @@ public class QuestionRepositoryAdapterTests {
         Mockito.verify(this.questionJpaRepository, Mockito.times(1)).saveAll(toSaveQuestionJpaList);
         Mockito.verify(this.questionMapper, Mockito.times(1)).mapToListEntity(savedQuestionJpaList);
     }
+
 }
