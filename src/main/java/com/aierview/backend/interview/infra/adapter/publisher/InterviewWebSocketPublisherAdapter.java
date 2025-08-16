@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class IInterviewWebSocketPublisherAdapter implements IInterviewWebSocketPublisher {
+public class InterviewWebSocketPublisherAdapter implements IInterviewWebSocketPublisher {
     private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public void execute(Long interviewId, CurrentQuestion currentQuestion) {
-        messagingTemplate.convertAndSend("/topic/interview/all", currentQuestion);
+        messagingTemplate.convertAndSend("/topic/interview/"+interviewId, currentQuestion);
     }
 }
