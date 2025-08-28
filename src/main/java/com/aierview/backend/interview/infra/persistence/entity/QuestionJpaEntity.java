@@ -25,8 +25,9 @@ public class QuestionJpaEntity {
     @Column(columnDefinition = "TEXT")
     private String feedback;
 
+    private double score;
+
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "interview_id")
     private InterviewJpaEntity interview;
 }

@@ -2,6 +2,7 @@ package com.aierview.backend.interview.infra.adapter.publisher;
 
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewEventConsumer;
 import com.aierview.backend.interview.domain.model.CurrentQuestion;
+import com.aierview.backend.interview.domain.model.InterviewEventConsumerPayload;
 import com.aierview.backend.interview.usecase.contract.ISendCurrentQuestion;
 import com.aierview.backend.shared.testdata.InterviewTestFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ public class KafkaKafkaInterviewEventConsumerAdapterTests {
     @Test
     @DisplayName("should consume topic of kafka and send question")
     void shouldConsumeTopicOfKafkaAndSendQuestion() {
-        CurrentQuestion currentQuestion = InterviewTestFixture.anyCurrentQuestion();
+        InterviewEventConsumerPayload currentQuestion = InterviewTestFixture.anyInterviewEventConsumerPayload();
         Mockito.doNothing().when(this.sendCurrentQuestion).execute(currentQuestion);
         this.kafkaInterviewEventConsumer.consume(currentQuestion);
         Mockito.verify(this.sendCurrentQuestion, Mockito.times(1)).execute(currentQuestion);

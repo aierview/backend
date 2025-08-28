@@ -1,4 +1,4 @@
 package com.aierview.backend.interview.domain.model;
 
-public record OnAnswerReceivedRequest(String answer, Long questionId) {
+public record OnAnswerReceivedRequest(Long questionId, String base64Answer) {
 }

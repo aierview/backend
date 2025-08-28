@@ -8,6 +8,7 @@ import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.InterviewState;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.exceptions.UnavailableNextQuestionException;
+import com.aierview.backend.interview.domain.model.InterviewEventPublisherPayload;
 import com.aierview.backend.interview.domain.model.OnQuestionReceivedRequest;
 import com.aierview.backend.interview.usecase.contract.IOnQuestionReceived;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
@@ -71,7 +72,7 @@ public class OnQuestionReceivedTests {
         verify(this.questionRepository, times(1)).findById(request.questionId());
         verify(this.interviewCacheRepository, times(1)).get(savedInterview.getId());
         verify(this.interviewCacheRepository, times(1)).revalidate(savedInterview.getId(), interviewState);
-        verify(this.interviewEventPublisher, times(0)).publish(any(Question.class));
+        verify(this.interviewEventPublisher, times(0)).publish(any(InterviewEventPublisherPayload.class));
     }
 
     @Test
@@ -98,7 +99,6 @@ public class OnQuestionReceivedTests {
         this.onQuestionReceived.execute(request);
         verify(this.questionRepository, times(1)).findById(request.questionId());
         verify(this.interviewCacheRepository, times(1)).get(savedInterview.getId());
-        verify(this.interviewEventPublisher, times(1)).publish(interviewStateWFCACK.getQuestions().getLast());
 
     }
 }

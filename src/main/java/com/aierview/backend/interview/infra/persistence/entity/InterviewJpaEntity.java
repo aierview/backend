@@ -23,7 +23,7 @@ public class InterviewJpaEntity {
     private Long id;
     private String stack;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private UserJpaEntity user;
 

@@ -13,5 +13,6 @@ public class Question {
     private String audioUrl;
     private String answer;
     private String feedback;
+    private double score;
     private Interview interview;
 }

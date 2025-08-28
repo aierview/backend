@@ -22,6 +22,7 @@ public class InterviewWebSocketController {
 
     @MessageMapping("/question/answered")
     public void onAnswerReceived(@Payload OnAnswerReceivedRequest request) {
+        System.out.println(request.toString());
         this.onAnswerReceivedUseCase.execute(request);
     }
 }

@@ -2,6 +2,7 @@ package com.aierview.backend.shared.utils;
 
 import com.aierview.backend.interview.domain.exceptions.UnavailableIAServiceException;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
+import com.aierview.backend.interview.domain.model.GenerateFeedbackRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -40,6 +41,35 @@ public class GeminiFunctUtils {
         prompt.append("pergunta\n");
         prompt.append("Uma pergunta por linha.\n");
         prompt.append("Adicione ## ao final de cada pergunta para indicar o término da pergunta.\n");
+        return prompt.toString();
+    }
+
+    public String generateFeedbackPrompt(GenerateFeedbackRequest request) {
+        StringBuilder prompt = new StringBuilder();
+        prompt.append("📋 Contexto:\n");
+        prompt.append("Você está atuando como entrevistador técnico e irá avaliar a resposta de um desenvolvedor na seguinte entrevista. ");
+        prompt.append("O candidato possui o papel de ").append(request.role())
+                .append(", com nível ").append(request.level())
+                .append(", e está sendo avaliado na stack ").append(request.stack()).append(".\n\n");
+
+        prompt.append("🎯 Objetivo:\n");
+        prompt.append("Sua tarefa é avaliar a qualidade da resposta fornecida pelo candidato com base na clareza, precisão técnica, completude e comunicação. ");
+        prompt.append("Além disso, forneça um feedback construtivo que possa ajudá-lo a melhorar.\n\n");
+
+        prompt.append("📝 Instruções:\n");
+        prompt.append("1. Retorne o feedback utilizando o seguinte formato:\n");
+        prompt.append(" [Seu feedback aqui]##\n\n");
+        prompt.append("2. Atribua uma nota de 0 a 10 com base na resposta, considerando critérios técnicos e comunicativos:\n");
+        prompt.append("[Nota de 0 a 10]##\n\n");
+        prompt.append("Adicione ## ao final do feedback para indicar o término o feedback.\n");
+        prompt.append("Adicione ## ao final do score para indicar o término do score.\n");
+        prompt.append("Ignore erros ortográficos ou de digitação ao atribuir o score. ");
+        prompt.append("Erros de português não devem ser apontados no feedback e não devem influenciar negativamente ");
+        prompt.append("no score do candidato caso o conteúdo técnico esteja correto.\n\n");
+
+        prompt.append("🧠 Dados da entrevista:\n");
+        prompt.append("Pergunta:\n").append(request.question()).append("\n\n");
+        prompt.append("Resposta:\n").append(request.answerText()).append("\n");
         return prompt.toString();
     }
 

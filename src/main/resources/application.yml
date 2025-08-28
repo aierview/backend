@@ -1,6 +1,13 @@
 google:
   token-info-url: ${GOOGLE_TOKEN_INFO_URL}
 
+r2:
+  endpoint: ${R2_ENDPOINT}
+  bucket: ${R2_BUCKET}
+  access_key: ${R2_ACCESS_KEY}
+  secret_key: ${R2_SECRET_KEY}
+  audio_file_path: ${R2_AUDIO_FILE_PATH}
+
 spring:
   data:
     redis:
@@ -18,4 +25,4 @@ spring:
     consumer:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.value.default.type: com.aierview.backend.interview.domain.model.CurrentQuestion
+        spring.json.value.default.type: com.aierview.backend.interview.domain.model.InterviewEventConsumerPayload

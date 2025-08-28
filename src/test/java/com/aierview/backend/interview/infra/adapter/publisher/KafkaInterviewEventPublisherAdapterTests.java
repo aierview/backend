@@ -3,7 +3,7 @@ package com.aierview.backend.interview.infra.adapter.publisher;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewEventPublisher;
 import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.Question;
-import com.aierview.backend.interview.infra.dto.NextQuestionEvent;
+import com.aierview.backend.interview.domain.model.InterviewEventPublisherPayload;
 import com.aierview.backend.shared.testdata.InterviewTestFixture;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ public class KafkaInterviewEventPublisherAdapterTests {
         question.setId(1L);
         question.setInterview(Interview.builder().id(1L).build());
 
-        NextQuestionEvent payload = new NextQuestionEvent(question.getInterview().getId(), question.getId(), question.getQuestion());
+        InterviewEventPublisherPayload payload = new InterviewEventPublisherPayload(question.getId(), question.getQuestion());
 
         SendResult<String, Object> fakeResult =
                 new SendResult<>(null, new RecordMetadata(null, 0, 0, 0, Long.valueOf(0), 0, 0));
@@ -41,7 +41,7 @@ public class KafkaInterviewEventPublisherAdapterTests {
         Mockito.when(kafkaTemplate.send("first-question-topic", payload))
                 .thenReturn(CompletableFuture.completedFuture(fakeResult));
 
-        this.interviewEventPublisher.publish(question);
+        this.interviewEventPublisher.publish(payload);
         Mockito.verify(this.kafkaTemplate, Mockito.times(1)).send("interview.next-question-text", payload);
     }
 }

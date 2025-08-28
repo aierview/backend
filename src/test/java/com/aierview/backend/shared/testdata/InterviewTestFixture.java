@@ -8,10 +8,7 @@ import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.enums.InterviewLevel;
 import com.aierview.backend.interview.domain.enums.InterviewRole;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
-import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
-import com.aierview.backend.interview.domain.model.CurrentQuestion;
-import com.aierview.backend.interview.domain.model.OnAnswerReceivedRequest;
-import com.aierview.backend.interview.domain.model.OnQuestionReceivedRequest;
+import com.aierview.backend.interview.domain.model.*;
 import com.aierview.backend.interview.infra.persistence.entity.InterviewJpaEntity;
 import com.aierview.backend.interview.infra.persistence.entity.QuestionJpaEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
@@ -178,6 +175,13 @@ public class InterviewTestFixture {
         return new CurrentQuestion(1L, "any_question", "any_audio_url");
     }
 
+
+
+    public static InterviewEventConsumerPayload anyInterviewEventConsumerPayload() {
+        return new InterviewEventConsumerPayload(1L, "any_audio_url");
+    }
+
+
     public static CurrentQuestion anyCurrentQuestion(Question question) {
         return new CurrentQuestion(question.getId(), question.getQuestion(), question.getAudioUrl());
     }
@@ -214,6 +218,6 @@ public class InterviewTestFixture {
     }
 
     public static OnAnswerReceivedRequest anyOnQuestionOnAnswerReceivedRequest() {
-        return new OnAnswerReceivedRequest("any_answer", 1L);
+        return new OnAnswerReceivedRequest( 1L,"any_answer");
     }
 }

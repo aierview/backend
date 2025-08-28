@@ -8,6 +8,7 @@ import com.aierview.backend.interview.domain.entity.InterviewState;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.exceptions.UnavailableNextQuestionException;
 import com.aierview.backend.interview.domain.model.CurrentQuestion;
+import com.aierview.backend.interview.domain.model.InterviewEventConsumerPayload;
 import com.aierview.backend.interview.usecase.contract.ISendCurrentQuestion;
 
 public class SendCurrentQuestion implements ISendCurrentQuestion {
@@ -22,14 +23,16 @@ public class SendCurrentQuestion implements ISendCurrentQuestion {
     }
 
     @Override
-    public void execute(CurrentQuestion currentQuestion) {
-        Question existingQuestion = this.questionRepository.findById(currentQuestion.questionId())
+    public void execute(InterviewEventConsumerPayload payload) {
+        Question existingQuestion = this.questionRepository.findById(payload.questionId())
                 .orElseThrow(UnavailableNextQuestionException::new);
-        existingQuestion.setAudioUrl(currentQuestion.audioUrl());
+        
+        existingQuestion.setAudioUrl(payload.audioUrl());
         this.questionRepository.save(existingQuestion);
         Interview interview = existingQuestion.getInterview();
         InterviewState interviewState = this.interviewCacheRepository.get(interview.getId());
         if (interviewState.isFirst()) {
+            CurrentQuestion currentQuestion = new CurrentQuestion(existingQuestion.getId(), existingQuestion.getQuestion(), existingQuestion.getAudioUrl() );
             this.interviewWebSocketPublisher.execute(interview.getId(), currentQuestion);
             interviewState.setStatus(existingQuestion.getId(), "WAITING_FOR_CLIENT_ACK");
         } else {

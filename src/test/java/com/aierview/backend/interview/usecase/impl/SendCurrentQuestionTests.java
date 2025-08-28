@@ -45,7 +45,7 @@ public class SendCurrentQuestionTests {
 
         when(questionRepository.findById(currentQuestion.questionId())).thenReturn(Optional.empty());
 
-        Throwable exception = Assertions.catchThrowable(() -> sendCurrentQuestion.execute(currentQuestion));
+        Throwable exception = Assertions.catchThrowable(() -> sendCurrentQuestion.execute(Mockito.any()));
 
         Assertions.assertThat(exception).isInstanceOf(UnavailableNextQuestionException.class);
         Assertions.assertThat(exception.getMessage()).isEqualTo("We sorry! We couldn't provide next question. Please try again.");
@@ -70,7 +70,7 @@ public class SendCurrentQuestionTests {
         when(this.questionRepository.save(questionWihAudioUrl)).thenReturn(questionWihAudioUrl);
         when(this.interviewCacheRepository.get(savedInterview.getId())).thenReturn(interviewState);
 
-        this.sendCurrentQuestion.execute(currentQuestion);
+        this.sendCurrentQuestion.execute(Mockito.any());
 
         Mockito.verify(this.questionRepository, times(1)).findById(currentQuestion.questionId());
         Mockito.verify(this.questionRepository, times(1)).save(questionWihAudioUrl);
@@ -100,7 +100,7 @@ public class SendCurrentQuestionTests {
         when(this.questionRepository.save(questionWihAudioUrl)).thenReturn(questionWihAudioUrl);
         when(this.interviewCacheRepository.get(savedInterview.getId())).thenReturn(interviewStateWFCACK);
 
-        this.sendCurrentQuestion.execute(currentQuestion);
+        this.sendCurrentQuestion.execute(Mockito.any());
 
         Mockito.verify(this.questionRepository, times(1)).findById(currentQuestion.questionId());
         Mockito.verify(this.questionRepository, times(1)).save(questionWihAudioUrl);

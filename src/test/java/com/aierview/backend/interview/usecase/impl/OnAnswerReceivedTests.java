@@ -1,7 +1,9 @@
 package com.aierview.backend.interview.usecase.impl;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
+import com.aierview.backend.interview.domain.contract.bucket.IUploadBase64File;
 import com.aierview.backend.interview.domain.contract.cache.IInterviewCacheRepository;
+import com.aierview.backend.interview.domain.contract.publisher.IAnswerEventPublisher;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewWebSocketPublisher;
 import com.aierview.backend.interview.domain.contract.repository.IQuestionRepository;
 import com.aierview.backend.interview.domain.entity.Interview;
@@ -26,13 +28,17 @@ public class OnAnswerReceivedTests {
     private IQuestionRepository questionRepository;
     private IInterviewCacheRepository interviewCacheRepository;
     private IInterviewWebSocketPublisher interviewWebSocketPublisher;
+    private IAnswerEventPublisher answerEventPublisher;
+    private IUploadBase64File uploadBase64File;
 
     @BeforeEach
     void setUp() {
         this.questionRepository = Mockito.mock(IQuestionRepository.class);
         this.interviewCacheRepository = Mockito.mock(IInterviewCacheRepository.class);
         this.interviewWebSocketPublisher = Mockito.mock(IInterviewWebSocketPublisher.class);
-        this.onAnswerReceived = new OnAnswerReceived(questionRepository, interviewCacheRepository, interviewWebSocketPublisher);
+        this.uploadBase64File = Mockito.mock(IUploadBase64File.class);
+        this.onAnswerReceived = new OnAnswerReceived(questionRepository, interviewCacheRepository,
+                interviewWebSocketPublisher, answerEventPublisher, uploadBase64File);
     }
 
 

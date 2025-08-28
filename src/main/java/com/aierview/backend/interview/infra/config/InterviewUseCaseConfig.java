@@ -1,20 +1,17 @@
 package com.aierview.backend.interview.infra.config;
 
 import com.aierview.backend.interview.domain.contract.IA.IGenerateQuestions;
+import com.aierview.backend.interview.domain.contract.IA.IIAGenerateFeedback;
+import com.aierview.backend.interview.domain.contract.bucket.IUploadBase64File;
 import com.aierview.backend.interview.domain.contract.cache.IInterviewCacheRepository;
+import com.aierview.backend.interview.domain.contract.publisher.IAnswerEventPublisher;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewEventPublisher;
 import com.aierview.backend.interview.domain.contract.publisher.IInterviewWebSocketPublisher;
 import com.aierview.backend.interview.domain.contract.repository.IInterviewRepository;
 import com.aierview.backend.interview.domain.contract.repository.IQuestionRepository;
 import com.aierview.backend.interview.domain.contract.user.IGetLoggedUser;
-import com.aierview.backend.interview.usecase.contract.IBeginInterview;
-import com.aierview.backend.interview.usecase.contract.IOnAnswerReceived;
-import com.aierview.backend.interview.usecase.contract.IOnQuestionReceived;
-import com.aierview.backend.interview.usecase.contract.ISendCurrentQuestion;
-import com.aierview.backend.interview.usecase.impl.BeginInterview;
-import com.aierview.backend.interview.usecase.impl.OnAnswerReceived;
-import com.aierview.backend.interview.usecase.impl.OnQuestionReceived;
-import com.aierview.backend.interview.usecase.impl.SendCurrentQuestion;
+import com.aierview.backend.interview.usecase.contract.*;
+import com.aierview.backend.interview.usecase.impl.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +28,9 @@ public class InterviewUseCaseConfig {
     private final IInterviewCacheRepository interviewCacheRepository;
     private final IInterviewEventPublisher interviewEventPublisher;
     private final IInterviewWebSocketPublisher interviewWebSocketPublisher;
+    private final IAnswerEventPublisher answerEventPublisher;
+    private final IUploadBase64File uploadBase64File;
+    private final IIAGenerateFeedback iiaGenerateFeedback;
 
     @Bean
     public IBeginInterview beginInterview() {
@@ -52,6 +52,12 @@ public class InterviewUseCaseConfig {
 
     @Bean
     public IOnAnswerReceived onAnswerReceived() {
-        return new OnAnswerReceived(questionRepository, interviewCacheRepository, interviewWebSocketPublisher);
+        return new OnAnswerReceived(questionRepository,
+                interviewCacheRepository, interviewWebSocketPublisher, answerEventPublisher, uploadBase64File);
+    }
+
+    @Bean
+    public IGenerateFeedback generateFeedback (){
+        return new GenerateFeedback(questionRepository, iiaGenerateFeedback);
     }
 }

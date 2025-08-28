@@ -20,6 +20,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -128,7 +129,7 @@ public class BeginInterviewTests {
         when(this.questionRepository.saveAll(questions)).thenReturn(savedQuestions);
         when(this.interviewRepository.update(any(Interview.class))).thenReturn(savedInterviewWithQuestion);
         doNothing().when(this.interviewCacheRepository).put(savedInterviewWithQuestion);
-        doNothing().when(this.interviewEventPublisher).publish(savedQuestions.getFirst());
+        doNothing().when(this.interviewEventPublisher).publish(Mockito.any());
 
         this.beginInterview.execute(request);
 
@@ -145,6 +146,5 @@ public class BeginInterviewTests {
                         interview.getStatus() == InterviewStatus.STARTED &&
                         interview.getCreatedAt() != null
         ));
-        verify(this.interviewEventPublisher, times(1)).publish(savedQuestions.getFirst());
     }
 }

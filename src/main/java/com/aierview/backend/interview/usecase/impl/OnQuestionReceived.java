@@ -7,6 +7,7 @@ import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.InterviewState;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.exceptions.UnavailableNextQuestionException;
+import com.aierview.backend.interview.domain.model.InterviewEventPublisherPayload;
 import com.aierview.backend.interview.domain.model.OnQuestionReceivedRequest;
 import com.aierview.backend.interview.usecase.contract.IOnQuestionReceived;
 
@@ -32,7 +33,8 @@ public class OnQuestionReceived implements IOnQuestionReceived {
         this.interviewCacheRepository.revalidate(interview.getId(), interviewState);
         if (!interviewState.hasNextQuestion()) return;
         Question nextQuestion = interviewState.peekNextQuestion();
-        this.interviewEventPublisher.publish(nextQuestion);
+        InterviewEventPublisherPayload payload =  new InterviewEventPublisherPayload(nextQuestion.getId(), nextQuestion.getQuestion());
+        this.interviewEventPublisher.publish(payload);
         interviewState.setStatus(nextQuestion.getId(), "WAITING_FOR_PREP");
         interviewState.advanceToNextQuestion();
         this.interviewCacheRepository.revalidate(interview.getId(), interviewState);

@@ -11,6 +11,7 @@ import com.aierview.backend.interview.domain.entity.Interview;
 import com.aierview.backend.interview.domain.entity.Question;
 import com.aierview.backend.interview.domain.enums.InterviewStatus;
 import com.aierview.backend.interview.domain.model.BeginInterviewRequest;
+import com.aierview.backend.interview.domain.model.InterviewEventPublisherPayload;
 import com.aierview.backend.interview.usecase.contract.IBeginInterview;
 
 import java.time.LocalDateTime;
@@ -46,7 +47,9 @@ public class BeginInterview implements IBeginInterview {
         interview = this.interviewRepository.update(interview);
         interview.setQuestions(questions);
         this.interviewCacheRepository.put(interview);
-        this.interviewEventPublisher.publish(questions.getFirst());
+        Question nextQuestion = interview.getQuestions().getFirst();
+        InterviewEventPublisherPayload payload =  new InterviewEventPublisherPayload(nextQuestion.getId(), nextQuestion.getQuestion());
+        this.interviewEventPublisher.publish(payload);
         return interview.getId();
     }
 
