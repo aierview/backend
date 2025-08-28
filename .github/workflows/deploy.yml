@@ -1,0 +1,67 @@
+name: Deploy Backend
+
+on:
+  pull_request:
+    branches:
+      - homolog
+      - main
+    types:
+      - closed
+
+jobs:
+  backup-and-deploy:
+    name: Flyway Migrations + Deploy to Fly.io
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'database')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run Flyway migrations (Maven)
+        run: mvn -Dflyway.url=${{ secrets.SUPABASE_DB_URL }} -Dflyway.user=${{ secrets.SUPABASE_DB_USER }} -Dflyway.password=${{ secrets.SUPABASE_DB_PASSWORD }} flyway:migrate
+
+      - name: Set FLY_CONFIG based on branch
+        run: |
+          if [[ "${GITHUB_BASE_REF}" == "main" ]]; then
+            echo "FLY_CONFIG=fly.toml" >> $GITHUB_ENV
+          else
+            echo "FLY_CONFIG=fly.homolog.toml" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions@1.4
+        with:
+          args: deploy --remote-only --config ${{ env.FLY_CONFIG }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  deploy-only:
+    name: Deploy to Fly.io (no backup)
+    if: github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'database')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set FLY_CONFIG based on branch
+        run: |
+          if [[ "${GITHUB_BASE_REF}" == "main" ]]; then
+            echo "FLY_CONFIG=fly.toml" >> $GITHUB_ENV
+          else
+            echo "FLY_CONFIG=fly.homolog.toml" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions@1.4
+        with:
+          args: deploy --remote-only --config ${{ env.FLY_CONFIG }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

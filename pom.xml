@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.aierview</groupId>
-    <artifactId>backend</artifactId>
+    <artifactId>interview-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
     <description>backend</description>
@@ -34,7 +34,32 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
         <dependency>
@@ -55,6 +80,30 @@
         </dependency>
 
         <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.34</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
@@ -68,6 +117,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>1.19.3</version>
@@ -78,6 +133,26 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
             <version>1.19.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wiremock.integrations</groupId>
+            <artifactId>wiremock-spring-boot</artifactId>
+            <version>3.9.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>kafka</artifactId>
+            <version>1.19.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -141,11 +216,12 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>com/aierview/backend/auth/infra/mapper/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/model/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/mapper/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/model/**/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/entity/*.class</exclude>
                                 <exclude>com/aierview/backend/BackendApplication.class</exclude>
-                                <exclude>com/aierview/backend/auth/infra/persisntence/jpa/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/persistence/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/interview/infra/controller/InterviewWebSocketController.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -158,11 +234,12 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>com/aierview/backend/auth/infra/mapper/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/model/*.class</exclude>
-                                <exclude>com/aierview/backend/auth/domain/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/mapper/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/model/**/*.class</exclude>
+                                <exclude>com/aierview/backend/**/domain/entity/*.class</exclude>
                                 <exclude>com/aierview/backend/BackendApplication.class</exclude>
-                                <exclude>com/aierview/backend/auth/infra/persisntence/jpa/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/**/infra/persisntence/entity/*.class</exclude>
+                                <exclude>com/aierview/backend/interview/infra/controller/InterviewWebSocketController.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -189,18 +266,32 @@
                                         </limit>
                                     </limits>
                                     <excludes>
-                                        <exclude>com/aierview/backend/auth/infra/mapper/*.class</exclude>
-                                        <exclude>com/aierview/backend/auth/domain/model/*.class</exclude>
-                                        <exclude>com/aierview/backend/auth/domain/entity/*.class</exclude>
+                                        <exclude>com/aierview/backend/**/infra/mapper/*.class</exclude>
+                                        <exclude>com/aierview/backend/**/domain/model/**/*.class</exclude>
+                                        <exclude>com/aierview/backend/**/domain/entity/*.class</exclude>
                                         <exclude>com/aierview/backend/BackendApplication.class</exclude>
-                                        <exclude>com/aierview/backend/auth/infra/persisntence/jpa/entity/*.class
-                                        </exclude>
+                                        <exclude>com/aierview/backend/**/infra/persisntence/entity/*.class</exclude>
+                                        <exclude>com/aierview/backend/interview/infra/controller/InterviewWebSocketController.class</exclude>
                                     </excludes>
                                 </rule>
                             </rules>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>9.22.3</version>
+                <configuration>
+                    <url>${env.DB_URL}</url>
+                    <user>${env.DB_USER}</user>
+                    <password>${env.DB_PASSWORD}</password>
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
+                </configuration>
             </plugin>
         </plugins>
     </build>

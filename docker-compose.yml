@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: aierview-db
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=aierview
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - aierview-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: aierview-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: [ "redis-server", "--appendonly", "yes" ]
+    restart: always
+    networks:
+      - aierview-network
+
+  backend:
+    build:
+      context: .
+    container_name: aierview-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      ## DATABASE CONFIGURATION
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://aierview-db:5432/aierview
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_SHOW_SQL=false
+      - SPRING_DEVTOOLS_RESTART_ENABLED=FALSE
+      - SPRING_DEVTOOLS_LIVERELOAD_ENABLED=FALSE
+    command: mvn spring-boot:run
+    networks:
+      - aierview-network
+
+volumes:
+  pgdata:
+  redis-data:
+
+networks:
+  aierview-network:
+    driver: bridge
+

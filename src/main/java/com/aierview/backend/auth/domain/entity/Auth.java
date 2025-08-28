@@ -14,5 +14,6 @@ public class Auth {
     private Long id;
     private String password;
     private AuthProvider provider;
+    private String picture;
     private UserRef user;
 }

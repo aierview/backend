@@ -1,10 +1,24 @@
 package com.aierview.backend.auth.infra.config;
 
-import com.aierview.backend.auth.domain.repository.IAuthRepository;
-import com.aierview.backend.auth.domain.repository.IUserRepository;
-import com.aierview.backend.auth.domain.security.IPasswordEncoder;
-import com.aierview.backend.auth.usecase.impl.LocalSignup;
+import com.aierview.backend.auth.domain.contact.google.IExtractUserDetails;
+import com.aierview.backend.auth.domain.contact.repository.IAuthRepository;
+import com.aierview.backend.auth.domain.contact.repository.IUserRepository;
+import com.aierview.backend.auth.domain.contact.security.IPasswordComparer;
+import com.aierview.backend.auth.domain.contact.security.IPasswordEncoder;
+import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
+import com.aierview.backend.auth.domain.enums.Environment;
+import com.aierview.backend.auth.usecase.contract.cookie.IGenerateCookieResponse;
+import com.aierview.backend.auth.usecase.contract.google.IGoogleSignin;
+import com.aierview.backend.auth.usecase.contract.google.IGoogleSignup;
+import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignin;
+import com.aierview.backend.auth.usecase.contract.lcoal.ILocalSignup;
+import com.aierview.backend.auth.usecase.impl.cookie.GenerateCookieResponse;
+import com.aierview.backend.auth.usecase.impl.google.GoogleSignin;
+import com.aierview.backend.auth.usecase.impl.google.GoogleSignup;
+import com.aierview.backend.auth.usecase.impl.local.LocalSignin;
+import com.aierview.backend.auth.usecase.impl.local.LocalSignup;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,9 +30,36 @@ public class AuthUseCaseConfig {
     private final IUserRepository userRepository;
     private final IPasswordEncoder passwordEncoder;
     private final IAuthRepository authRepository;
+    private final IPasswordComparer passwordComparer;
+    private final ITokenGenerator tokenGenerator;
+    private final IExtractUserDetails extractUserDetails;
+
+    @Value("${spring.profiles.active}")
+    private String env;
 
     @Bean
-    public LocalSignup localSignup() {
+    public ILocalSignup localSignup() {
         return new LocalSignup(userRepository, passwordEncoder, authRepository);
+    }
+
+    @Bean
+    public ILocalSignin localSignin() {
+        return new LocalSignin(userRepository, authRepository, passwordComparer, tokenGenerator, generateCookieResponse());
+    }
+
+    @Bean
+    public IGenerateCookieResponse generateCookieResponse() {
+        return new GenerateCookieResponse(Environment.valueOf(env.toUpperCase()));
+    }
+
+    @Bean
+    public IGoogleSignup googleSignup() {
+        return new GoogleSignup(extractUserDetails, userRepository, authRepository);
+    }
+
+    @Bean
+    public IGoogleSignin googleSignin() {
+        return new GoogleSignin(extractUserDetails, userRepository,
+                tokenGenerator, generateCookieResponse(), authRepository);
     }
 }

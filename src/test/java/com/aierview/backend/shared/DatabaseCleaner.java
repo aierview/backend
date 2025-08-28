@@ -15,5 +15,7 @@ public class DatabaseCleaner {
     public void clearDatabase() {
         entityManager.createQuery("DELETE FROM AuthJpaEntity").executeUpdate();
         entityManager.createQuery("DELETE FROM UserJpaEntity").executeUpdate();
+        entityManager.createQuery("DELETE FROM QuestionJpaEntity ").executeUpdate();
+        entityManager.createQuery("DELETE FROM InterviewJpaEntity ").executeUpdate();
     }
 }
