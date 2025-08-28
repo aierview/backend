@@ -9,6 +9,36 @@ The **InterviewService** is responsible for managing technical interviews within
 - **WebSocket support**: streams questions and interview updates to the frontend in real-time.
 - **User authentication**: handles authentication and authorization of users.
 
+---
+
+## Architecture Overview
+
+The InterviewService uses a **modular monolithic architecture combined with Clean Architecture**, which provides several strategic advantages:
+
+### Modular Monolithic Architecture
+- The modular monolithic design organizes the application into independent modules within a single codebase.
+- **Justification:** This approach allows for easier **refactoring into microservices** in the future. For example, the authentication module can be extracted into a standalone microservice without disrupting the rest of the system.
+- Modules communicate internally in a controlled manner, keeping dependencies manageable and improving maintainability.
+
+### Clean Architecture
+- Each module follows **Clean Architecture principles**, ensuring a clear separation of responsibilities between layers (e.g., domain, usecase and infrastructure).
+- **Justification:** This separation enables:
+   - Easier **unit testing** by isolating business logic from infrastructure concerns.
+   - Maintainability and scalability, as changes in one layer do not impact others.
+   - A decoupled design, reducing the risk of tight coupling between modules and dependencies.
+
+---
+
+## Key Benefits
+- **Future-proofing:** Modular monolith allows the service to be split into microservices over time.
+- **Testability:** Clean Architecture facilitates unit and integration testing.
+- **Maintainability:** Layered separation and module boundaries reduce complexity and make refactoring safer.
+- **Scalability:** Individual modules can evolve independently, preparing the service for future growth.
+
+---
+
+This combined architectural approach ensures that the InterviewService remains **robust, testable, and adaptable**, supporting both current MVP requirements and planned expansions, such as microservices decomposition and enhanced modularity.
+
 ## Technologies used
 
 - **Spring Boot 3.5.4** → Main framework for building the backend in Java.
