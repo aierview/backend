@@ -9,8 +9,8 @@ import com.aierview.backend.auth.domain.model.google.GoogleAccountModel;
 import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSignupRequest;
-import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 
 import java.util.UUID;
 
@@ -248,5 +248,16 @@ public class AuthTestFixture {
 
     public static GoogleAuhRequest anyGoogleAuthRequest() {
         return new GoogleAuhRequest("any_valid_token");
+    }
+
+    public static UserRef anySavedUser(UserJpaEntity savedUserJpaEntity) {
+        return UserRef
+                .builder()
+                .id(savedUserJpaEntity.getId())
+                .name(savedUserJpaEntity.getName())
+                .email(savedUserJpaEntity.getEmail())
+                .role(savedUserJpaEntity.getRole())
+                .build();
+
     }
 }

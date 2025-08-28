@@ -3,14 +3,14 @@ package com.aierview.backend.auth.infra.adapter.repository;
 import com.aierview.backend.auth.domain.contact.repository.IAuthRepository;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.infra.mapper.AuthMapper;
-import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.repository.AuthJpaRepository;
+import com.aierview.backend.auth.infra.persistence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persistence.repository.AuthJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class AuthRepositoryAdapter implements IAuthRepository {
     private final AuthMapper authMapper;
@@ -18,14 +18,14 @@ public class AuthRepositoryAdapter implements IAuthRepository {
 
     @Override
     public Auth save(Auth auth) {
-        AuthJpaEntity entity = this.authMapper.authToAuthJpaEntity(auth);
+        AuthJpaEntity entity = this.authMapper.mapToJpa(auth);
         entity = this.authRepository.save(entity);
-        return this.authMapper.authJpaEntityToAuth(entity);
+        return this.authMapper.mapToEntity(entity);
     }
 
     @Override
     public Optional<Auth> findByUserId(Long userId) {
         Optional<AuthJpaEntity> entity = this.authRepository.findByUserId(userId);
-        return entity.map(this.authMapper::authJpaEntityToAuth);
+        return entity.map(this.authMapper::mapToEntity);
     }
 }

@@ -3,8 +3,8 @@ package com.aierview.backend.auth.infra.adapter.repository;
 import com.aierview.backend.auth.domain.entity.Auth;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.mapper.AuthMapper;
-import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.repository.AuthJpaRepository;
+import com.aierview.backend.auth.infra.persistence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persistence.repository.AuthJpaRepository;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,9 +35,9 @@ public class AuthRepositoryAdapterTests {
         AuthJpaEntity savedAuthJpaEntity = AuthTestFixture.anySavedAuthJpaEntity(auth);
         Auth savedAuth = AuthTestFixture.anySavedAuth(savedAuthJpaEntity);
 
-        when(this.authMapper.authToAuthJpaEntity(auth)).thenReturn(authJpaEntity);
+        when(this.authMapper.mapToJpa(auth)).thenReturn(authJpaEntity);
         when(this.authJpaRepository.save(authJpaEntity)).thenReturn(savedAuthJpaEntity);
-        when(this.authMapper.authJpaEntityToAuth(savedAuthJpaEntity)).thenReturn(savedAuth);
+        when(this.authMapper.mapToEntity(savedAuthJpaEntity)).thenReturn(savedAuth);
 
         Auth result = this.authRepositoryAdapter.save(auth);
 
@@ -68,7 +68,7 @@ public class AuthRepositoryAdapterTests {
         AuthJpaEntity savedAuthJpaEntity = AuthTestFixture.anySavedAuthJpaEntity(savedAuth);
 
         when(this.authJpaRepository.findByUserId(savedUser.getId())).thenReturn(Optional.of(savedAuthJpaEntity));
-        when(this.authMapper.authJpaEntityToAuth(savedAuthJpaEntity)).thenReturn(savedAuth);
+        when(this.authMapper.mapToEntity(savedAuthJpaEntity)).thenReturn(savedAuth);
 
         Optional<Auth> result = this.authRepositoryAdapter.findByUserId(savedUser.getId());
 
@@ -76,6 +76,6 @@ public class AuthRepositoryAdapterTests {
         assertEquals(savedAuthJpaEntity.getId(), result.get().getId());
         assertEquals(savedAuthJpaEntity.getUser().getId(), result.get().getUser().getId());
         verify(this.authJpaRepository, times(1)).findByUserId(savedUser.getId());
-        verify(this.authMapper, times(1)).authJpaEntityToAuth(savedAuthJpaEntity);
+        verify(this.authMapper, times(1)).mapToEntity(savedAuthJpaEntity);
     }
 }

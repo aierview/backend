@@ -2,8 +2,8 @@ package com.aierview.backend.auth.infra.adapter.repository;
 
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.mapper.UserMapper;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.repository.UserJpaRepository;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.repository.UserJpaRepository;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +48,7 @@ public class UserRepositoryAdapterTests {
         UserRef savedUserRef = AuthTestFixture.anyUserRef(savedUserJpaEntity);
 
         when(this.userJpaRepository.findByEmail(email)).thenReturn(Optional.of(savedUserJpaEntity));
-        when(this.userMapper.userJpaEntityToUserRef(savedUserJpaEntity)).thenReturn(savedUserRef);
+        when(this.userMapper.mapToEntity(savedUserJpaEntity)).thenReturn(savedUserRef);
 
         Optional<UserRef> result = this.userRepositoryAdapter.findByEmail(email);
 
@@ -67,9 +67,9 @@ public class UserRepositoryAdapterTests {
         UserJpaEntity savedEntity = AuthTestFixture.anyUserJpaEntity(entity);
         UserRef savedUserRef = AuthTestFixture.anyUserRef(savedEntity);
 
-        when(this.userMapper.userRefToUserJpaEntity(userRef)).thenReturn(entity);
+        when(this.userMapper.mapToJpa(userRef)).thenReturn(entity);
         when(this.userJpaRepository.save(entity)).thenReturn(savedEntity);
-        when(this.userMapper.userJpaEntityToUserRef(savedEntity)).thenReturn(savedUserRef);
+        when(this.userMapper.mapToEntity(savedEntity)).thenReturn(savedUserRef);
 
         UserRef result = this.userRepositoryAdapter.save(userRef);
 

@@ -4,34 +4,122 @@ import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.domain.enums.AuthProvider;
 import com.aierview.backend.auth.domain.model.google.GoogleAuhRequest;
 import com.aierview.backend.auth.domain.model.local.LocalSigninRequest;
-import com.aierview.backend.auth.infra.persisntence.entity.AuthJpaEntity;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
-import com.aierview.backend.shared.BaseIntegrationTests;
+import com.aierview.backend.auth.infra.persistence.entity.AuthJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
+import com.aierview.backend.shared.DatabaseCleaner;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import com.aierview.backend.shared.testdata.HttpServletTestFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class AuthControllerIntegrationTest extends BaseIntegrationTests {
 
+@Testcontainers
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@SpringBootTest(properties = "spring.profiles.active=test", webEnvironment = RANDOM_PORT)
+public class AuthControllerIntegrationTest {
+    static GenericContainer<?> redisContainer = new GenericContainer<>(DockerImageName.parse("redis:7.2.0-alpine"))
+            .withExposedPorts(6379);
+
+    @Container
+    static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.2.1"));
+
+    @Container
+    static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")
+            .withDatabaseName("testdb")
+            .withUsername("testuser")
+            .withPassword("testpass");
+
+    private static WireMockServer wireMockServer;
     private final String LOCAL_SIGNUP_API_URL = "/api/v1/auth/local/signup";
     private final String LOCAL_SIGNIN_API_URL = "/api/v1/auth/local/signin";
     private final String GOOGLE_SIGNUP_API_URL = "/api/v1/auth/google/signup";
     private final String GOOGLE_SIGNIN_API_URL = "/api/v1/auth/google/signin";
 
+    @Autowired
+    private EntityManager entityManager;
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
+    @Autowired
+    private MockMvc mvc;
+
+    @DynamicPropertySource
+    static void overrideProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgresContainer::getUsername);
+        registry.add("spring.datasource.password", postgresContainer::getPassword);
+//      KAFKA CONFIG
+        registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
+//      REDIS CONFIG
+        registry.add("spring.data.redis.host", redisContainer::getHost);
+        registry.add("spring.data.redis.port", () -> redisContainer.getMappedPort(6379));
+    }
+
+    @BeforeAll
+    static void startWireMockContainer() {
+        redisContainer.start();
+
+        wireMockServer = new WireMockServer(8089);
+        wireMockServer.start();
+
+        //GOOGLE -  get token info
+        wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
+                .withQueryParam("id_token", equalTo("any_valid_token"))
+                .willReturn(okJson("""
+                            {
+                              "email": "example@example.com",
+                              "name": "John Snow Smith",
+                              "picture": "any_picture"
+                            }
+                        """)));
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/tokeninfo"))
+                .withQueryParam("id_token", equalTo("any_invalid_token"))
+                .willReturn(aResponse().withStatus(400)));
+    }
+
+    @AfterAll
+    static void stopWireMock() {
+        if (wireMockServer != null) {
+            wireMockServer.stop();
+        }
+        postgresContainer.close();
+    }
+
+    @BeforeEach
+    public void setup() {
+        databaseCleaner.clearDatabase();
+    }
 
     @Test
     @Transactional
@@ -46,7 +134,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isConflict())
@@ -64,7 +152,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -81,7 +169,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -98,7 +186,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -116,7 +204,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -134,7 +222,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -152,7 +240,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -169,7 +257,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNUP_API_URL, json);
 
         mvc
                 .perform(request)
@@ -187,7 +275,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isUnauthorized())
@@ -204,7 +292,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -221,7 +309,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -238,7 +326,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
 
         mvc
                 .perform(request)
@@ -266,7 +354,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.LOCAL_SIGNIN_API_URL, json);
 
         mvc
                 .perform(request)
@@ -292,7 +380,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isConflict())
@@ -309,7 +397,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -324,7 +412,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -340,7 +428,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNUP_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isCreated())
@@ -357,7 +445,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isUnauthorized())
@@ -372,7 +460,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -388,7 +476,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
         mvc
                 .perform(request)
                 .andExpect(status().isBadRequest())
@@ -413,7 +501,7 @@ public class AuthControllerIntegrationTest extends BaseIntegrationTests {
         String json = new ObjectMapper().writeValueAsString(requestBody);
 
         MockHttpServletRequestBuilder request = HttpServletTestFixture
-                .anyMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
+                .anyPostMockMvcRequestBuilder(this.GOOGLE_SIGNIN_API_URL, json);
 
         mvc
                 .perform(request)

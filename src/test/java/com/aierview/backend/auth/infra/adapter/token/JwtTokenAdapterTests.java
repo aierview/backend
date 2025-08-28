@@ -3,7 +3,7 @@ package com.aierview.backend.auth.infra.adapter.token;
 import com.aierview.backend.auth.domain.contact.token.ITokenGenerator;
 import com.aierview.backend.auth.domain.entity.UserRef;
 import com.aierview.backend.auth.infra.mapper.UserMapper;
-import com.aierview.backend.auth.infra.persisntence.entity.UserJpaEntity;
+import com.aierview.backend.auth.infra.persistence.entity.UserJpaEntity;
 import com.aierview.backend.shared.testdata.AuthTestFixture;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -46,14 +46,14 @@ public class JwtTokenAdapterTests {
         UserRef savedUserRef = AuthTestFixture.anySavedUserRef();
         UserJpaEntity savedUserJpaEntity = AuthTestFixture.anyUserJpaEntity(savedUserRef);
 
-        when(this.userMapper.userRefToUserJpaEntity(savedUserRef)).thenReturn(savedUserJpaEntity);
+        when(this.userMapper.mapToJpa(savedUserRef)).thenReturn(savedUserJpaEntity);
 
         String token = this.encoder.generate(savedUserRef);
 
         assertNotNull(token);
         Claims claims = parseToken(token);
         Assertions.assertEquals(claims.getSubject(), savedUserRef.getEmail());
-        Mockito.verify(this.userMapper, Mockito.times(1)).userRefToUserJpaEntity(any());
+        Mockito.verify(this.userMapper, Mockito.times(1)).mapToJpa(any());
     }
 
     private Claims parseToken(String token) {
