@@ -143,7 +143,7 @@ After setting up all environment variables and selecting the desired Spring Boot
 
 1. **Using an IDE** (recommended: IntelliJ IDEA):
     - Open the project in IntelliJ.
-    - Locate the main class `BackendApplication`.
+    - Locate the main class `InterviewService`.
     - Run it directly via the IDE's Spring Boot run configuration.
       > The selected Spring profile (default, dev, homolog, prod) will be applied automatically based on your `application-<profile>.yaml`.
 
@@ -283,7 +283,7 @@ You can also run the tests from the terminal using Maven commands:
 
 This section provides guidelines for contributing to the **Speech Service**.
 
-Repository: [https://github.com/aierview/backend](https://github.com/aierview/speech-service.git)
+Repository: [https://github.com/aierview/interview-service](https://github.com/aierview/speech-service.git)
 
 ---
 
@@ -291,7 +291,7 @@ Repository: [https://github.com/aierview/backend](https://github.com/aierview/sp
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/aierview/backend
+git clone https://github.com/aierview/interview-service
 cd inerview-service
 ```
 2. **Create a new branch from main for your feature or fix:**
